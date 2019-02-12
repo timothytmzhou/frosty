@@ -49,7 +49,7 @@ async def on_message(message):
                 await client.send_message(message.channel, "☃" * min(snowman_count, 128))
 
 
-ban_list = ["Neil G."]
+ban_list = ["nog642"]
 LAST = get_warning()
 CHANNEL = discord.Object(id='')
 TOKEN = ''
