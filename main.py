@@ -37,4 +37,21 @@ async def on_message(message):
         try:
             between = text[text.index("give me")+7:text.index(snow_word)].strip()
             if str(between) == "a":
-                snowman_
+                snowman_count = 1
+            else:
+                snowman_count = int(literal_eval(between))
+        except:
+            return
+        if message.author.name in ban_list:
+            await client.send_message(message.channel, "{0} doesn't deserve ANY snowmen".format(message.author.name))
+        else:
+            if snowman_count > 0:
+                await client.send_message(message.channel, "☃" * min(snowman_count, 128))
+
+
+ban_list = ["Neil G."]
+LAST = get_warning()
+CHANNEL = discord.Object(id='')
+TOKEN = ''
+client.loop.create_task(check_bsd())
+client.run(TOKEN)
