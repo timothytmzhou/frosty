@@ -2,6 +2,7 @@ import requests
 import bs4
 import discord
 import asyncio
+import math
 from ast import literal_eval
 
 
@@ -33,6 +34,7 @@ class Response:
     def __init__(self, message):
         self.message = message
         self.text = message.content.lower()
+        self.words = self.text.split(" ")
         self.do = (Response.triggers[set_phrase] for set_phrase in Response.triggers.keys()
                    if all(words in self.text for words in set_phrase))
         self.responses = [getattr(self, foo.__name__)() for foo in self.do]
@@ -44,11 +46,10 @@ class Response:
             snow_word = "snowmen" if "snowmen" in self.text else "snowman"
             try:
                 between = self.text[self.text.index("give me") + 7:self.text.index(snow_word)].strip()
-                print(between)
                 if str(between) == "a":
                     snowman_count = 1
                 else:
-                    snowman_count = round(literal_eval(between))
+                    snowman_count = round(eval(between))
             except:
                 return
             if snowman_count > 0:
@@ -57,18 +58,23 @@ class Response:
     def kindred_spirit(self):
         return "A kindred spirit from {0}".format(self.message.author.name)
 
+    def friend(self):
+        return "I'm a friend"
+
     triggers = {
         ("give me", "snowman"): snowman,
         ("give me", "snowmen"): snowman,
-        ("☃") : kindred_spirit
+        ("☃",): kindred_spirit,
+        ("frosty is a friend",): friend
     }
 
 
 @client.event
 async def on_message(message):
-    for r in Response(message).responses:
-        if r is not None:
-            await client.send_message(message.channel, r)
+    if not message.author.bot:
+        for r in Response(message).responses:
+            if r is not None:
+                await client.send_message(message.channel, r)
 
 
 with open("ban_list.txt", "r") as bl:
