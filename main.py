@@ -80,11 +80,19 @@ async def on_message(message):
 with open("ban_list.txt", "r") as bl:
     ban_list = list(map(lambda x: x.rstrip(), bl.readlines()))
     
-
+def decode(key, enc):
+    dec = []
+    enc = base64.urlsafe_b64decode(enc).decode()
+    for i in range(len(enc)):
+        key_c = key[i % len(key)]
+        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
+        dec.append(dec_c)
+    return "".join(dec)
+    
 with open("data.txt", "r") as dat:
     lines = dat.read().splitlines()
     ANNOUNCEMENTS = discord.Object(id=lines[0])
-    TOKEN = lines[1]
+    TOKEN = decode(input("Enter key: "), lines[1])
 
 last_warning = SnowAlertSystem.get_warning()
 client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
