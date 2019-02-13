@@ -6,7 +6,6 @@ import base64
 import math
 from ast import literal_eval
 
-
 client = discord.Client()
 
 
@@ -50,7 +49,10 @@ class Response:
                 if str(between) == "a":
                     snowman_count = 1
                 else:
-                    snowman_count = round(eval(between))
+                    if self.message.author.name in eval_list:
+                        snowman_count = round(eval(between))
+                    else:
+                        snowman_count = round(literal_eval(between))
             except:
                 return
             if snowman_count > 0:
@@ -77,10 +79,9 @@ async def on_message(message):
             if r is not None:
                 await client.send_message(message.channel, r)
 
+ban_list = []
 
-with open("ban_list.txt", "r") as bl:
-    ban_list = list(map(lambda x: x.rstrip(), bl.readlines()))
-    
+
 def decode(key, enc):
     dec = []
     enc = base64.urlsafe_b64decode(enc).decode()
@@ -89,12 +90,13 @@ def decode(key, enc):
         dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
         dec.append(dec_c)
     return "".join(dec)
-    
+
+
+eval_list = ["Timothy Z."]
+last_warning = SnowAlertSystem.get_warning()
+client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
+
 with open("data.txt", "r") as dat:
     lines = dat.read().splitlines()
     ANNOUNCEMENTS = discord.Object(id=lines[0])
-    TOKEN = decode(input("Enter key: "), lines[1])
-
-last_warning = SnowAlertSystem.get_warning()
-client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
-client.run(TOKEN)
+    client.run(decode(input("Enter key: "), lines[1]))
