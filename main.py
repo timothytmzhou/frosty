@@ -33,23 +33,31 @@ class SnowAlertSystem:
 class Response:
     def __init__(self, message):
         self.message = message
-        self.text = message.content.lower()
+        self.text = message.content
+        self.lower_text = self.text.lower()
         self.words = self.text.split(" ")
+        self.lower_words = self.lower_text.split(" ")
+        self.author = self.message.author.name
         self.do = (Response.triggers[set_phrase] for set_phrase in Response.triggers.keys()
-                   if all(words in self.text for words in set_phrase))
+                   if all(words in self.lower_text for words in set_phrase))
         self.responses = [getattr(self, foo.__name__)() for foo in self.do]
 
     def snowman(self):
-        if self.message.author.name in ban_list:
+        if self.author in ban_list:
             return "{0} doesn't deserve ANY snowmen".format(self.message.author.name)
         else:
-            snow_word = "snowmen" if "snowmen" in self.text else "snowman"
+            snow_word = "snowmen" if "snowmen" in self.lower_text else "snowman"
             try:
                 between = self.text[self.text.index("give me") + 7:self.text.index(snow_word)].strip()
+                while True:
+                    if between.startswith("'") and between.endswith("'"):
+                        between = between[1:-1]
+                    else:
+                        break
                 if str(between) == "a":
                     snowman_count = 1
                 else:
-                    if self.message.author.name in eval_list:
+                    if self.author in eval_list:
                         snowman_count = round(eval(between))
                     else:
                         snowman_count = round(literal_eval(between))
@@ -64,11 +72,44 @@ class Response:
     def friend(self):
         return "I'm a friend"
 
+    def ban(self):
+        try:
+            i = self.lower_words.index("ban") + 1
+            name = self.words[i]
+            if name in ban_list:
+                ban_list.remove(name)
+                return "{0} has been removed from the ban list".format(name)
+            else:
+                ban_list.append(name)
+                return "{0} has been banned".format(name)
+        except:
+            return
+
+    def give_eval(self):
+        if self.author == "Timothy Z.":
+            try:
+                i = self.lower_words.index("eval") + 1
+                name = self.words[i]
+                if name in eval_list:
+                    eval_list.remove(name)
+                    return "{0} has had their eval privileges revoked".format(name)
+                else:
+                    eval_list.append(name)
+                    return "{0} now has eval privileges".format(name)
+            except:
+                return
+
+    def where_money(self):
+        return "CMU where {0}'s money at".format(self.author)
+
     triggers = {
         ("give me", "snowman"): snowman,
         ("give me", "snowmen"): snowman,
         ("☃",): kindred_spirit,
-        ("frosty is a friend",): friend
+        ("frosty is a friend",): friend,
+        ("ban ",): ban,
+        ("give eval",): give_eval,
+        ("cmu",): where_money
     }
 
 
@@ -78,8 +119,6 @@ async def on_message(message):
         for r in Response(message).responses:
             if r is not None:
                 await client.send_message(message.channel, r)
-
-ban_list = []
 
 
 def decode(key, enc):
@@ -93,8 +132,10 @@ def decode(key, enc):
 
 
 eval_list = ["Timothy Z."]
+ban_list = []
 last_warning = SnowAlertSystem.get_warning()
 client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
+
 
 with open("data.txt", "r") as dat:
     lines = dat.read().splitlines()
