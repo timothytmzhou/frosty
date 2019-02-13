@@ -50,7 +50,7 @@ class Response:
             try:
                 between = self.text[self.text.index("give me") + 7:self.text.index(snow_word)].strip()
                 while True:
-                    if between.startswith("'") and between.endswith("'"):
+                    if between.startswith("`") and between.endswith("'"):
                         between = between[1:-1]
                     else:
                         break
