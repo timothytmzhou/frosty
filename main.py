@@ -58,7 +58,11 @@ class Response:
                     snowman_count = 1
                 else:
                     if self.author in eval_list:
-                        snowman_count = round(eval(between))
+                        invalid_words = ", ".join(i for i in ("requests", "os") if i in between.lower())
+                        if not len(invalid_words):
+                            snowman_count = round(eval(between))
+                        else:
+                            return "invalid words: `{0}` found in eval attempt".format(invalid_words)
                     else:
                         snowman_count = round(literal_eval(between))
             except:
@@ -73,17 +77,18 @@ class Response:
         return "I'm a friend"
 
     def ban(self):
-        try:
-            i = self.lower_words.index("ban") + 1
-            name = self.words[i]
-            if name in ban_list:
-                ban_list.remove(name)
-                return "{0} has been removed from the ban list".format(name)
-            else:
-                ban_list.append(name)
-                return "{0} has been banned".format(name)
-        except:
-            return
+        if self.author == "Timothy Z.":
+            try:
+                i = self.lower_words.index("ban") + 1
+                name = self.words[i]
+                if name in ban_list:
+                    ban_list.remove(name)
+                    return "{0} has been removed from the ban list".format(name)
+                else:
+                    ban_list.append(name)
+                    return "{0} has been banned".format(name)
+            except:
+                return
 
     def give_eval(self):
         if self.author == "Timothy Z.":
