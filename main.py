@@ -43,6 +43,8 @@ class Response:
         if self.message.author.name in ban_list:
             return "{0} doesn't deserve ANY snowmen".format(self.message.author.name)
         else:
+            print(self.message.author.name)
+            print(ban_list)
             snow_word = "snowmen" if "snowmen" in self.text else "snowman"
             try:
                 between = self.text[self.text.index("give me") + 7:self.text.index(snow_word)].strip()
