@@ -2,6 +2,7 @@ import requests
 import bs4
 import discord
 import asyncio
+import base64
 import math
 from ast import literal_eval
 
