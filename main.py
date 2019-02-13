@@ -79,6 +79,7 @@ async def on_message(message):
 
 with open("ban_list.txt", "r") as bl:
     ban_list = bl.readlines()
+    print(ban_list)
 
 with open("data.txt", "r") as dat:
     lines = dat.read().splitlines()
