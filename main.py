@@ -175,9 +175,8 @@ async def on_message(message):
         for r in Response(message).responses:
             if r is not None:
                 if r.startswith("DELETE//"):
-                    r.remove("DELETE//")
                     await client.delete_message(message)
-                await client.send_message(message.channel, r)
+                await client.send_message(message.channel, r.replace("DELETE//", ""))
 
 
 snow_alert = SnowAlertSystem()
