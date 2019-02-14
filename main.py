@@ -158,7 +158,7 @@ class Response:
         message = "**Triggers:**\n"
         for t in Response.triggers:
             message += "`{0}` - `{1}`\n".format(", ".join(t), Response.triggers[t].__name__)
-        message += "**Replies:**\n"
+        message += "\n**Replies:**\n"
         for r in Response.replies:
             message += "`{0}` - `{1}`\n".format(", ".join(r), Response.replies[r])
         return message
