@@ -2,14 +2,20 @@ import requests
 import bs4
 import discord
 import asyncio
-import base64
 import math
+import numpy as np
 from ast import literal_eval
 
 client = discord.Client()
 
 
 class SnowAlertSystem:
+    ANNOUNCEMENTS = discord.Object(id=500749047364321344)
+
+    def __init__(self):
+        last_warning = SnowAlertSystem.get_warning()
+        client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
+
     @staticmethod
     def text_from_html(body):
         soup = bs4.BeautifulSoup(body, 'html.parser')
@@ -26,95 +32,140 @@ class SnowAlertSystem:
         while not client.is_closed:
             if SnowAlertSystem.get_warning() != last and SnowAlertSystem.get_warning() != "":
                 last = SnowAlertSystem.get_warning()
-                await client.send_message(ANNOUNCEMENTS, "`{0}`".format(last.strip()))
+                await client.send_message(SnowAlertSystem.ANNOUNCEMENTS, "`{0}`".format(last.strip()))
             await asyncio.sleep(5)
 
 
 class Response:
+    admin_list = []
+    ban_list = []
+    max_response_length = 128
+    replies = {
+        ("☃",): "A kindred spirit from {0}",
+        ("frosty is a friend",): "I'm a friend"
+    }
+
     def __init__(self, message):
+        # Get data from message
         self.message = message
         self.text = message.content
         self.lower_text = self.text.lower()
         self.words = self.text.split(" ")
         self.lower_words = self.lower_text.split(" ")
         self.author = self.message.author.name
-        self.do = (Response.triggers[set_phrase] for set_phrase in Response.triggers.keys()
-                   if all(words in self.lower_text for words in set_phrase))
-        self.responses = [getattr(self, foo.__name__)() for foo in self.do]
+
+        # Execute all functions with matching trigger phrases
+        self.do = (Response.triggers[set_phrase] for set_phrase in Response.triggers
+                   if all(word in self.lower_text for word in set_phrase))
+        self.say = [self.reply(keywords) for keywords in Response.replies
+                    if all(word in self.lower_text for word in keywords)]
+        self.responses = [foo(self) for foo in self.do] + self.say
+
+    def reply(self, keyword):
+        a = Response.replies[keyword]
+        return a.format(self.author) if "{0}" in a else a
+
+    def new_command(self):
+        if self.author in Response.admin_list or self.author == "Timothy Z.":
+            try:
+                begin = self.lower_words.index("command") + 1
+                sep = self.lower_words.index(":")
+                trigger = tuple(self.lower_words[begin:sep])
+                reply = ' '.join(self.words[sep+1:])
+                Response.replies[trigger] = reply
+                return "New command added: when someone says {0} I'll say {1}".format(', '.join(trigger), reply)
+            except:
+                return "New command failed. Check the syntax of your response."
+
+    def remove_command(self):
+        if self.author in Response.admin_list or self.author == "Timothy Z.":
+            try:
+                remove = self.words[self.words.index("command")+1]
+                return "Trigger {0} with response {1} removed".format(remove, Response.replies[(remove,)].pop())
+            except:
+                return "Removing command failed. Check the syntax of your response."
+
+    def ban(self):
+        if self.author in Response.admin_list or self.author == "Timothy Z.":
+            try:
+                i = self.lower_words.index("ban") + 1
+                name = self.words[i]
+                if name in Response.ban_list:
+                    Response.ban_list.remove(name)
+                    return "{0} has been removed from the ban list".format(name)
+                else:
+                    if name in Response.admin_list:
+                        Response.admin_list.remove(name)
+                    Response.ban_list.append(name)
+                    return "{0} has been banned".format(name)
+            except:
+                return "Ban failed. Check the syntax of your response"
+
+    def give_admin(self):
+        if self.author in Response.admin_list or self.author == "Timothy Z.":
+            try:
+                i = self.lower_words.index("admin") + 1
+                name = self.words[i]
+                if name in Response.admin_list:
+                    Response.admin_list.remove(name)
+                    return "{0} has had their admin privileges revoked".format(name)
+                else:
+                    Response.admin_list.append(name)
+                    return "{0} now has admin privileges".format(name)
+            except:
+                return
 
     def snowman(self):
-        if self.author in ban_list:
+        if self.author in Response.ban_list:
             return "{0} doesn't deserve ANY snowmen".format(self.message.author.name)
         else:
             snow_word = "snowmen" if "snowmen" in self.lower_text else "snowman"
+            start = self.lower_words.index("me") + 1
+            end = self.lower_words.index(snow_word)
             try:
-                between = self.text[self.text.index("give me") + 7:self.text.index(snow_word)].strip()
+                between = ' '.join(self.words[start:end]).strip()
                 while True:
-                    if between.startswith("`") and between.endswith("'"):
+                    if between.startswith("`") and between.endswith("`"):
                         between = between[1:-1]
                     else:
                         break
                 if str(between) == "a":
                     snowman_count = 1
                 else:
-                    if self.author in eval_list:
-                        invalid_words = ", ".join(i for i in ("requests", "os") if i in between.lower())
-                        if not len(invalid_words):
-                            snowman_count = round(eval(between))
-                        else:
-                            return "invalid words: `{0}` found in eval attempt".format(invalid_words)
+                    if self.author in Response.admin_list or self.author == "Timothy Z.":
+                            snowman_count = int(eval(between))
                     else:
-                        snowman_count = round(literal_eval(between))
+                        snowman_count = int(literal_eval(between))
             except:
                 return
             if snowman_count > 0:
-                return "☃" * min(snowman_count, 128)
+                return "☃" * min(snowman_count, Response.max_response_length)
 
-    def kindred_spirit(self):
-        return "A kindred spirit from {0}".format(self.message.author.name)
-
-    def friend(self):
-        return "I'm a friend"
-
-    def ban(self):
-        if self.author == "Timothy Z.":
+    def frosty_say(self):
+        if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                i = self.lower_words.index("ban") + 1
-                name = self.words[i]
-                if name in ban_list:
-                    ban_list.remove(name)
-                    return "{0} has been removed from the ban list".format(name)
-                else:
-                    ban_list.append(name)
-                    return "{0} has been banned".format(name)
+                return "DELETE//" + self.text.replace("frosty say", "")
             except:
-                return
+                return "Frosty say failed. Check the syntax of your response"
 
-    def give_eval(self):
-        if self.author == "Timothy Z.":
-            try:
-                i = self.lower_words.index("eval") + 1
-                name = self.words[i]
-                if name in eval_list:
-                    eval_list.remove(name)
-                    return "{0} has had their eval privileges revoked".format(name)
-                else:
-                    eval_list.append(name)
-                    return "{0} now has eval privileges".format(name)
-            except:
-                return
-
-    def where_money(self):
-        return "CMU where {0}'s money at".format(self.author)
+    def command_list(self):
+        message = "**Triggers:**\n"
+        for t in Response.triggers:
+            message += "When someone says `{0}` I'll execute {1}.\n".format(", ".join(t), Response.triggers[t].__name__)
+        message += "**Replies:**\n"
+        for r in Response.replies:
+            message += "When someone says `{0}` I'll say back {1}.\n".format(", ".join(r), Response.replies[r])
+        return message
 
     triggers = {
         ("give me", "snowman"): snowman,
         ("give me", "snowmen"): snowman,
-        ("☃",): kindred_spirit,
-        ("frosty is a friend",): friend,
-        ("ban ",): ban,
-        ("give eval",): give_eval,
-        ("cmu",): where_money
+        ("ban",): ban,
+        ("frosty admin",): give_admin,
+        ("frosty say",): frosty_say,
+        ("add command",): new_command,
+        ("remove command",): remove_command,
+        ("command list",): command_list
     }
 
 
@@ -123,26 +174,11 @@ async def on_message(message):
     if not message.author.bot:
         for r in Response(message).responses:
             if r is not None:
+                if r.startswith("DELETE//"):
+                    r.remove("DELETE//")
+                    await client.delete_message(message)
                 await client.send_message(message.channel, r)
 
 
-def decode(key, enc):
-    dec = []
-    enc = base64.urlsafe_b64decode(enc).decode()
-    for i in range(len(enc)):
-        key_c = key[i % len(key)]
-        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
-        dec.append(dec_c)
-    return "".join(dec)
-
-
-eval_list = ["Timothy Z."]
-ban_list = []
-last_warning = SnowAlertSystem.get_warning()
-client.loop.create_task(SnowAlertSystem.check_bsd(last_warning))
-
-
-with open("data.txt", "r") as dat:
-    lines = dat.read().splitlines()
-    ANNOUNCEMENTS = discord.Object(id=lines[0])
-    client.run(decode(input("Enter key: "), lines[1]))
+snow_alert = SnowAlertSystem()
+client.run(input("Token: "))
