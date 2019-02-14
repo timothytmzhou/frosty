@@ -80,8 +80,11 @@ class Response:
     def remove_command(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                remove = self.words[self.words.index("command")+1]
-                return "Trigger {0} with response {1} removed".format(remove, Response.replies[(remove,)].pop())
+                remove = self.words[self.words.index("command")+1:]
+                return "Trigger `{0}` with response `{1}` removed".format(
+                    ', '.join(remove),
+                    Response.replies[tuple(remove)].pop()
+                )
             except:
                 return "Removing command failed. Check the syntax of your response."
 
