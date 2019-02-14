@@ -68,7 +68,7 @@ class Response:
     def new_command(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                begin = self.lower_words.index("command") + 1
+                begin = self.lower_words.index("!add") + 1
                 sep = self.lower_words.index(":")
                 trigger = tuple(self.lower_words[begin:sep])
                 reply = ' '.join(self.words[sep+1:])
@@ -80,7 +80,7 @@ class Response:
     def remove_command(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                remove = self.words[self.words.index("command")+1:]
+                remove = self.words[self.words.index("!remove")+1:]
                 for key in remove:
                     # Gets rid of command so it doesn't also trigger
                     self.lower_text = self.text.remove(key.lower())
@@ -94,7 +94,7 @@ class Response:
     def ban(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                i = self.lower_words.index("ban") + 1
+                i = self.lower_words.index("!ban") + 1
                 name = self.words[i]
                 if name in Response.ban_list:
                     Response.ban_list.remove(name)
@@ -110,7 +110,7 @@ class Response:
     def give_admin(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                i = self.lower_words.index("admin") + 1
+                i = self.lower_words.index("!admin") + 1
                 name = self.words[i]
                 if name in Response.admin_list:
                     Response.admin_list.remove(name)
@@ -150,28 +150,28 @@ class Response:
     def frosty_say(self):
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
-                return "DELETE//" + self.text.replace("frosty say", "")
+                return "DELETE//" + self.text.replace("!say", "")
             except:
                 return "Frosty say failed. Check the syntax of your response"
 
     def command_list(self):
         message = "**Triggers:**\n"
         for t in Response.triggers:
-            message += "When someone says `{0}` I'll execute {1}.\n".format(", ".join(t), Response.triggers[t].__name__)
+            message += "`{0}` - `{1}`\n".format(", ".join(t), Response.triggers[t].__name__)
         message += "**Replies:**\n"
         for r in Response.replies:
-            message += "When someone says `{0}` I'll say back {1}.\n".format(", ".join(r), Response.replies[r])
+            message += "`{0}` - `{1}`\n".format(", ".join(r), Response.replies[r])
         return message
 
     triggers = {
         ("give me", "snowman"): snowman,
         ("give me", "snowmen"): snowman,
-        ("ban",): ban,
-        ("frosty admin",): give_admin,
-        ("frosty say",): frosty_say,
-        ("add command",): new_command,
-        ("remove command",): remove_command,
-        ("command list",): command_list
+        ("!ban",): ban,
+        ("!admin",): give_admin,
+        ("!say",): frosty_say,
+        ("!add",): new_command,
+        ("!remove",): remove_command,
+        ("!list",): command_list
     }
 
 
