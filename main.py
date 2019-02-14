@@ -42,7 +42,7 @@ class Response:
     max_response_length = 128
     replies = {
         ("☃",): "A kindred spirit from {0}",
-        ("frosty is a friend",): "I'm a friend"
+        ("frosty", "is", "a", "friend"): "I'm a friend"
     }
 
     def __init__(self, message):
@@ -81,9 +81,12 @@ class Response:
         if self.author in Response.admin_list or self.author == "Timothy Z.":
             try:
                 remove = self.words[self.words.index("command")+1:]
+                for key in remove:
+                    # Gets rid of command so it doesn't also trigger
+                    self.lower_text = self.text.remove(key.lower())
                 return "Trigger `{0}` with response `{1}` removed".format(
                     ', '.join(remove),
-                    Response.replies[tuple(remove)].pop()
+                    Response.replies.pop(tuple(remove))
                 )
             except:
                 return "Removing command failed. Check the syntax of your response."
