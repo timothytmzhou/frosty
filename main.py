@@ -103,7 +103,7 @@ class Response:
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words)
                     if message_slice is not None:
-                        func(message_slice).invoke()
+                        func(self, message_slice).invoke()
                 else:
                     func.send("Command unauthorized for status `{0}`").format(
                         UserTypes(trigger.access_level).name.lower()
