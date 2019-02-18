@@ -7,7 +7,7 @@ import xkcd
 import numpy as np
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-from timeout import timeout
+# from timeout import timeout
 
 
 client = discord.Client()
@@ -19,12 +19,12 @@ class Call:
         self.response = response
         self.message = message
 
-    def invoke(self):
+    async def invoke(self):
         if self.call_type == CallType.DELETE or self.call_type == CallType.REPLACE:
-            self.delete(self.message)
+            await self.delete()
         if self.call_type == CallType.SEND or self.call_type == CallType.REPLACE:
             if self.response is not None:
-                self.send(self.message.channel, self.response)
+                await self.send()
         else:
             return
 
@@ -63,13 +63,13 @@ class Trigger:
         return self.end is None or self.end in lwords
 
     def begin_index(self, lwords):
-            return lwords.index(self.begin)
+            return lwords.index(self.begin) + 1
 
     def end_index(self, lwords):
         if self.end is None:
             return len(lwords)
         else:
-            return lwords.index(self.end) + 1
+            return lwords.index(self.end)
 
     def slice(self, words):
         sliced = " ".join(words[
@@ -103,25 +103,26 @@ class Response:
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words)
                     if message_slice is not None:
-                        func(self, message_slice).invoke()
-                else:
-                    func.send("Command unauthorized for status `{0}`").format(
-                        UserTypes(trigger.access_level).name.lower()
-                    )
+                        client.loop.create_task(func(self, message_slice).invoke())
 
     def new_command(self, message_slice):
         i = message_slice.index(":")
-        trigger = Trigger(*message_slice[:i])
-        reply = ' '.join(message_slice[i + 1:])
+        args = message_slice[0:i]
+        if len(args) > 1:
+            args[1] = int(args[1])
+        trigger = Trigger(*args)
+        reply = ' '.join(message_slice[i + 1:]).strip()
         if "!del" in reply:
-            call = Call(CallType.REPLACE, self.message, reply.replace("!del", "").strip())
+            reply = reply.replace("!del", "")
+            call_type = CallType.REPLACE
         else:
-            call = Call(CallType.SEND, self.message, reply.strip())
+            call_type = CallType.SEND
+        call = Call(call_type, self.message, reply)
         Response.commands[trigger] = call
         return Call(
             CallType.SEND,
             self.message,
-            "New command: on `{0}` I'll say `{1}`".format(', '.join(trigger), reply)
+            "New command: on `{0}` I'll say `{1}`".format(str(trigger), reply)
         )
 
     def remove_command(self, message_slice):
@@ -130,23 +131,22 @@ class Response:
                 return Call(
                     CallType.SEND,
                     self.message,
-                    "Trigger `{0}` with response `{1}` removed".format(
-                        ', '.join(trigger.begin),
-                        Response.commands.pop(trigger)
-                    )
+                    "`{0}` with response `{1}` has been removed".format(
+                        str(trigger),
+                        Response.commands[trigger].__name__)
                 )
 
     def ban(self, message_slice):
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == -1:
-            UserData.levels[UserTypes.BAN].remove(message_slice)
+            UserData.levels[UserTypes.BANNED].remove(message_slice)
             return Call(CallType.SEND, self.message, "Un-banned {0}".format(message_slice))
         elif recipient_level == 2:
             return Call(CallType.SEND, self.message, "Owners can't be banned")
         else:
-            UserData.levels[UserData(recipient_level)].remove(message_slice)
+            UserData.levels[UserTypes(recipient_level)].remove(message_slice)
             UserData.levels[UserTypes.BANNED].append(message_slice)
-            return Call(CallType.SEND, self.message, "{0} has been banned")
+            return Call(CallType.SEND, self.message, "{0} has been banned".format(message_slice))
 
     def give_admin(self, message_slice):
         recipient_level = UserData.get_level(message_slice)
@@ -160,9 +160,9 @@ class Response:
         elif recipient_level == 2:
             return Call(CallType.SEND, self.message, "Owners can't be given admin status")
         else:
-            UserData.levels[UserData(recipient_level)].remove(message_slice)
+            UserData.levels[UserTypes(recipient_level)].remove(message_slice)
             UserData.levels[UserTypes.ADMIN].append(message_slice)
-            return Call(CallType.SEND, self.message, "{0} is now an admin")
+            return Call(CallType.SEND, self.message, "{0} is now an admin".format(message_slice))
 
     def snowman(self, message_slice):
         if UserData.get_level(self.author) == -1:
@@ -174,10 +174,12 @@ class Response:
                 snowman_count = 1
             else:
                 if all(char in Response.safe_characters for char in message_slice):
-                    @timeout
+                    # @timeout
                     def evaluate():
                         return int(eval(message_slice))
                     snowman_count = evaluate()
+                else:
+                    snowman_count = 0
             if snowman_count > 0:
                 return Call(CallType.SEND, self.message, "☃" * min(snowman_count, 128))
 
@@ -187,8 +189,8 @@ class Response:
     def command_list(self, message_slice):
         message = "**Commands:**\n"
         message += "\n".join(
-            "`{0}` will run `{1}`\n".format(trigger.begin, func.__name__)
-            for trigger, func in Response.commands
+            "`{0}` will run `{1}`\n".format(str(trigger), func.__name__)
+            for trigger, func in Response.commands.items()
         )
         return Call(CallType.SEND, self.message, message)
 
@@ -210,19 +212,7 @@ async def on_message(message):
         Response(message)
 
 
-async def check_bsd():
-    await client.wait_until_ready()
-    while not client.is_closed:
-        if SnowAlertSystem.get_warning() != SnowAlertSystem.last:
-            last = SnowAlertSystem.get_warning()
-            await client.send_message(
-                ANNOUNCEMENTS,
-                "`{0}`".format(last.strip())
-            )
-        await asyncio.sleep(5)
-
-ANNOUNCEMENTS = discord.Object(id=500749047364321344)
-snow_alert = SnowAlertSystem()
-client.loop.create_task(check_bsd())
+snow_alert = SnowAlertSystem(client)
+client.loop.create_task(snow_alert.check_bsd())
 
 client.run(input("Token: "))
