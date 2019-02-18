@@ -85,6 +85,10 @@ class Trigger:
 
 
 class Response:
+    safe_characters = (
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "/", "+", "-", "%", "^", "(", ")"
+    )
+
     def __init__(self, message):
         # Get data from message
         self.message = message
