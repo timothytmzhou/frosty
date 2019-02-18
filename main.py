@@ -112,18 +112,20 @@ class Response:
         if len(args) > 1:
             args[1] = int(args[1])
         trigger = Trigger(*args)
-        reply = ' '.join(message_slice[i + 1:]).strip()
+        reply = ' '.join(words[i + 1:]).strip()
         if "!del" in reply:
             reply = reply.replace("!del", "")
             call_type = CallType.REPLACE
         else:
             call_type = CallType.SEND
-        call = Call(call_type, self.message, reply)
-        Response.commands[trigger] = call
+
+        def call_func():
+            return Call(call_type, self.message, reply)
+        Response.commands[trigger] = call_func
         return Call(
             CallType.SEND,
             self.message,
-            "New command: on `{0}` I'll say `{1}`".format(str(trigger), reply)
+            "New command: on {0} I'll say `{1}`".format(str(trigger), reply)
         )
 
     def remove_command(self, message_slice):
