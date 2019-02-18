@@ -1,4 +1,4 @@
-# This code is from https://stackoverflow.com/a/2282656
+# This code is from https://stackoverflow.com/a/2282656, only UNIX compatible
 from functools import wraps
 import errno
 import os

@@ -23,3 +23,9 @@ class UserData:
         # If the user's level isn't already defined, add them to the users list
         UserData.user.append(author)
         return 0
+
+
+class CallType(Enum):
+    DELETE = 0
+    SEND = 1
+    REPLACE = 2

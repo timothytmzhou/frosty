@@ -7,7 +7,7 @@ import xkcd
 import numpy as np
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-from timeout import timeout
+# from timeout import timeout
 
 
 client = discord.Client()
@@ -40,7 +40,9 @@ class Call:
 class Trigger:
     def __init__(self, begin, access_level=0, end=None):
         self.begin = begin.lower()
-        self.end = end.lower()
+        self.end = end
+        if self.end is not None:
+            self.end = self.end.lower()
         self.access_level = access_level
 
     def __str__(self):
@@ -172,7 +174,7 @@ class Response:
                 snowman_count = 1
             else:
                 if all(char in Response.safe_characters for char in message_slice):
-                    @timeout
+                    # @timeout
                     def evaluate():
                         return int(eval(message_slice))
                     snowman_count = evaluate()
@@ -211,5 +213,19 @@ async def on_message(message):
             return
 
 
+async def check_bsd():
+    await client.wait_until_ready()
+    while not client.is_closed:
+        if SnowAlertSystem.get_warning() != SnowAlertSystem.last:
+            last = SnowAlertSystem.get_warning()
+            await client.send_message(
+                ANNOUNCEMENTS,
+                "`{0}`".format(last.strip())
+            )
+        await asyncio.sleep(5)
+
+ANNOUNCEMENTS = discord.Object(id=500749047364321344)
 snow_alert = SnowAlertSystem()
+client.loop.create_task(check_bsd())
+
 client.run(input("Token: "))
