@@ -27,5 +27,8 @@ class SnowAlertSystem:
         while not self.client.is_closed:
             if SnowAlertSystem.get_warning() != last and SnowAlertSystem.get_warning() != "":
                 last = SnowAlertSystem.get_warning()
-                await self.client.send_message(SnowAlertSystem.ANNOUNCEMENTS, "`{0}`".format(last.strip()))
+                await self.client.send_message(
+                    SnowAlertSystem.ANNOUNCEMENTS,
+                    "`{0}`".format(last.strip())
+                )
             await asyncio.sleep(5)
