@@ -106,8 +106,9 @@ class Response:
                         client.loop.create_task(func(self, message_slice).invoke())
 
     def new_command(self, message_slice):
-        i = message_slice.split(" ").index(":")
-        args = message_slice[0:i]
+        words = message_slice.split(" ")
+        i = words.index(":")
+        args = words[0:i]
         if len(args) > 1:
             args[1] = int(args[1])
         trigger = Trigger(*args)
