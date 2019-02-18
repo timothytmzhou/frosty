@@ -97,7 +97,7 @@ class Response:
         self.words = self.message.content.split(" ")
         self.lwords = [s.lower() for s in self.words]
         self.author = self.message.author.name
-        for trigger, func in Response.commands.items():
+        for trigger, func in Response.commands.copy().items():
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 user_level = UserData.get_level(self.author)
                 if user_level >= trigger.access_level:
