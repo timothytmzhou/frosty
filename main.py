@@ -103,7 +103,7 @@ class Response:
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words)
                     if message_slice is not None:
-                        client.loop.create_task(func(self, message_slice).invoke())
+                        client.loop.create_task(func(self, message_slice).invoke)
 
     def new_command(self, message_slice):
         i = message_slice.split(" ").index(":")
