@@ -7,7 +7,7 @@ import xkcd
 import numpy as np
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-# from timeout import timeout
+from timeout import timeout
 
 
 client = discord.Client()
@@ -174,7 +174,7 @@ class Response:
                 snowman_count = 1
             else:
                 if all(char in Response.safe_characters for char in message_slice):
-                    # @timeout
+                    @timeout
                     def evaluate():
                         return int(eval(message_slice))
                     snowman_count = evaluate()
@@ -207,10 +207,7 @@ class Response:
 @client.event
 async def on_message(message):
     if not message.author.bot:
-        try:
-            Response(message)
-        except Exception:
-            return
+        Response(message)
 
 
 async def check_bsd():
