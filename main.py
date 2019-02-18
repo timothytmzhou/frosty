@@ -30,7 +30,7 @@ class Call:
 
     async def send(self):
         if self.response is not None:
-            self.response = self.response.replace("{auth}", self.message.author.name)
+            self.response = self.response.replace("!auth", self.message.author.name)
             await client.send_message(self.message.channel, self.response)
 
     async def delete(self):
