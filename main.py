@@ -119,8 +119,8 @@ class Response:
         else:
             call_type = CallType.SEND
 
-        def call_func():
-            return Call(call_type, self.message, reply)
+        def call_func(response, message_slice):
+            return Call(call_type, response.message, reply)
         Response.commands[trigger] = call_func
         return Call(
             CallType.SEND,
