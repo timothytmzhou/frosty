@@ -73,8 +73,8 @@ class Trigger:
 
     def slice(self, words):
         sliced = " ".join(words[
-            self.begin_index(words.lower()):
-            self.end_index(words.lower())
+            self.begin_index(w.lower() for w in words):
+            self.end_index(w.lower() for w in words)
         ])
         # Removes leading/trailing pairs of ` to allow for code formatting
         i = 0
