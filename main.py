@@ -44,7 +44,8 @@ class Trigger:
         if self.end is not None:
             self.end = self.end.lower()
         self.b_words = self.begin.split()
-        self.e_words = self.end.split()
+        if self.end != None:
+            self.e_words = self.end.split()
         self.access_level = access_level
 
 
