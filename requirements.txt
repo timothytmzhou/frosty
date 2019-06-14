@@ -1,0 +1,4 @@
+discord
+bs4
+requests
+numpy

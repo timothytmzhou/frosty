@@ -21,7 +21,7 @@ class UserData:
             if author in UserData.levels[access_level]:
                 return access_level.value
         # If the user's level isn't already defined, add them to the users list
-        UserData[UserTypes.USER].append(author)
+        UserData.levels[UserTypes.USER].append(author)
         return 0
 
 
