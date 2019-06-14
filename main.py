@@ -43,6 +43,8 @@ class Trigger:
         self.end = end
         if self.end is not None:
             self.end = self.end.lower()
+        self.b_words = self.begin.split()
+        self.e_words = self.end.split()
         self.access_level = access_level
 
 
@@ -57,29 +59,30 @@ class Trigger:
         return string
 
 
-    def begins(self, text):
-        return text.lower().strip()[:len(self.begin.strip())] == self.begin.strip()
+    def begins(self, lwords):
+        return lwords[:len(self.b_words)] == self.b_words
 
 
     def ends(self, text):
-        return self.end is None or text.lower().strip()[-len(self.end.strip()):] == self.end.strip()
+        return self.end is None or lwords[-len(self.e_words):] == self.e_words
 
 
     def begin_index(self, lwords):
-            return lwords.index(self.begin.split()[0]) + len(self.begin.split())
+            return lwords.index(self.b_words[0]) + len(self.b_words)
 
 
     def end_index(self, lwords):
         if self.end is None:
             return len(lwords)
         else:
-            return lwords.index(self.end.split()[0])
+            return lwords.index(self.e_words[0])
 
 
     def slice(self, words):
+        lwords = [w.lower() for w in words]
         sliced = " ".join(words[
-            self.begin_index([w.lower() for w in words]):
-            self.end_index([w.lower() for w in words])
+            self.begin_index(lwords):
+            self.end_index(lwords)
         ])
         # Removes leading/trailing pairs of ` to allow for code formatting
         i = 0
@@ -92,28 +95,28 @@ class Trigger:
 
 
 class Response:
-    safe_characters = (
-        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "/", "+", "-", "%", "^", "(", ")"
-    )
+    safe_characters = "0123456789*/+-%^()"
+
 
     def __init__(self, message):
         # Get data from message
         self.message = message
-        self.words = self.message.content.split(" ")
+        self.words = self.message.content.split()
+        self.lwords = self.words.lower()
         self.author = self.message.author.name
+        user_level = UserData.get_level(self.author)
         for trigger, func in Response.commands.copy().items():
-            if trigger.begins(self.message.content) and trigger.ends(self.message.content):
-                user_level = UserData.get_level(self.author)
+            if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words)
-                    if message_slice is not None:
+                    if message_slice != "":
                         task = func(self, message_slice)
                         if isinstance(task, Call):
                             client.loop.create_task(task.invoke())
 
 
     def new_command(self, message_slice):
-        words = message_slice.split(" ")
+        words = message_slice.split()
         i = words.index(":")
         args = words[0:i]
         if len(args) > 1:
@@ -156,7 +159,7 @@ class Response:
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == -1:
             UserData.levels[UserTypes.BANNED].remove(message_slice)
-            return Call(CallType.SEND, self.message, "Un-banned {0}".format(message_slice))
+            return Call(CallType.SEND, self.message, "un-banned {0}".format(message_slice))
         elif recipient_level == 2:
             return Call(CallType.SEND, self.message, "Owners can't be banned")
         else:
@@ -175,7 +178,7 @@ class Response:
                 "{0}'s admin status has been revoked".format(message_slice)
             )
         elif recipient_level == 2:
-            return Call(CallType.SEND, self.message, "Owners can't be given admin status")
+            return Call(CallType.SEND, self.message, "owners can't be given admin status")
         else:
             UserData.levels[UserTypes(recipient_level)].remove(message_slice)
             UserData.levels[UserTypes.ADMIN].append(message_slice)
