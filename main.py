@@ -2,6 +2,7 @@
 import discord
 import asyncio
 import math
+import sys
 import numpy as np
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
@@ -290,4 +291,4 @@ async def on_message(message):
 snow_alert = SnowAlertSystem(client)
 client.loop.create_task(snow_alert.check_bsd())
 
-client.run(input("Token: "))
+client.run(sys.argv[1])
