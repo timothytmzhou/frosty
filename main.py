@@ -93,14 +93,13 @@ class Trigger:
             return lwords.index(self.e_words[0])
 
 
-    def slice(self, lwords):
+    def slice(self, words, lwords):
         """
         Gets the content of the message between the start and end triggers (guranteed to be in lwords).
         Return value is a space-seperated string.
         E.g "_START_ my message in between _END_" returns "my message in between"
         """
-
-        sliced = " ".join(lwords[
+        sliced = " ".join(words[
             self.begin_index(lwords):
             self.end_index(lwords)
         ])
@@ -133,7 +132,7 @@ class Response:
         for trigger, func in Response.commands.copy().items():
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 if user_level >= trigger.access_level:
-                    message_slice = trigger.slice(self.lwords)
+                    message_slice = trigger.slice(self.words, self.lwords)
                     task = func(self, message_slice)
                     if isinstance(task, Call):
                         client.loop.create_task(task.invoke())
