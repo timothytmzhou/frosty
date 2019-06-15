@@ -178,7 +178,7 @@ class Response:
         Remove functionality for built-ins is disabled.
         """
         for trigger in Response.commands:
-            if trigger.begin == message_slice and trigger.protected = False:
+            if trigger.begin == message_slice and trigger.protected == False:
                 return Call(
                     CallType.SEND,
                     self.message,
