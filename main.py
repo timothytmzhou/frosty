@@ -43,9 +43,8 @@ class Trigger:
         self.end = end
         if self.end is not None:
             self.end = self.end.lower()
-        self.b_words = self.begin.split()
-        if self.end != None:
             self.e_words = self.end.split()
+        self.b_words = self.begin.split()
         self.access_level = access_level
 
 
@@ -64,7 +63,7 @@ class Trigger:
         return lwords[:len(self.b_words)] == self.b_words
 
 
-    def ends(self, text):
+    def ends(self, lwords):
         return self.end is None or lwords[-len(self.e_words):] == self.e_words
 
 
@@ -79,9 +78,8 @@ class Trigger:
             return lwords.index(self.e_words[0])
 
 
-    def slice(self, words):
-        lwords = [w.lower() for w in words]
-        sliced = " ".join(words[
+    def slice(self, lwords):
+        sliced = " ".join(lwords[
             self.begin_index(lwords):
             self.end_index(lwords)
         ])
@@ -103,17 +101,16 @@ class Response:
         # Get data from message
         self.message = message
         self.words = self.message.content.split()
-        self.lwords = self.words.lower()
+        self.lwords = [w.lower() for w in self.words]
         self.author = self.message.author.name
         user_level = UserData.get_level(self.author)
         for trigger, func in Response.commands.copy().items():
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 if user_level >= trigger.access_level:
-                    message_slice = trigger.slice(self.words)
-                    if message_slice != "":
-                        task = func(self, message_slice)
-                        if isinstance(task, Call):
-                            client.loop.create_task(task.invoke())
+                    message_slice = trigger.slice(self.lwords)
+                    task = func(self, message_slice)
+                    if isinstance(task, Call):
+                        client.loop.create_task(task.invoke())
 
 
     def new_command(self, message_slice):
@@ -210,7 +207,7 @@ class Response:
 
 
     def command_list(self, message_slice):
-        message = "**Commands:**\n"
+        message = "**Commands:**\n" 
         message += "\n".join(
             "{0} will run `{1}`\n".format(str(trigger), func.__name__)
             for trigger, func in Response.commands.items()
@@ -236,7 +233,7 @@ async def on_message(message):
         try:
             Response(message)
         except Exception as e:
-            pass
+            raise e
 
 
 snow_alert = SnowAlertSystem(client)
