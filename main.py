@@ -147,9 +147,9 @@ class Response:
                 return Call(
                     CallType.SEND,
                     self.message,
-                    "`{0}` with response `{1}` has been removed".format(
+                    "{0} with response `{1}` has been removed".format(
                         str(trigger),
-                        Response.commands[trigger].__name__)
+                        Response.commands.pop(trigger).__name__)
                 )
 
 
