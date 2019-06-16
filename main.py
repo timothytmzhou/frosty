@@ -12,11 +12,11 @@ client = discord.Client()
 
 
 class Call:
-    def __init__(self, call_type, message, response=None, ignore_auth = False):
+    def __init__(self, call_type, message, response=None, ignore_keywords = False):
         self.call_type = call_type
         self.response = response
         self.message = message
-        self.ignore_auth = ignore_auth
+        self.ignore_keywords = ignore_keywords
 
 
     async def invoke(self):
@@ -35,13 +35,22 @@ class Call:
 
     async def send(self):
         if self.response is not None:
-            if not self.ignore_auth:
-                self.response = self.response.replace("!auth", self.message.author.name)
+            if not self.ignore_keywords:
+                keywords =  {
+                    "!auth" : self.message.author.name, 
+                    "!channel" : self.message.channel.name
+                }
+                for key, var in keywords:
+                    self.response = self.replace_keyords(key, var)
             await self.message.channel.send(self.response)
 
 
     async def delete(self):
         await self.message.delete()
+
+
+    def replace_keyords(self, key, var):
+        return self.response.replace(key, var)
 
 
 class Trigger:
@@ -119,7 +128,7 @@ class Response:
 
     def __init__(self, message):
         """
-        Iterates through the commands dic of the form {Trigger: func -> Call}:
+        Iterates through the commands dict of the form {Trigger: func -> Call}:
         Uses the begins() and ends() helper methods to check if activation conditions for any trigger are met.
         If so, passes the slice into the corresponding function, and adds the returned Call object's invoke() method to the client loop.
         """
@@ -138,12 +147,24 @@ class Response:
                         client.loop.create_task(task.invoke())
 
 
+    def help(self, message_slice):
+        for key, value in Response.commands.items():
+            if message_slice == value.__name__:
+                if value.__doc__ is not None:
+                    return Call(CallType.SEND, self.message, value.__doc__, ignore_keywords=True)
+                else:
+                    return Call(CallType.SEND, self.message, "{0} does not define a docstring (yell at Timothy to add one)!")
+
+
     def new_command(self, message_slice):
         """
         Allows users to add simple echo commands. 
-        These must follow the syntax of "trigger_phrase : response":
-        Adding "!del" within response will make Frosty delete the message used to trigger the command.
-        Adding "!auth" within the resposne acts like a placeholder, it is replaced with the username of the person who triggered the command.
+        These must follow the syntax of "trigger_phrase : response".
+        optional params {
+            !del : makes Frosty delete the triggering message,
+            !auth : placeholder for the name of the author of the triggering message,
+            !channel : placeholder for the name of the channel the triggering message was sent in
+        }
         """
         words = message_slice.split()
         i = words.index(":")
@@ -162,12 +183,13 @@ class Response:
             return Call(call_type, response.message, reply)
 
         call_func.__name__ = args[0].replace("!", "")
+        call_func.__doc__ = "!add created echo-like command returning {0}".format(reply)
         Response.commands[trigger] = call_func
         return Call(
             CallType.SEND,
             self.message,
             "New command: on {0} I'll say `{1}`".format(str(trigger), reply),
-            ignore_auth = True
+            ignore_keywords = True
 
         )
 
@@ -274,7 +296,8 @@ class Response:
         Trigger("!say", protected=True): frosty_say,
         Trigger("!add", access_level=1, protected=True): new_command,
         Trigger("!remove", access_level=1, protected=True): remove_command,
-        Trigger("!list", protected=True): command_list
+        Trigger("!list", protected=True): command_list,
+        Trigger("!help", protected=True) : help
     }
 
 

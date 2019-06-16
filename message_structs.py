@@ -10,7 +10,7 @@ class UserTypes(Enum):
 
 class UserData:
     levels = {UserTypes.OWNER: ["Timothy Z."],
-              UserTypes.ADMIN: ["nog642", "veggietiki", "imyxh", "VkRob"],
+              UserTypes.ADMIN: ["nog642", "veggietiki", "imyxh", "VkRob", "Creon", "NotDeGhost"],
               UserTypes.USER: [],
               UserTypes.BANNED: []
               }
