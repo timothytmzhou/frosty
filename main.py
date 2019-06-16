@@ -2,6 +2,7 @@
 import discord
 import asyncio
 import math
+from textwrap import dedent
 import sys
 import numpy as np
 from bsd import SnowAlertSystem
@@ -20,12 +21,10 @@ class Call:
 
 
     async def invoke(self):
-        """
-        Invokes an action depending on call_type:
-        CallType.DELETE -- deletes message.
-        CallType.SEND -- sends response to the same channel as message.
-        CallType.REPLACE -- performs both of the actions above.
-        """
+        # Invokes an action depending on call_type:
+        # CallType.DELETE -- deletes message.
+        # CallType.SEND -- sends response to the same channel as message.
+        # CallType.REPLACE -- performs both of the actions above.
         if self.call_type == CallType.DELETE or self.call_type == CallType.REPLACE:
             await self.delete()
         if self.call_type == CallType.SEND or self.call_type == CallType.REPLACE:
@@ -40,8 +39,8 @@ class Call:
                     "!auth" : self.message.author.name, 
                     "!channel" : self.message.channel.name
                 }
-                for key, var in keywords:
-                    self.response = self.replace_keyords(key, var)
+                for key in keywords:
+                    self.response = self.replace_keyords(key, keywords[key])
             await self.message.channel.send(self.response)
 
 
@@ -55,7 +54,7 @@ class Call:
 
 class Trigger:
     def __init__(self, begin, access_level=0, end=None, protected=False):
-        """Sets beggining and ending trigger phrases, .split()ed versions of them."""
+        # Sets beggining and ending trigger phrases, .split()ed versions of them.
         self.begin = begin.lower()   
         self.b_words = self.begin.split()
 
@@ -80,22 +79,22 @@ class Trigger:
 
 
     def begins(self, lwords):
-        """Given a list of lowercase words, checks if it begins with this trigger's start phrase."""
+        # Given a list of lowercase words, checks if it begins with this trigger's start phrase.
         return lwords[:len(self.b_words)] == self.b_words
 
 
     def ends(self, lwords):
-        """Given a list of lowercase words, checks if it begins with this trigger's end phrase."""
+        # Given a list of lowercase words, checks if it begins with this trigger's end phrase.
         return self.end is None or lwords[-len(self.e_words):] == self.e_words
 
 
     def begin_index(self, lwords):
-            """Gets index of last element of this trigger's start phrase (guranteed to be in lwords)."""
-            return lwords.index(self.b_words[0]) + len(self.b_words)
+        # Gets index of last element of this trigger's start phrase (guranteed to be in lwords).
+        return lwords.index(self.b_words[0]) + len(self.b_words)
 
 
     def end_index(self, lwords):
-        """Gets index of first element of this trigger's end phrase (guranteed to be in lwords)."""
+        # Gets index of first element of this trigger's end phrase (guranteed to be in lwords).
         if self.end is None:
             return len(lwords)
         else:
@@ -103,11 +102,9 @@ class Trigger:
 
 
     def slice(self, words, lwords):
-        """
-        Gets the content of the message between the start and end triggers (guranteed to be in lwords).
-        Return value is a space-seperated string.
-        E.g "_START_ my message in between _END_" returns "my message in between"
-        """
+        # Gets the content of the message between the start and end triggers (guranteed to be in lwords).
+        # Return value is a space-seperated string.
+        # E.g "_START_ my message in between _END_" returns "my message in between"
         sliced = " ".join(words[
             self.begin_index(lwords):
             self.end_index(lwords)
@@ -127,43 +124,48 @@ class Response:
 
 
     def __init__(self, message):
-        """
-        Iterates through the commands dict of the form {Trigger: func -> Call}:
-        Uses the begins() and ends() helper methods to check if activation conditions for any trigger are met.
-        If so, passes the slice into the corresponding function, and adds the returned Call object's invoke() method to the client loop.
-        """
         self.message = message
         self.words = self.message.content.split()
         self.lwords = [w.lower() for w in self.words]
         self.author = self.message.author.name
         user_level = UserData.get_level(self.author)
 
+        # Iterates through the commands dict of the form {Trigger: func -> Call}:
         for trigger, func in Response.commands.copy().items():
+            #  Uses the begins() and ends() helper methods to check if activation conditions for any trigger are met.
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words, self.lwords)
+                    # If so, passes the slice into the corresponding function, and adds the returned Call object's invoke() method to the client loop.
                     task = func(self, message_slice)
                     if isinstance(task, Call):
                         client.loop.create_task(task.invoke())
 
 
     def help(self, message_slice):
+        """
+        > To get a full list of available commands, use the !list command. 
+        > To reference the Frosty user manual, call !help with no args.
+        """
+        if message_slice == "":
+            with open("help.txt", "r") as f:
+                return Call(CallType.SEND, self.message, f.read())
         for key, value in Response.commands.items():
-            if message_slice == value.__name__:
+            if message_slice == key.begin or message_slice == value.__name__:
                 if value.__doc__ is not None:
-                    return Call(CallType.SEND, self.message, value.__doc__, ignore_keywords=True)
+                    return Call(CallType.SEND, self.message, "```md\n{0}```".format(dedent(value.__doc__)), ignore_keywords=True)
                 else:
                     return Call(CallType.SEND, self.message, "{0} does not define a docstring (yell at Timothy to add one)!")
 
 
     def new_command(self, message_slice):
         """
-        Allows users to add simple echo commands. 
-        These must follow the syntax of "trigger_phrase : response".
-        optional params {
-            !del : makes Frosty delete the triggering message,
-            !auth : placeholder for the name of the author of the triggering message,
-            !channel : placeholder for the name of the channel the triggering message was sent in
+        > Allows users to add simple echo commands. 
+        > These must follow the syntax of "trigger_phrase : response".
+        < optional params > {
+            <!del> : makes Frosty delete the triggering message.
+            <!auth> : placeholder for the name of the author of the triggering message.
+            <!channel> : placeholder for the name of the channel the triggering message was sent in.
         }
         """
         words = message_slice.split()
@@ -196,8 +198,8 @@ class Response:
 
     def remove_command(self, message_slice):
         """
-        Removes commands from the command dictionary.
-        Remove functionality for built-ins is disabled.
+        > Removes commands from the command dictionary.
+        > Remove functionality for built-ins is disabled.
         """
         for trigger in Response.commands:
             if trigger.begin == message_slice and trigger.protected == False:
@@ -212,8 +214,8 @@ class Response:
 
     def ban(self, message_slice):
         """
-        Changes the ban status of a user:
-        If already banned, gives them user status, otherwise if they are not an owner, ban them.
+        > Changes the ban status of a user:
+        > If already banned, gives them user status, otherwise if they are not an owner, ban them.
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == -1:
@@ -230,8 +232,8 @@ class Response:
 
     def give_admin(self, message_slice):
         """
-        Changes admin status of a user:
-        If already an admin, gives them user status, otherwise makes them an admin-level user.
+        > Changes admin status of a user:
+        > If already an admin, gives them user status, otherwise makes them an admin-level user.
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == 1:
@@ -252,8 +254,8 @@ class Response:
 
     def snowman(self, message_slice):
         """
-        Giver of snowmen since 2018.
-        Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen (limited to safe characters).
+        > Giver of snowmen since 2018.
+        > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen (limited to safe characters).
         """
         if UserData.get_level(self.author) == -1:
             return Call(
@@ -274,7 +276,9 @@ class Response:
 
 
     def frosty_say(self, message_slice):
-        """Echo command which also removes the message invokling !say"""
+        """
+        > Echo command, replaces message invoking <!say>
+        """
         return Call(CallType.REPLACE, self.message, message_slice)
 
 
@@ -296,8 +300,8 @@ class Response:
         Trigger("!say", protected=True): frosty_say,
         Trigger("!add", access_level=1, protected=True): new_command,
         Trigger("!remove", access_level=1, protected=True): remove_command,
-        Trigger("!list", protected=True): command_list,
-        Trigger("!help", protected=True) : help
+        Trigger("!list", access_level=-1, protected=True): command_list,
+        Trigger("!help", access_level=-1, protected=True) : help
     }
 
 
