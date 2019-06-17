@@ -279,7 +279,7 @@ class Response:
         """
         > Echo command, replaces message invoking <!say>
         """
-        if UserData,get_level(self.author) < 1 and "@everyone" in message_slice:
+        if UserData.get_level(self.author) < 1 and "@everyone" in message_slice:
             return Call(CallType.REPLACE, self.message, "I can't ping everyone unless you have admin status")
         return Call(CallType.REPLACE, self.message, message_slice)
 
