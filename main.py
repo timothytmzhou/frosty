@@ -7,6 +7,15 @@ import sys
 import numpy as np
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
+import gspread
+from util import format_table
+from oauth2client.service_account import ServiceAccountCredentials
+
+
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+sheets_client = gspread.authorize(creds)
+sheet = sheets_client.open("ihscy finance sheet").sheet1
 
 
 client = discord.Client()
@@ -212,6 +221,13 @@ class Response:
                 )
 
 
+    def get_finances(self, message_slice):
+        values = sheet.get_all_values()
+        data = [[x for x in row[:4] if x != ""] for row in values[3:]]
+        data = [i for i in data if i != []]
+        return Call(CallType.SEND, self.message, format_table(data))
+
+
     def ban(self, message_slice):
         """
         > Changes the ban status of a user:
@@ -302,6 +318,7 @@ class Response:
         Trigger("!say", protected=True): frosty_say,
         Trigger("!add", access_level=1, protected=True): new_command,
         Trigger("!remove", access_level=1, protected=True): remove_command,
+        Trigger("!budget", access_level=-1, protected=True) : get_finances,
         Trigger("!list", access_level=-1, protected=True): command_list,
         Trigger("!help", access_level=-1, protected=True) : help
     }
