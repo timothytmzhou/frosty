@@ -7,7 +7,7 @@ import requests
 class SnowAlertSystem:
 
     last = ""
-    ANNOUNCEMENTS = discord.Object(id=500749047364321344)
+    ANNOUNCEMENTS = 500749047364321344
 
     def __init__(self, client):
         SnowAlertSystem.last = SnowAlertSystem.get_warning()
@@ -28,8 +28,7 @@ class SnowAlertSystem:
         while not self.client.is_closed:
             if SnowAlertSystem.get_warning() != SnowAlertSystem.last:
                 last = SnowAlertSystem.get_warning()
-                await self.client.send_message(
-                    SnowAlertSystem.ANNOUNCEMENTS,
+                await self.client.get_channel(ANNOUNCEMENTS).send(
                     "`{0}`".format(last.strip())
                 )
             await asyncio.sleep(5)
