@@ -54,7 +54,7 @@ class Call:
 
 class Trigger:
     def __init__(self, begin, access_level=0, end=None, protected=False):
-        # Sets beggining and ending trigger phrases, .split()ed versions of them.
+        # Sets beginning and ending trigger phrases, .split()ed versions of them.
         self.begin = begin.lower()   
         self.b_words = self.begin.split()
 
@@ -89,12 +89,12 @@ class Trigger:
 
 
     def begin_index(self, lwords):
-        # Gets index of last element of this trigger's start phrase (guranteed to be in lwords).
+        # Gets index of last element of this trigger's start phrase (guaranteed to be in lwords).
         return lwords.index(self.b_words[0]) + len(self.b_words)
 
 
     def end_index(self, lwords):
-        # Gets index of first element of this trigger's end phrase (guranteed to be in lwords).
+        # Gets index of first element of this trigger's end phrase (guaranteed to be in lwords).
         if self.end is None:
             return len(lwords)
         else:
@@ -102,8 +102,8 @@ class Trigger:
 
 
     def slice(self, words, lwords):
-        # Gets the content of the message between the start and end triggers (guranteed to be in lwords).
-        # Return value is a space-seperated string.
+        # Gets the content of the message between the start and end triggers (guaranteed to be in lwords).
+        # Return value is a space-separated string.
         # E.g "_START_ my message in between _END_" returns "my message in between"
         sliced = " ".join(words[
             self.begin_index(lwords):
@@ -195,8 +195,7 @@ class Response:
             CallType.SEND,
             self.message,
             "New command: on {0} I'll say `{1}`".format(str(trigger), reply),
-            ignore_keywords = True
-
+            ignore_keywords=True
         )
 
 
@@ -232,7 +231,8 @@ class Response:
     def ban(self, message_slice):
         """
         > Changes the ban status of a user:
-        > If already banned, gives them user status, otherwise if they are not an owner, ban them.
+        > If already banned, gives them user status, otherwise if they are not
+          an owner, ban them.
         :param message_slice:
         :return:
         """
@@ -252,7 +252,8 @@ class Response:
     def give_admin(self, message_slice):
         """
         > Changes admin status of a user:
-        > If already an admin, gives them user status, otherwise makes them an admin-level user.
+        > If already an admin, gives them user status, otherwise makes them an
+          admin-level user.
         :param message_slice:
         :return:
         """
@@ -276,7 +277,8 @@ class Response:
     def snowman(self, message_slice):
         """
         > Giver of snowmen since 2018.
-        > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen (limited to safe characters).
+        > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
+          (limited to safe characters).
         :param message_slice:
         :return:
         """
@@ -305,7 +307,8 @@ class Response:
         :return:
         """
         if UserData.get_level(self.author) < 1 and "@everyone" in message_slice:
-            return Call(CallType.REPLACE, self.message, "I can't ping everyone unless you have admin status")
+            return Call(CallType.REPLACE, self.message,
+                        "I can't ping everyone unless you have admin status")
         return Call(CallType.REPLACE, self.message, message_slice)
 
 
