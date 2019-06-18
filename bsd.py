@@ -1,10 +1,11 @@
-import requests
-import bs4
 import asyncio
+import bs4
 import discord
+import requests
 
 
 class SnowAlertSystem:
+
     last = ""
     ANNOUNCEMENTS = discord.Object(id=500749047364321344)
 
@@ -14,7 +15,7 @@ class SnowAlertSystem:
 
     @staticmethod
     def text_from_html(body):
-        soup = bs4.BeautifulSoup(body, 'html.parser')
+        soup = bs4.BeautifulSoup(body, "html.parser")
         text = soup.find(class_="cs-column-text emergency-alert-header").get_text()
         return text
 
