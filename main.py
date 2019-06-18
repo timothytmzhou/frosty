@@ -4,11 +4,13 @@ ihscy's over-engineered Discord bot
 import sys
 from textwrap import dedent
 import discord
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
+from sheets import get_sheet
 from util import format_table
+
+client = discord.Client()
+SHEET = get_sheet()
 
 
 class Call:
@@ -222,7 +224,7 @@ class Response:
         :param message_slice:
         :return:
         """
-        values = sheet.get_all_values()
+        values = SHEET.get_all_values()
         data = [[x for x in row[:4] if x != ""] for row in values[3:]]
         data = [i for i in data if i != []]
         return Call(CallType.SEND, self.message, format_table(data))
@@ -336,25 +338,16 @@ class Response:
     }
 
 
+@client.event
+async def on_message(message):
+    if not message.author.bot:
+        try:
+            Response(message)
+        except Exception as e:
+            raise e
+
+
 def main():
-    scope = ['https://spreadsheets.google.com/feeds',
-             'https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-    sheets_client = gspread.authorize(creds)
-    global sheet  # TODO: get rid of global vars
-    sheet = sheets_client.open("ihscy finance sheet").sheet1
-
-    global client
-    client = discord.Client()
-
-    @client.event
-    async def on_message(message):
-        if not message.author.bot:
-            try:
-                Response(message)
-            except Exception as e:
-                raise e
-
     snow_alert = SnowAlertSystem(client)
     client.loop.create_task(snow_alert.check_bsd())
 
