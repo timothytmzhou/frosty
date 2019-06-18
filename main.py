@@ -1,13 +1,10 @@
 """
 ihscy's over-engineered Discord bot
 """
-import asyncio
-import math
 import sys
 from textwrap import dedent
 import discord
 import gspread
-import numpy as np
 from oauth2client.service_account import ServiceAccountCredentials
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
