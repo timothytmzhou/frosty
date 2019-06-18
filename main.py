@@ -1,15 +1,17 @@
-# ihscy's over-engineered Discord bot
-import discord
+"""
+ihscy's over-engineered Discord bot
+"""
 import asyncio
 import math
-from textwrap import dedent
 import sys
+from textwrap import dedent
+import discord
+import gspread
 import numpy as np
+from oauth2client.service_account import ServiceAccountCredentials
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-import gspread
 from util import format_table
-from oauth2client.service_account import ServiceAccountCredentials
 
 
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
