@@ -11,15 +11,6 @@ from message_structs import CallType, UserData, UserTypes
 from util import format_table
 
 
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-sheets_client = gspread.authorize(creds)
-sheet = sheets_client.open("ihscy finance sheet").sheet1
-
-
-client = discord.Client()
-
-
 class Call:
     def __init__(self, call_type, message, response=None, ignore_keywords = False):
         self.call_type = call_type
@@ -323,16 +314,30 @@ class Response:
     }
 
 
-@client.event
-async def on_message(message):
-    if not message.author.bot:
-        try:
-            Response(message)
-        except Exception as e:
-            raise e
+def main():
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
+    sheets_client = gspread.authorize(creds)
+    global sheet  # TODO: get rid of global vars
+    sheet = sheets_client.open("ihscy finance sheet").sheet1
+
+    global client
+    client = discord.Client()
+
+    @client.event
+    async def on_message(message):
+        if not message.author.bot:
+            try:
+                Response(message)
+            except Exception as e:
+                raise e
+
+    snow_alert = SnowAlertSystem(client)
+    client.loop.create_task(snow_alert.check_bsd())
+
+    client.run(sys.argv[1])
 
 
-snow_alert = SnowAlertSystem(client)
-client.loop.create_task(snow_alert.check_bsd())
-
-client.run(sys.argv[1])
+if __name__ == "__main__":
+    main()
