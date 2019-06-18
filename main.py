@@ -119,8 +119,8 @@ class Trigger:
 
 
 class Response:
-    safe_characters = "0123456789*/+-%^()"
 
+    safe_characters = "0123456789*/+-%^()"
 
     def __init__(self, message):
         self.message = message
@@ -143,8 +143,10 @@ class Response:
 
     def help(self, message_slice):
         """
-        > To get a full list of available commands, use the !list command. 
+        > To get a full list of available commands, use the !list command.
         > To reference the Frosty user manual, call !help with no args.
+        :param message_slice:
+        :return:
         """
         if message_slice == "":
             with open("help.txt", "r") as f:
@@ -159,13 +161,15 @@ class Response:
 
     def new_command(self, message_slice):
         """
-        > Allows users to add simple echo commands. 
+        > Allows users to add simple echo commands.
         > These must follow the syntax of "trigger_phrase : response".
         < optional params > {
             <!del> : makes Frosty delete the triggering message.
             <!auth> : placeholder for the name of the author of the triggering message.
             <!channel> : placeholder for the name of the channel the triggering message was sent in.
         }
+        :param message_slice:
+        :return:
         """
         words = message_slice.split()
         i = words.index(":")
@@ -199,6 +203,8 @@ class Response:
         """
         > Removes commands from the command dictionary.
         > Remove functionality for built-ins is disabled.
+        :param message_slice:
+        :return:
         """
         for trigger in Response.commands:
             if trigger.begin == message_slice and trigger.protected == False:
@@ -212,6 +218,10 @@ class Response:
 
 
     def get_finances(self, message_slice):
+        """
+        :param message_slice:
+        :return:
+        """
         values = sheet.get_all_values()
         data = [[x for x in row[:4] if x != ""] for row in values[3:]]
         data = [i for i in data if i != []]
@@ -222,6 +232,8 @@ class Response:
         """
         > Changes the ban status of a user:
         > If already banned, gives them user status, otherwise if they are not an owner, ban them.
+        :param message_slice:
+        :return:
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == -1:
@@ -240,6 +252,8 @@ class Response:
         """
         > Changes admin status of a user:
         > If already an admin, gives them user status, otherwise makes them an admin-level user.
+        :param message_slice:
+        :return:
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == 1:
@@ -262,6 +276,8 @@ class Response:
         """
         > Giver of snowmen since 2018.
         > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen (limited to safe characters).
+        :param message_slice:
+        :return:
         """
         if UserData.get_level(self.author) == -1:
             return Call(
@@ -284,6 +300,8 @@ class Response:
     def frosty_say(self, message_slice):
         """
         > Echo command, replaces message invoking <!say>
+        :param message_slice:
+        :return:
         """
         if UserData.get_level(self.author) < 1 and "@everyone" in message_slice:
             return Call(CallType.REPLACE, self.message, "I can't ping everyone unless you have admin status")
@@ -291,7 +309,11 @@ class Response:
 
 
     def command_list(self, message_slice):
-        """Generates a list of all available commands."""
+        """
+        Generates a list of all available commands.
+        :param message_slice:
+        :return:
+        """
         message = "**Commands:**\n" 
         message += "\n".join(
             "{0} will run `{1}`\n".format(str(trigger), func.__name__)
