@@ -6,8 +6,7 @@ from textwrap import dedent
 import discord
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-from sheets import get_sheet
-from util import format_table
+from sheets import get_sheet, format_table
 
 client = discord.Client()
 SHEET = get_sheet()
