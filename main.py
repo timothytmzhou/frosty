@@ -1,8 +1,6 @@
 """
 ihscy's over-engineered Discord bot
 """
-# import argparse
-import sys
 from textwrap import dedent
 import discord
 from bsd import SnowAlertSystem
@@ -375,10 +373,16 @@ async def on_message(message):
 
 
 def main():
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument("token", help="discord API token")
+    args = parser.parse_args()
+
     snow_alert = SnowAlertSystem(client)
     client.loop.create_task(snow_alert.check_bsd())
 
-    client.run(sys.argv[1])
+    client.run(args.token)
 
 
 if __name__ == "__main__":
