@@ -1,6 +1,7 @@
 """
 ihscy's over-engineered Discord bot
 """
+# import argparse
 import sys
 from textwrap import dedent
 import discord
@@ -15,7 +16,7 @@ SHEET = get_sheet()
 class Call:
 
     def __init__(self, call_type, message, response=None,
-                 ignore_keywords = False):
+                 ignore_keywords=False):
         self.call_type = call_type
         self.response = response
         self.message = message
@@ -35,7 +36,7 @@ class Call:
     async def send(self):
         if self.response is not None:
             if not self.ignore_keywords:
-                keywords =  {
+                keywords = {
                     "!auth" : self.message.author.name, 
                     "!channel" : self.message.channel.name
                 }
