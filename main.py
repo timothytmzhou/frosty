@@ -1,33 +1,24 @@
-# ihscy's over-engineered Discord bot
-import discord
-import asyncio
-import math
+"""
+ihscy's over-engineered Discord bot
+"""
 from textwrap import dedent
-import sys
-import numpy as np
+import discord
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
-import gspread
-from util import format_table
-from oauth2client.service_account import ServiceAccountCredentials
-
-
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-sheets_client = gspread.authorize(creds)
-sheet = sheets_client.open("ihscy finance sheet").sheet1
-
+from sheets import get_sheet, format_table
 
 client = discord.Client()
+SHEET = get_sheet()
 
 
 class Call:
-    def __init__(self, call_type, message, response=None, ignore_keywords = False):
+
+    def __init__(self, call_type, message, response=None,
+                 ignore_keywords=False):
         self.call_type = call_type
         self.response = response
         self.message = message
         self.ignore_keywords = ignore_keywords
-
 
     async def invoke(self):
         # Invokes an action depending on call_type:
@@ -40,11 +31,10 @@ class Call:
             if self.response is not None:
                 await self.send()
 
-
     async def send(self):
         if self.response is not None:
             if not self.ignore_keywords:
-                keywords =  {
+                keywords = {
                     "!auth" : self.message.author.name, 
                     "!channel" : self.message.channel.name
                 }
@@ -52,18 +42,18 @@ class Call:
                     self.response = self.replace_keyords(key, keywords[key])
             await self.message.channel.send(self.response)
 
-
     async def delete(self):
         await self.message.delete()
-
 
     def replace_keyords(self, key, var):
         return self.response.replace(key, var)
 
 
 class Trigger:
+
     def __init__(self, begin, access_level=0, end=None, protected=False):
-        # Sets beggining and ending trigger phrases, .split()ed versions of them.
+        # Sets beginning and ending trigger phrases, .split()ed versions of
+        #     them.
         self.begin = begin.lower()   
         self.b_words = self.begin.split()
 
@@ -75,7 +65,6 @@ class Trigger:
         self.access_level = access_level
         self.protected = protected
 
-
     def __str__(self):
         if self.end is not None:
             string = "`{0}...{1}`".format(self.begin, self.end)
@@ -86,34 +75,55 @@ class Trigger:
         )
         return string
 
-
     def begins(self, lwords):
-        # Given a list of lowercase words, checks if it begins with this trigger's start phrase.
+        """
+        Given a list of lowercase words, checks if it begins with this
+        trigger's start phrase.
+        :param lwords:
+        :return:
+        """
         return lwords[:len(self.b_words)] == self.b_words
 
-
     def ends(self, lwords):
-        # Given a list of lowercase words, checks if it begins with this trigger's end phrase.
+        """
+        Given a list of lowercase words, checks if it begins with this
+        trigger's end phrase.
+        :param lwords:
+        :return:
+        """
         return self.end is None or lwords[-len(self.e_words):] == self.e_words
 
-
     def begin_index(self, lwords):
-        # Gets index of last element of this trigger's start phrase (guranteed to be in lwords).
+        """
+        Gets index of last element of this trigger's start phrase (guaranteed
+        to be in lwords).
+        :param lwords:
+        :return:
+        """
         return lwords.index(self.b_words[0]) + len(self.b_words)
 
-
     def end_index(self, lwords):
-        # Gets index of first element of this trigger's end phrase (guranteed to be in lwords).
+        """
+        Gets index of first element of this trigger's end phrase (guaranteed to
+        be in lwords).
+        :param lwords:
+        :return:
+        """
         if self.end is None:
             return len(lwords)
         else:
             return lwords.index(self.e_words[0])
 
-
     def slice(self, words, lwords):
-        # Gets the content of the message between the start and end triggers (guranteed to be in lwords).
-        # Return value is a space-seperated string.
-        # E.g "_START_ my message in between _END_" returns "my message in between"
+        """
+        Gets the content of the message between the start and end triggers
+            (guaranteed to be in lwords).
+        E.g "_START_ my message in between _END_" returns "my message in
+            between"
+        :param words:
+        :param lwords:
+        :return: A space-separated string.
+        """
         sliced = " ".join(words[
             self.begin_index(lwords):
             self.end_index(lwords)
@@ -121,7 +131,7 @@ class Trigger:
         # Removes leading/trailing pairs of ` to allow for code formatting
         i = 0
         while True:
-            if i < len(sliced) // 2 and sliced[i] == sliced[-i - 1] == '`':
+            if i < len(sliced) // 2 and sliced[i] == sliced[-i - 1] == "`":
                 i += 1
             else:
                 break
@@ -129,8 +139,8 @@ class Trigger:
 
 
 class Response:
-    safe_characters = "0123456789*/+-%^()"
 
+    safe_characters = "0123456789*/+-%^()"
 
     def __init__(self, message):
         self.message = message
@@ -141,20 +151,24 @@ class Response:
 
         # Iterates through the commands dict of the form {Trigger: func -> Call}:
         for trigger, func in Response.commands.copy().items():
-            #  Uses the begins() and ends() helper methods to check if activation conditions for any trigger are met.
+            # Uses the begins() and ends() helper methods to check if
+            #     activation conditions for any trigger are met.
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
                 if user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words, self.lwords)
-                    # If so, passes the slice into the corresponding function, and adds the returned Call object's invoke() method to the client loop.
+                    # If so, passes the slice into the corresponding function,
+                    #     and adds the returned Call object's invoke() method
+                    #     to the client loop.
                     task = func(self, message_slice)
                     if isinstance(task, Call):
                         client.loop.create_task(task.invoke())
 
-
     def help(self, message_slice):
         """
-        > To get a full list of available commands, use the !list command. 
+        > To get a full list of available commands, use the !list command.
         > To reference the Frosty user manual, call !help with no args.
+        :param message_slice:
+        :return:
         """
         if message_slice == "":
             with open("help.txt", "r") as f:
@@ -162,20 +176,27 @@ class Response:
         for key, value in Response.commands.items():
             if message_slice == key.begin or message_slice == value.__name__:
                 if value.__doc__ is not None:
-                    return Call(CallType.SEND, self.message, "```md\n{0}```".format(dedent(value.__doc__)), ignore_keywords=True)
+                    return Call(CallType.SEND, self.message,
+                                "```md\n{0}```".format(dedent(value.__doc__)),
+                                ignore_keywords=True)
                 else:
-                    return Call(CallType.SEND, self.message, "{0} does not define a docstring (yell at Timothy to add one)!")
-
+                    return Call(CallType.SEND, self.message,
+                                "{0} does not define a docstring (yell at "
+                                "Timothy to add one)!")
 
     def new_command(self, message_slice):
         """
-        > Allows users to add simple echo commands. 
+        > Allows users to add simple echo commands.
         > These must follow the syntax of "trigger_phrase : response".
         < optional params > {
             <!del> : makes Frosty delete the triggering message.
-            <!auth> : placeholder for the name of the author of the triggering message.
-            <!channel> : placeholder for the name of the channel the triggering message was sent in.
+            <!auth> : placeholder for the name of the author of the triggering
+                      message.
+            <!channel> : placeholder for the name of the channel the triggering
+                         message was sent in.
         }
+        :param message_slice:
+        :return:
         """
         words = message_slice.split()
         i = words.index(":")
@@ -200,15 +221,15 @@ class Response:
             CallType.SEND,
             self.message,
             "New command: on {0} I'll say `{1}`".format(str(trigger), reply),
-            ignore_keywords = True
-
+            ignore_keywords=True
         )
-
 
     def remove_command(self, message_slice):
         """
         > Removes commands from the command dictionary.
         > Remove functionality for built-ins is disabled.
+        :param message_slice:
+        :return:
         """
         for trigger in Response.commands:
             if trigger.begin == message_slice and trigger.protected == False:
@@ -220,36 +241,45 @@ class Response:
                         Response.commands.pop(trigger).__name__)
                 )
 
-
     def get_finances(self, message_slice):
-        values = sheet.get_all_values()
+        """
+        :param message_slice:
+        :return:
+        """
+        values = SHEET.get_all_values()
         data = [[x for x in row[:4] if x != ""] for row in values[3:]]
         data = [i for i in data if i != []]
         return Call(CallType.SEND, self.message, format_table(data))
 
-
     def ban(self, message_slice):
         """
         > Changes the ban status of a user:
-        > If already banned, gives them user status, otherwise if they are not an owner, ban them.
+        > If already banned, gives them user status, otherwise if they are not
+          an owner, ban them.
+        :param message_slice:
+        :return:
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == -1:
             UserData.levels[UserTypes.BANNED].remove(message_slice)
             UserData.levels[UserTypes.USER].append(message_slice)
-            return Call(CallType.SEND, self.message, "un-banned {0}".format(message_slice))
+            return Call(CallType.SEND, self.message,
+                        "un-banned {0}".format(message_slice))
         elif recipient_level == 2:
             return Call(CallType.SEND, self.message, "owners can't be banned")
         else:
             UserData.levels[UserTypes(recipient_level)].remove(message_slice)
             UserData.levels[UserTypes.BANNED].append(message_slice)
-            return Call(CallType.SEND, self.message, "{0} has been banned".format(message_slice))
-
+            return Call(CallType.SEND, self.message,
+                        "{0} has been banned".format(message_slice))
 
     def give_admin(self, message_slice):
         """
         > Changes admin status of a user:
-        > If already an admin, gives them user status, otherwise makes them an admin-level user.
+        > If already an admin, gives them user status, otherwise makes them an
+          admin-level user.
+        :param message_slice:
+        :return:
         """
         recipient_level = UserData.get_level(message_slice)
         if recipient_level == 1:
@@ -261,17 +291,21 @@ class Response:
                 "{0}'s admin status has been revoked".format(message_slice)
             )
         elif recipient_level == 2:
-            return Call(CallType.SEND, self.message, "owners can't be given admin status")
+            return Call(CallType.SEND, self.message,
+                        "owners can't be given admin status")
         else:
             UserData.levels[UserTypes(recipient_level)].remove(message_slice)
             UserData.levels[UserTypes.ADMIN].append(message_slice)
-            return Call(CallType.SEND, self.message, "{0} is now an admin".format(message_slice))
-
+            return Call(CallType.SEND, self.message,
+                        "{0} is now an admin".format(message_slice))
 
     def snowman(self, message_slice):
         """
         > Giver of snowmen since 2018.
-        > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen (limited to safe characters).
+        > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
+          (limited to safe characters).
+        :param message_slice:
+        :return:
         """
         if UserData.get_level(self.author) == -1:
             return Call(
@@ -288,27 +322,32 @@ class Response:
                 else:
                     snowman_count = 0
             if snowman_count > 0:
-                return Call(CallType.SEND, self.message, "☃" * min(snowman_count, 128))
-
+                return Call(CallType.SEND, self.message,
+                            "☃" * min(snowman_count, 128))
 
     def frosty_say(self, message_slice):
         """
         > Echo command, replaces message invoking <!say>
+        :param message_slice:
+        :return:
         """
         if UserData.get_level(self.author) < 1 and "@everyone" in message_slice:
-            return Call(CallType.REPLACE, self.message, "I can't ping everyone unless you have admin status")
+            return Call(CallType.REPLACE, self.message,
+                        "I can't ping everyone unless you have admin status")
         return Call(CallType.REPLACE, self.message, message_slice)
 
-
     def command_list(self, message_slice):
-        """Generates a list of all available commands."""
+        """
+        Generates a list of all available commands.
+        :param message_slice:
+        :return:
+        """
         message = "**Commands:**\n" 
         message += "\n".join(
             "{0} will run `{1}`\n".format(str(trigger), func.__name__)
             for trigger, func in Response.commands.items()
         )
         return Call(CallType.SEND, self.message, message)
-
 
     commands = {
         Trigger("give me", end="snowman", protected=True): snowman,
@@ -333,7 +372,18 @@ async def on_message(message):
             raise e
 
 
-snow_alert = SnowAlertSystem(client)
-client.loop.create_task(snow_alert.check_bsd())
+def main():
+    from argparse import ArgumentParser
 
-client.run(sys.argv[1])
+    parser = ArgumentParser()
+    parser.add_argument("token", help="discord API token")
+    args = parser.parse_args()
+
+    snow_alert = SnowAlertSystem(client)
+    client.loop.create_task(snow_alert.check_bsd())
+
+    client.run(args.token)
+
+
+if __name__ == "__main__":
+    main()

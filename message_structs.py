@@ -9,11 +9,13 @@ class UserTypes(Enum):
 
 
 class UserData:
-    levels = {UserTypes.OWNER: ["Timothy Z."],
-              UserTypes.ADMIN: ["nog642", "veggietiki", "imyxh", "VkRob", "Creon", "NotDeGhost"],
-              UserTypes.USER: [],
-              UserTypes.BANNED: []
-              }
+
+    levels = {
+        UserTypes.OWNER: ["Timothy Z."],
+        UserTypes.ADMIN: ["nog642", "veggietiki", "imyxh", "VkRob", "Creon", "NotDeGhost"],
+        UserTypes.USER: [],
+        UserTypes.BANNED: []
+    }
 
     @staticmethod
     def get_level(author):
