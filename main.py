@@ -112,7 +112,7 @@ class Trigger:
         # Removes leading/trailing pairs of ` to allow for code formatting
         i = 0
         while True:
-            if i < len(sliced) // 2 and sliced[i] == sliced[-i - 1] == '`':
+            if i < len(sliced) // 2 and sliced[i] == sliced[-i - 1] == "`":
                 i += 1
             else:
                 break
