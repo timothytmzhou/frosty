@@ -147,14 +147,15 @@ class Response:
         self.words = self.message.content.split()
         self.lwords = [w.lower() for w in self.words]
         self.author = self.message.author.name
-        user_level = UserData.get_level(self.author)
+        self.discriminator = self.message.author.discriminator
+        self.user_level = UserData.get_level(self.author, self.discriminator)
 
         # Iterates through the commands dict of the form {Trigger: func -> Call}:
         for trigger, func in Response.commands.copy().items():
             # Uses the begins() and ends() helper methods to check if
             #     activation conditions for any trigger are met.
             if trigger.begins(self.lwords) and trigger.ends(self.lwords):
-                if user_level >= trigger.access_level:
+                if self.user_level >= trigger.access_level:
                     message_slice = trigger.slice(self.words, self.lwords)
                     # If so, passes the slice into the corresponding function,
                     #     and adds the returned Call object's invoke() method
@@ -259,7 +260,7 @@ class Response:
         :param message_slice:
         :return:
         """
-        recipient_level = UserData.get_level(message_slice)
+        recipient_level = UserData.get_level(*message_slice.split("#"))
         if recipient_level == -1:
             UserData.levels[UserTypes.BANNED].remove(message_slice)
             UserData.levels[UserTypes.USER].append(message_slice)
@@ -281,7 +282,7 @@ class Response:
         :param message_slice:
         :return:
         """
-        recipient_level = UserData.get_level(message_slice)
+        recipient_level = UserData.get_level(*message_slice.split("#"))
         if recipient_level == 1:
             UserData.levels[UserTypes.ADMIN].remove(message_slice)
             UserData.levels[UserTypes.USER].append(message_slice)
@@ -307,7 +308,7 @@ class Response:
         :param message_slice:
         :return:
         """
-        if UserData.get_level(self.author) == -1:
+        if self.user_level == -1:
             return Call(
                 CallType.SEND, 
                 self.message, 
@@ -331,10 +332,12 @@ class Response:
         :param message_slice:
         :return:
         """
-        if UserData.get_level(self.author) < 1 and "@everyone" in message_slice:
-            return Call(CallType.REPLACE, self.message,
-                        "I can't ping everyone unless you have admin status")
-        return Call(CallType.REPLACE, self.message, message_slice)
+        return Call(
+            CallType.REPLACE, 
+            self.message, 
+            message_slice.replace("@", "")
+        )
+
 
     def command_list(self, message_slice):
         """

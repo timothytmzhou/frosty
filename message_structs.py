@@ -11,19 +11,19 @@ class UserTypes(Enum):
 class UserData:
 
     levels = {
-        UserTypes.OWNER: ["Timothy Z."],
-        UserTypes.ADMIN: ["nog642", "veggietiki", "imyxh", "VkRob", "Creon", "NotDeGhost"],
+        UserTypes.OWNER: ["stackdynamic#4860"],
+        UserTypes.ADMIN: ["nog642#5233", "veggietiki#4699", "imyxh#6725", "Creon#3992", "NotDeGhost#6829", "jespiron#3979"],
         UserTypes.USER: [],
         UserTypes.BANNED: []
     }
 
     @staticmethod
-    def get_level(author):
+    def get_level(author, discrim):
         for access_level in UserData.levels:
-            if author in UserData.levels[access_level]:
+            if [author, discrim] in [user.split("#") for user in UserData.levels[access_level]]:
                 return access_level.value
         # If the user's level isn't already defined, add them to the users list
-        UserData.levels[UserTypes.USER].append(author)
+        UserData.levels[UserTypes.USER].append("{0}#{1}".format(author, discrim))
         return 0
 
 
