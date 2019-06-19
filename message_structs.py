@@ -19,11 +19,12 @@ class UserData:
 
     @staticmethod
     def get_level(author, discrim):
+        name = "{0}#{1}".format(author, discrim)
         for access_level in UserData.levels:
-            if [author, discrim] in [user.split("#") for user in UserData.levels[access_level]]:
+            if name in UserData.levels[access_level]:
                 return access_level.value
         # If the user's level isn't already defined, add them to the users list
-        UserData.levels[UserTypes.USER].append("{0}#{1}".format(author, discrim))
+        UserData.levels[UserTypes.USER].append(name)
         return 0
 
 
