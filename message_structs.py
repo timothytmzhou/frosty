@@ -66,6 +66,10 @@ class Call:
     async def send(self):
         if self.response is not None:
             self.response = self.response.replace("@", "")
+            if self.response.beginswith("```") and self.response.endswith("```"):
+                self.response = "```" + self.response[3:-3].replace("`", "\`") + "```"
+            else:
+                self.response = self.response.replace("`", "\`")
             if not self.ignore_keywords:
                 keywords = {
                     "!auth": self.message.author.name,
