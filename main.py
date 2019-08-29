@@ -3,12 +3,12 @@ ihscy's over-engineered Discord bot
 """
 import discord
 import epicbox
-import aioify
 from textwrap import dedent
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
 from sheets import get_sheet, format_table
-from concurrent.futures import ThreadPoolExecutor
+from sandbox import execute
+from util import wrap_sync
 
 client = discord.Client()
 SHEET = get_sheet()
@@ -150,21 +150,7 @@ class Response:
         self.discriminator = self.message.author.discriminator
         self.user_level = UserData.get_level(self.author, self.discriminator)
 
-        # Iterates through the commands dict of the form {Trigger: func -> Call}:
-        for trigger, func in Response.commands.copy().items():
-            # Uses the begins() and ends() helper methods to check if
-            #     activation conditions for any trigger are met.
-            if trigger.begins(self.lwords) and trigger.ends(self.lwords):
-                if self.user_level >= trigger.access_level:
-                    message_slice = trigger.slice(self.words, self.lwords)
-                    # If so, passes the slice into the corresponding function,
-                    #     and adds the returned Call object's invoke() method
-                    #     to the client loop.
-                    task = func(self, message_slice)
-                    if isinstance(task, Call):
-                        client.loop.create_task(task.invoke())
-
-    def help(self, message_slice):
+    async def help(self, message_slice):
         """
         > To get a full list of available commands, use the !list command.
         > To reference the Frosty user manual, call !help with no args.
@@ -182,10 +168,10 @@ class Response:
                                 ignore_keywords=True)
                 else:
                     return Call(CallType.SEND, self.message,
-                                "{0} does not define a docstring (yell at "
+                                "{0} does not async define a docstring (yell at "
                                 "Timothy to add one)!")
 
-    def new_command(self, message_slice):
+    async def new_command(self, message_slice):
         """
         > Allows users to add simple echo commands.
         > These must follow the syntax of "trigger_phrase : response".
@@ -212,7 +198,7 @@ class Response:
         else:
             call_type = CallType.SEND
 
-        def call_func(response, message_slice):
+        async def call_func(response, message_slice):
             return Call(call_type, response.message, reply)
 
         call_func.__name__ = args[0].replace("!", "")
@@ -225,7 +211,7 @@ class Response:
             ignore_keywords=True
         )
 
-    def remove_command(self, message_slice):
+    async def remove_command(self, message_slice):
         """
         > Removes commands from the command dictionary.
         > Remove functionality for built-ins is disabled.
@@ -242,7 +228,7 @@ class Response:
                         Response.commands.pop(trigger).__name__)
                 )
 
-    def get_finances(self, message_slice):
+    async def get_finances(self, message_slice):
         """
         :param message_slice:
         :return:
@@ -252,7 +238,7 @@ class Response:
         data = [i for i in data if i != []]
         return Call(CallType.SEND, self.message, format_table(data))
 
-    def ban(self, message_slice):
+    async def ban(self, message_slice):
         """
         > Changes the ban status of a user:
         > If already banned, gives them user status, otherwise if they are not
@@ -274,7 +260,7 @@ class Response:
             return Call(CallType.SEND, self.message,
                         "{0} has been banned".format(message_slice))
 
-    def give_admin(self, message_slice):
+    async def give_admin(self, message_slice):
         """
         > Changes admin status of a user:
         > If already an admin, gives them user status, otherwise makes them an
@@ -300,7 +286,7 @@ class Response:
             return Call(CallType.SEND, self.message,
                         "{0} is now an admin".format(message_slice))
 
-    def snowman(self, message_slice):
+    async def snowman(self, message_slice):
         """
         > Giver of snowmen since 2018.
         > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
@@ -326,7 +312,7 @@ class Response:
                 return Call(CallType.SEND, self.message,
                             "☃" * min(snowman_count, 128))
 
-    def frosty_say(self, message_slice):
+    async def frosty_say(self, message_slice):
         """
         > Echo command, replaces message invoking <!say>
         :param message_slice:
@@ -335,10 +321,10 @@ class Response:
         return Call(
             CallType.REPLACE,
             self.message,
-            message_slice.replace("@", "＠")
+            message_slice.replace("@", "")
         )
 
-    def run_code(self, message_slice):
+    async def run_code(self, message_slice):
         # Removes leading/trailing pairs of ` to allow for code formatting
         i = 0
         while True:
@@ -349,16 +335,14 @@ class Response:
         message_slice = message_slice[i: len(message_slice) - i]
         if message_slice.startswith("python"):
             message_slice = message_slice[6:]
-        files = [{'name': 'main.py', 'content': message_slice.strip().encode()}]
-        limits = {'cputime': 60, 'memory': 64}
-        result = epicbox.run('python', 'python3 main.py', files=files, limits=limits)
+        result = wrap_sync(client.loop, execute, message_slice)
         return Call(
             CallType.SEND,
             self.message,
             result["stdout"].decode()
         )
 
-    def command_list(self, message_slice):
+    async def command_list(self, message_slice):
         """
         Generates a list of all available commands.
         :param message_slice:
@@ -386,16 +370,24 @@ class Response:
     }
 
 
-@aioify
-def process_message(message):
-    Response(message)
-
-
 @client.event
 async def on_message(message):
     if not message.author.bot:
         try:
-            await process_message(message)
+            response = Response(message)
+            # Iterates through the commands dict of the form {Trigger: func -> Call}:
+            for trigger, func in Response.commands.copy().items():
+                # Uses the begins() and ends() helper methods to check if
+                #     activation conditions for any trigger are met.
+                if trigger.begins(response.lwords) and trigger.ends(response.lwords):
+                    if response.user_level >= trigger.access_level:
+                        message_slice = trigger.slice(response.words, response.lwords)
+                        # If so, passes the slice into the corresponding function,
+                        #     and adds the returned Call object's invoke() method
+                        #     to the client loop.
+                        task = await func(response, message_slice)
+                        if isinstance(task, Call):
+                            client.loop.create_task(task.invoke())
         except Exception as e:
             raise e
 
