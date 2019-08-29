@@ -154,7 +154,7 @@ def snowman(msg_info, message_slice):
             return Call(
                 CallType.SEND,
                 msg_info.message,
-                execute(f"print(({message_slice}) * '☃')")
+                execute(f"print(({message_slice}) * '☃')")["stdout"]
             )
 
 
