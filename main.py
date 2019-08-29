@@ -386,7 +386,7 @@ class Response:
     }
 
 
-@aiofy
+@aioify
 def process_message(message):
     Response(message)
 
