@@ -151,10 +151,11 @@ def snowman(msg_info, message_slice):
         if message_slice == "a":
             return Call(CallType.SEND, msg_info.message, "☃")
         else:
+            result = execute(f"print(({message_slice}) * '☃')")
             return Call(
                 CallType.SEND,
                 msg_info.message,
-                execute(f"print(({message_slice}) * '☃')")["stdout"]
+                result["stdout"].decode()
             )
 
 
