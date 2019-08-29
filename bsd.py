@@ -1,6 +1,5 @@
 import asyncio
 import bs4
-import discord
 import requests
 
 
@@ -28,7 +27,7 @@ class SnowAlertSystem:
         while not self.client.is_closed:
             if SnowAlertSystem.get_warning() != SnowAlertSystem.last:
                 last = SnowAlertSystem.get_warning()
-                await self.client.get_channel(ANNOUNCEMENTS).send(
+                await self.client.get_channel(SnowAlertSystem.ANNOUNCEMENTS).send(
                     "`{0}`".format(last.strip())
                 )
             await asyncio.sleep(5)
