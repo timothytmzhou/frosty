@@ -189,7 +189,7 @@ def run_code(msg_info, message_slice):
         msg += "TimeoutError: computation timed out"
     if result["oom_killed"]:
         msg += "MemoryError: computation exceeded memory limit"
-    if result["stderr"] != b"":
+    if result["stderr"] not in (b"", b"Killed\n"):
         msg += result["stderr"].decode()
     if msg != "":
         return Call(
