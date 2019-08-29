@@ -3,10 +3,12 @@ ihscy's over-engineered Discord bot
 """
 import discord
 import epicbox
+import aioify
 from textwrap import dedent
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
 from sheets import get_sheet, format_table
+from concurrent.futures import ThreadPoolExecutor
 
 client = discord.Client()
 SHEET = get_sheet()
@@ -384,11 +386,16 @@ class Response:
     }
 
 
+@aiofy
+def process_message(message):
+    Response(message)
+
+
 @client.event
 async def on_message(message):
     if not message.author.bot:
         try:
-            Response(message)
+            await process_message(message)
         except Exception as e:
             raise e
 
