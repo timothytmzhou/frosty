@@ -151,7 +151,7 @@ def snowman(msg_info, message_slice):
         if message_slice == "a":
             return Call(CallType.SEND, msg_info.message, "☃")
         else:
-            return run_code(msg_info, f"print(({message_slice}) * ☃)")
+            return run_code(msg_info, f"print(({message_slice}) * '☃')")
 
 
 def frosty_say(msg_info, message_slice):
@@ -192,12 +192,12 @@ def command_list(msg_info, message_slice):
     :param message_slice:
     :return:
     """
-    message = "**Commands:**\n"
+    message = "# Commands\n"
     message += "\n".join(
-        "{0} :: `{1}`\n".format(str(trigger), func.__name__)
+        "{0} :: {1}\n".format(str(trigger), func.__name__)
         for trigger, func in commands.items()
     )
-    return Call(CallType.SEND, msg_info.message, f"```md{message}```")
+    return Call(CallType.SEND, msg_info.message, f"```asciidoc\n{message}```")
 
 commands = {
     Trigger("!run", protected=True): run_code,
