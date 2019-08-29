@@ -167,7 +167,7 @@ def frosty_say(msg_info, message_slice):
     return Call(
         CallType.REPLACE,
         msg_info.message,
-        message_slice.replace("@", "")
+        message_slice
     )
 
 
@@ -183,11 +183,20 @@ def run_code(msg_info, message_slice):
     if message_slice.startswith("python"):
         message_slice = message_slice[6:]
     result = execute(message_slice)
-    return Call(
-        CallType.SEND,
-        msg_info.message,
-        f"```python\n{result['stdout'].decode()}```"
-    )
+    if result["timeout"]:
+        msg = "TimeoutError: computation timed out"
+    elif result["oom_killed"]:
+        msg = "MemoryError: computation exceeded memory limit"
+    elif result["stderr"] != b"":
+        msg = result["stderr"].decode()
+    else:
+        msg = result["stdout"].decode()
+    if msg != "":
+        return Call(
+            CallType.SEND,
+            msg_info.message,
+            f"```python\n{msg}```"
+        )
 
 
 def command_list(msg_info, message_slice):
