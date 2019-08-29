@@ -184,14 +184,13 @@ def run_code(msg_info, message_slice):
     if message_slice.startswith("python"):
         message_slice = message_slice[6:]
     result = execute(message_slice)
+    msg = result["stdout"].decode()
     if result["timeout"]:
-        msg = "TimeoutError: computation timed out"
-    elif result["oom_killed"]:
-        msg = "MemoryError: computation exceeded memory limit"
-    elif result["stderr"] != b"":
-        msg = result["stderr"].decode()
-    else:
-        msg = result["stdout"].decode()
+        msg += "TimeoutError: computation timed out"
+    if result["oom_killed"]:
+        msg += "MemoryError: computation exceeded memory limit"
+    if result["stderr"] != b"":
+        msg += result["stderr"].decode()
     if msg != "":
         return Call(
             CallType.SEND,
