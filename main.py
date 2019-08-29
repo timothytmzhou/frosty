@@ -348,7 +348,7 @@ class Response:
                 break
         message_slice = message_slice[i: len(message_slice) - 1]
         files = [{'name': 'main.py', 'content': message_slice.encode()}]
-        limits = {'cputime': 60, 'memory': 1}
+        limits = {'cputime': 60, 'memory': 64}
         result = epicbox.run('python', 'python3 main.py', files=files, limits=limits)
         return Call(
             CallType.SEND,
