@@ -1,14 +1,21 @@
 """
 ihscy's over-engineered Discord bot
 """
-from textwrap import dedent
 import discord
+import epicbox
+from textwrap import dedent
 from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
 from sheets import get_sheet, format_table
 
+
 client = discord.Client()
 SHEET = get_sheet()
+epicbox.configure(
+    profiles=[
+        epicbox.Profile('python', 'python')
+    ]
+)
 
 
 class Call:
@@ -124,20 +131,13 @@ class Trigger:
         :param lwords:
         :return: A space-separated string.
         """
-        sliced = " ".join(words[
+        return " ".join(words[
             self.begin_index(lwords):
             self.end_index(lwords)
         ])
-        # Removes leading/trailing pairs of ` to allow for code formatting
-        i = 0
-        while True:
-            if i < len(sliced) // 2 and sliced[i] == sliced[-i - 1] == "`":
-                i += 1
-            else:
-                break
-        return sliced[i:len(sliced) - i]
 
 
+# TODO: split functions into different files
 class Response:
 
     safe_characters = "0123456789*/+-%^()"
@@ -335,9 +335,27 @@ class Response:
         return Call(
             CallType.REPLACE, 
             self.message, 
-            message_slice.replace("@", "")
+            message_slice.replace("@", "＠")
         )
 
+    def run_code(self, message_slice):
+        # Removes leading/trailing pairs of ` to allow for code formatting
+        i = 0
+        while True:
+            if i < len(message_slice) // 2 and message_slice[i] == message_slice[-i - 1] == "`":
+                i += 1
+            else:
+                break
+        message_slice = message_slice[i: len(message_slice) - 1]
+        files = [{'name': 'main.py', 'content': message_slice.encode()}]
+        limits = {'cputime': 60, 'memory': 64}
+        try:
+            result = epicbox.run('python', 'python3 main.py', files=files, limits=limits)
+        return Call(
+            CallType.SEND,
+            self.message,
+            result["stdout"].decode()
+        )
 
     def command_list(self, message_slice):
         """
@@ -353,6 +371,7 @@ class Response:
         return Call(CallType.SEND, self.message, message)
 
     commands = {
+        Trigger("!run", protected=True): run_code,
         Trigger("give me", end="snowman", protected=True): snowman,
         Trigger("give me", end="snowmen", protected=True): snowman,
         Trigger("!ban", access_level=1, protected=True): ban,
