@@ -335,7 +335,7 @@ class Response:
         message_slice = message_slice[i: len(message_slice) - i]
         if message_slice.startswith("python"):
             message_slice = message_slice[6:]
-        result = wrap_sync(client.loop, execute, message_slice)
+        result = await wrap_sync(client.loop, execute, message_slice)
         return Call(
             CallType.SEND,
             self.message,
