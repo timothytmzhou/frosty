@@ -41,7 +41,7 @@ def new_command(msg_info, message_slice):
     """
     words = message_slice.split()
     i = words.index(":")
-    args = words[0:i]
+    args = words[:i]
     if len(args) > 1:
         args[1] = int(args[1])
     trigger = Trigger(*args)
@@ -174,6 +174,7 @@ def frosty_say(msg_info, message_slice):
 
 def run_code(msg_info, message_slice):
     # Removes leading/trailing pairs of ` to allow for code formatting
+    message_slice = message_slice.strip()
     i = 0
     while True:
         if i < len(message_slice) // 2 and message_slice[i] == message_slice[-i - 1] == "`":
@@ -191,6 +192,7 @@ def run_code(msg_info, message_slice):
         msg += "MemoryError: computation exceeded memory limit"
     if result["stderr"] not in (b"", b"Killed\n"):
         msg += result["stderr"].decode()
+    msg = msg.replace("`", "\`")
     if msg != "":
         return Call(
             CallType.SEND,
