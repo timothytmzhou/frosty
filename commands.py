@@ -151,7 +151,11 @@ def snowman(msg_info, message_slice):
         if message_slice == "a":
             return Call(CallType.SEND, msg_info.message, "☃")
         else:
-            return run_code(msg_info, f"print(({message_slice}) * '☃')")
+            return Call(
+                CallType.SEND,
+                msg_info.message,
+                execute(f"print(({message_slice}) * '☃')")
+            )
 
 
 def frosty_say(msg_info, message_slice):
@@ -198,6 +202,7 @@ def command_list(msg_info, message_slice):
         for trigger, func in commands.items()
     )
     return Call(CallType.SEND, msg_info.message, f"```asciidoc\n{message}```")
+
 
 commands = {
     Trigger("!run", protected=True): run_code,

@@ -102,9 +102,9 @@ class Trigger:
             UserTypes(self.access_level).name.lower()
         )
         if self.end is not None:
-            string += "`{0}...{1}`".format(self.begin, self.end)
+            string += "{0}...{1}".format(self.begin, self.end)
         else:
-            string += "`{0}`".format(self.begin)
+            string += "{0}".format(self.begin)
         return string
 
     def begins(self, lwords):
