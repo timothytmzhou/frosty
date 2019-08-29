@@ -1,8 +1,6 @@
 discord.py==1.*
 bs4
 requests
-numpy
 gspread
-aioify
 epicbox
 oauth2client
