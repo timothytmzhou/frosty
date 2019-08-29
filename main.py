@@ -8,7 +8,6 @@ from bsd import SnowAlertSystem
 from message_structs import CallType, UserData, UserTypes
 from sheets import get_sheet, format_table
 
-
 client = discord.Client()
 SHEET = get_sheet()
 epicbox.configure(
@@ -42,8 +41,8 @@ class Call:
         if self.response is not None:
             if not self.ignore_keywords:
                 keywords = {
-                    "!auth" : self.message.author.name, 
-                    "!channel" : self.message.channel.name
+                    "!auth": self.message.author.name,
+                    "!channel": self.message.channel.name
                 }
                 for key in keywords:
                     self.response = self.replace_keyords(key, keywords[key])
@@ -61,7 +60,7 @@ class Trigger:
     def __init__(self, begin, access_level=0, end=None, protected=False):
         # Sets beginning and ending trigger phrases, .split()ed versions of
         #     them.
-        self.begin = begin.lower()   
+        self.begin = begin.lower()
         self.b_words = self.begin.split()
 
         self.end = end
@@ -132,19 +131,18 @@ class Trigger:
         :return: A space-separated string.
         """
         return " ".join(words[
-            self.begin_index(lwords):
-            self.end_index(lwords)
-        ])
+                        self.begin_index(lwords):
+                        self.end_index(lwords)
+                        ])
 
 
 # TODO: split functions into different files
 class Response:
-
     safe_characters = "0123456789*/+-%^()"
 
     def __init__(self, message):
         self.message = message
-        self.words = self.message.content.split()
+        self.words = self.message.content.split(" ")
         self.lwords = [w.lower() for w in self.words]
         self.author = self.message.author.name
         self.discriminator = self.message.author.discriminator
@@ -310,8 +308,8 @@ class Response:
         """
         if self.user_level == -1:
             return Call(
-                CallType.SEND, 
-                self.message, 
+                CallType.SEND,
+                self.message,
                 "{0} doesn't deserve ANY snowmen".format(self.message.author.name)
             )
         else:
@@ -333,8 +331,8 @@ class Response:
         :return:
         """
         return Call(
-            CallType.REPLACE, 
-            self.message, 
+            CallType.REPLACE,
+            self.message,
             message_slice.replace("@", "＠")
         )
 
@@ -346,8 +344,10 @@ class Response:
                 i += 1
             else:
                 break
-        message_slice = message_slice[i: len(message_slice) - 1]
-        files = [{'name': 'main.py', 'content': message_slice.encode()}]
+        message_slice = message_slice[i: len(message_slice) - i]
+        if message_slice.startswith("python"):
+            message_slice = message_slice[6:]
+        files = [{'name': 'main.py', 'content': message_slice.strip().encode()}]
         limits = {'cputime': 60, 'memory': 64}
         result = epicbox.run('python', 'python3 main.py', files=files, limits=limits)
         return Call(
@@ -362,7 +362,7 @@ class Response:
         :param message_slice:
         :return:
         """
-        message = "**Commands:**\n" 
+        message = "**Commands:**\n"
         message += "\n".join(
             "{0} will run `{1}`\n".format(str(trigger), func.__name__)
             for trigger, func in Response.commands.items()
@@ -378,9 +378,9 @@ class Response:
         Trigger("!say", protected=True): frosty_say,
         Trigger("!add", access_level=1, protected=True): new_command,
         Trigger("!remove", access_level=1, protected=True): remove_command,
-        Trigger("!budget", access_level=-1, protected=True) : get_finances,
+        Trigger("!budget", access_level=-1, protected=True): get_finances,
         Trigger("!list", access_level=-1, protected=True): command_list,
-        Trigger("!help", access_level=-1, protected=True) : help
+        Trigger("!help", access_level=-1, protected=True): help
     }
 
 
