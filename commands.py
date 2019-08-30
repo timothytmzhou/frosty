@@ -26,15 +26,8 @@ def frosty_help(msg_info, message_slice):
 
 def new_command(msg_info, message_slice):
     """
-    > Allows users to add simple echo commands.
-    > These must follow the syntax of "trigger_phrase : response".
-    < optional params > {
-        <!del> : makes Frosty delete the triggering message.
-        <!auth> : placeholder for the name of the author of the triggering
-                  message.
-        <!channel> : placeholder for the name of the channel the triggering
-                     message was sent in.
-    }
+    > Allows users to add commands which run python code.
+    > These must follow the syntax of "trigger_phrase : code".
     """
     words = message_slice.split(":", 1)
     name = words[0].strip()
@@ -203,6 +196,7 @@ def command_list(msg_info, message_slice):
 
 
 commands = {
+    Trigger(r"!help (.*)|!help", access_level=-1): frosty_help,
     Trigger(r"!run[\s\n](.*)"): run_code,
     Trigger(r"give me (.*) (snowmen|snowman)", name="!snowman"): snowman,
     Trigger(r"!ban (.*)", access_level=1): ban,
@@ -211,5 +205,4 @@ commands = {
     Trigger(r"!add (.*)", access_level=1): new_command,
     Trigger(r"!remove (.*)", access_level=1): remove_command,
     Trigger(r"!list", access_level=-1): command_list,
-    Trigger(r"!help (.*)|!help", access_level=-1): frosty_help
 }

@@ -17,8 +17,6 @@ async def process_message(message):
     msg_info = Message_Info(message)
     # Iterates through the commands dict of the form {Trigger: func -> Call}:
     for trigger, func in commands.copy().items():
-        # Uses the begins() and ends() helper methods to check if
-        #     activation conditions for any trigger are met.
         if trigger.match(msg_info.content):
             if msg_info.user_level >= trigger.access_level:
                 async with message.channel.typing():
