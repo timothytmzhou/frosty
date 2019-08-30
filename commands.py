@@ -77,7 +77,7 @@ def remove_command(msg_info, message_slice):
 
 def ban(msg_info, message_slice):
     """
-    > Changes the ban status of a user:
+    > Changes the ban status of a user.
     > If already banned, gives them user status, otherwise if they are not
       an owner, ban them.
     """
@@ -98,7 +98,7 @@ def ban(msg_info, message_slice):
 
 def give_admin(msg_info, message_slice):
     """
-    > Changes admin status of a user:
+    > Changes admin status of a user.
     > If already an admin, gives them user status, otherwise makes them an
       admin-level user.
     """
@@ -124,7 +124,7 @@ def give_admin(msg_info, message_slice):
 def snowman(msg_info, message_slice):
     """
     > Giver of snowmen since 2018.
-    > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
+    > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen.
     """
     if msg_info.user_level == -1:
         return Call(
@@ -146,7 +146,7 @@ def snowman(msg_info, message_slice):
 
 def frosty_say(msg_info, message_slice):
     """
-    > Echo command, replaces message invoking <!say>
+    > Echo command, replaces message invoking <!say>.
     """
     return Call(
         CallType.REPLACE,
@@ -157,8 +157,8 @@ def frosty_say(msg_info, message_slice):
 
 def run_code(msg_info, message_slice):
     """
-    > Runs arbitrary python code in docker sandbox
-    > 60 second time limit, 1 mb memory limit
+    > Runs arbitrary python code in docker sandbox.
+    > 60 second time limit, 1 mb memory limit.
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
     message_slice = message_slice.strip()
@@ -208,7 +208,7 @@ def command_list(msg_info, message_slice):
 
 commands = {
     Trigger("!run (.*)"): run_code,
-    Trigger("give me (.*) (snowmen|snowman)"): snowman,
+    Trigger("give me (.*) (snowmen|snowman)", name="!snowman"): snowman,
     Trigger("!ban (.*)", access_level=1): ban,
     Trigger("!admin (.*)", access_level=1): give_admin,
     Trigger("!say (.*)"): frosty_say,
