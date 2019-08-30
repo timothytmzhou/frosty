@@ -17,8 +17,8 @@ def format_table(data, headers):
         " " * (column_lengths[column_number] - len(headers[column_number]) + 4)
         for column_number in range(header_count)
     )
-    table = "```CSS\n{0}{1}{2}```".format(
-        *(headers[n] + header_padding[n] for n in range(header_count))
+    table = "```CSS\n{}```".format(
+        "".join(headers[n] + header_padding[n] for n in range(header_count))
     )
     items = "\n".join(
         " :: ".join(

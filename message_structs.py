@@ -88,24 +88,18 @@ class Trigger:
         #     them.
         self.pattern = pattern
         if name is None:
-            self.name = re.match(r"[^(]*", self.pattern).group(0).strip()
+            self.name = re.match(r"[a-zA-Z\d!]*", self.pattern).group(0).strip()
         else:
             self.name = name
         self.access_level = access_level
+        self.level = UserTypes(self.access_level).name.lower()
         self.protected = protected
 
-    def __str__(self):
-        string = "< {0}+ > {1}".format(
-            UserTypes(self.access_level).name.lower(),
-            self.pattern
-        )
-        return string
-
     def match(self, text):
-        return re.match(self.pattern, text)
+        return re.match(self.pattern, text, re.DOTALL)
 
     def slice(self, text):
         try:
-            return re.match(self.pattern, text).group(1)
+            return self.match(text).group(1)
         except IndexError:
             return ""

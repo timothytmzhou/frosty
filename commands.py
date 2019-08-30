@@ -12,9 +12,7 @@ def frosty_help(msg_info, message_slice):
     if message_slice == "":
         with open("help.txt", "r") as f:
             return Call(CallType.SEND, msg_info.message, f.read())
-    print(message_slice)
     for key, value in commands.items():
-        print(key.name)
         if message_slice == key.name:
             if value.__doc__ is not None:
                 return Call(CallType.SEND, msg_info.message,
@@ -177,7 +175,7 @@ def run_code(msg_info, message_slice):
         msg += "MemoryError: computation exceeded memory limit"
     if result["stderr"] not in (b"", b"Killed\n"):
         msg += result["stderr"].decode()
-    msg = msg.replace("`", "\`")
+    msg = msg.replace("`", "​`")
     if msg != "":
         return Call(
             CallType.SEND,
@@ -190,11 +188,12 @@ def command_list(msg_info, message_slice):
     """
     > Generates a list of all available commands.
     """
-    headers = ("pattern", "command", "description")
+    headers = ("pattern", "command", "level", "description")
     data = tuple(
         (
-            str(trigger),
+            trigger.pattern,
             trigger.name,
+            "< {}+ >".format(trigger.level),
             func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
         )
         for trigger, func in commands.items()
@@ -204,13 +203,13 @@ def command_list(msg_info, message_slice):
 
 
 commands = {
-    Trigger("!run (.*)"): run_code,
-    Trigger("give me (.*) (snowmen|snowman)", name="!snowman"): snowman,
-    Trigger("!ban (.*)", access_level=1): ban,
-    Trigger("!admin (.*)", access_level=1): give_admin,
-    Trigger("!say (.*)"): frosty_say,
-    Trigger("!add (.*)", access_level=1): new_command,
-    Trigger("!remove (.*)", access_level=1): remove_command,
-    Trigger("!list", access_level=-1): command_list,
-    Trigger("!help (.*)|!help", access_level=-1): frosty_help
+    Trigger(r"!run[\s\n](.*)"): run_code,
+    Trigger(r"give me (.*) (snowmen|snowman)", name="!snowman"): snowman,
+    Trigger(r"!ban (.*)", access_level=1): ban,
+    Trigger(r"!admin (.*)", access_level=1): give_admin,
+    Trigger(r"!say (.*)"): frosty_say,
+    Trigger(r"!add (.*)", access_level=1): new_command,
+    Trigger(r"!remove (.*)", access_level=1): remove_command,
+    Trigger(r"!list", access_level=-1): command_list,
+    Trigger(r"!help (.*)|!help", access_level=-1): frosty_help
 }
