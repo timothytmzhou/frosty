@@ -73,7 +73,7 @@ class Call:
                 }
                 for key in keywords:
                     self.response = self.replace_keyords(key, keywords[key])
-            await self.message.channel.send(self.response)
+            await self.message.channel.send(self.response[:2000])
 
     async def delete(self):
         await self.message.delete()
@@ -91,7 +91,6 @@ class Trigger:
             self.name = re.match(r"[^(]*", self.pattern).group(0)
         else:
             self.name = name
-        self.name = name
         self.access_level = access_level
         self.protected = protected
 

@@ -197,11 +197,12 @@ def command_list(msg_info, message_slice):
         (
             str(trigger),
             trigger.name,
-            func.__doc__.split("\n")[0].lower()
+            func.__doc__.strip().partition("\n")[0].lower()
         )
         for trigger, func in commands.items()
     )
-    message = format_table(headers, data)
+    print(data)
+    message = format_table(data, headers)
     return Call(CallType.SEND, msg_info.message, message)
 
 
@@ -213,6 +214,6 @@ commands = {
     Trigger("!say (.*)"): frosty_say,
     Trigger("!add (.*)", access_level=1): new_command,
     Trigger("!remove (.*)", access_level=1): remove_command,
-    Trigger("!list (.*)", access_level=-1): command_list,
+    Trigger("!list", access_level=-1): command_list,
     Trigger("!help (.*)|!help", access_level=-1): frosty_help
 }
