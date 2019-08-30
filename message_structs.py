@@ -88,7 +88,7 @@ class Trigger:
         #     them.
         self.pattern = pattern
         if name is None:
-            self.name = re.match(r"[^(]*", self.pattern).group(0)
+            self.name = re.match(r"[^(]*", self.pattern).group(0).strip()
         else:
             self.name = name
         self.access_level = access_level

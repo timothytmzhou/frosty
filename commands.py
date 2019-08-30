@@ -1,6 +1,6 @@
 from message_structs import *
 from sandbox import execute
-from textwrap import dedent
+from textwrap import dedent, indent
 from util import format_table
 
 
@@ -12,7 +12,9 @@ def frosty_help(msg_info, message_slice):
     if message_slice == "":
         with open("help.txt", "r") as f:
             return Call(CallType.SEND, msg_info.message, f.read())
+    print(message_slice)
     for key, value in commands.items():
+        print(key.name)
         if message_slice == key.name:
             if value.__doc__ is not None:
                 return Call(CallType.SEND, msg_info.message,
@@ -36,27 +38,23 @@ def new_command(msg_info, message_slice):
                      message was sent in.
     }
     """
-    words = message_slice.split()[0]
-    name = words[0]
-    trigger = Trigger(name)
-    reply = " ".join(words[1:]).strip()
-    if "!del" in reply:
-        reply = reply.replace("!del", "")
-        call_type = CallType.REPLACE
-    else:
-        call_type = CallType.SEND
-
+    words = message_slice.split(":", 1)
+    name = words[0].strip()
+    trigger = Trigger(name, protected=False)
+    code = words[1]
+    
     def call_func(msg_info, message_slice):
-        return Call(call_type, msg_info.message, reply)
+        return run_code(msg_info, code)
 
     call_func.__name__ = name.replace("!", "")
-    call_func.__doc__ = "!add created echo-like command returning {0}".format(reply)
+    call_func.__doc__ = "> !add created command running code:\n{}".format(
+        indent(code, " " * 4)
+    )
     commands[trigger] = call_func
     return Call(
         CallType.SEND,
         msg_info.message,
-        "new command: on {0} I'll say `{1}`".format(str(trigger), reply),
-        ignore_keywords=True
+        "```asciidoc\nadded command {}```".format(trigger.name)
     )
 
 
@@ -197,7 +195,7 @@ def command_list(msg_info, message_slice):
         (
             str(trigger),
             trigger.name,
-            func.__doc__.strip().partition("\n")[0].lower().split()[1:]
+            func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
         )
         for trigger, func in commands.items()
     )
