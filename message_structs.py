@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 
 
@@ -37,8 +38,7 @@ class CallType(Enum):
 class Message_Info:
     def __init__(self, message):
         self.message = message
-        self.words = self.message.content.split(" ")
-        self.lwords = [w.lower() for w in self.words]
+        self.content = self.message.content
         self.author = self.message.author.name
         self.discriminator = self.message.author.discriminator
         self.user_level = UserData.get_level(self.author, self.discriminator)
@@ -83,81 +83,30 @@ class Call:
 
 
 class Trigger:
-
-    def __init__(self, begin, access_level=0, end=None, protected=False):
+    def __init__(self, pattern, name=None, access_level=0, protected=True):
         # Sets beginning and ending trigger phrases, .split()ed versions of
         #     them.
-        self.begin = begin.lower()
-        self.b_words = self.begin.split()
-
-        self.end = end
-        if self.end is not None:
-            self.end = self.end.lower()
-            self.e_words = self.end.split()
-
+        self.pattern = pattern
+        if name is None:
+            self.name = re.match(r"[^(]*", self.pattern).group(0)
+        else:
+            self.name = name
+        self.name = name
         self.access_level = access_level
         self.protected = protected
 
     def __str__(self):
-        string = "< {0}+ > ".format(
-            UserTypes(self.access_level).name.lower()
+        string = "< {0}+ > {1}".format(
+            UserTypes(self.access_level).name.lower(),
+            self.pattern
         )
-        if self.end is not None:
-            string += "{0}...{1}".format(self.begin, self.end)
-        else:
-            string += "{0}".format(self.begin)
         return string
 
-    def begins(self, lwords):
-        """
-        Given a list of lowercase words, checks if it begins with this
-        trigger's start phrase.
-        :param lwords:
-        :return:
-        """
-        return lwords[:len(self.b_words)] == self.b_words
+    def match(self, text):
+        return re.match(self.pattern, text)
 
-    def ends(self, lwords):
-        """
-        Given a list of lowercase words, checks if it begins with this
-        trigger's end phrase.
-        :param lwords:
-        :return:
-        """
-        return self.end is None or lwords[-len(self.e_words):] == self.e_words
-
-    def begin_index(self, lwords):
-        """
-        Gets index of last element of this trigger's start phrase (guaranteed
-        to be in lwords).
-        :param lwords:
-        :return:
-        """
-        return lwords.index(self.b_words[0]) + len(self.b_words)
-
-    def end_index(self, lwords):
-        """
-        Gets index of first element of this trigger's end phrase (guaranteed to
-        be in lwords).
-        :param lwords:
-        :return:
-        """
-        if self.end is None:
-            return len(lwords)
-        else:
-            return lwords.index(self.e_words[0])
-
-    def slice(self, words, lwords):
-        """
-        Gets the content of the message between the start and end triggers
-            (guaranteed to be in lwords).
-        E.g "_START_ my message in between _END_" returns "my message in
-            between"
-        :param words:
-        :param lwords:
-        :return: A space-separated string.
-        """
-        return " ".join(words[
-                        self.begin_index(lwords):
-                        self.end_index(lwords)
-                        ])
+    def slice(self, text):
+        try:
+            return re.match(self.pattern, text).group(1)
+        except IndexError:
+            return ""
