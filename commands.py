@@ -190,18 +190,17 @@ def run_code(msg_info, message_slice):
 
 def command_list(msg_info, message_slice):
     """
-    Generates a list of all available commands.
+    > Generates a list of all available commands.
     """
     headers = ("pattern", "command", "description")
     data = tuple(
         (
             str(trigger),
             trigger.name,
-            func.__doc__.strip().partition("\n")[0].lower()
+            func.__doc__.strip().partition("\n")[0].lower().split()[1:]
         )
         for trigger, func in commands.items()
     )
-    print(data)
     message = format_table(data, headers)
     return Call(CallType.SEND, msg_info.message, message)
 
