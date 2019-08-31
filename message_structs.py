@@ -19,13 +19,12 @@ class UserData:
     }
 
     @staticmethod
-    def get_level(author, discrim):
-        name = "{0}#{1}".format(author, discrim)
+    def get_level(id):
         for access_level in UserData.levels:
-            if name in UserData.levels[access_level]:
+            if id in UserData.levels[access_level]:
                 return access_level.value
         # If the user's level isn't already defined, add them to the users list
-        UserData.levels[UserTypes.USER].append(name)
+        UserData.levels[UserTypes.USER].append(id)
         return 0
 
 
@@ -99,7 +98,4 @@ class Trigger:
         return re.match(self.pattern, text, re.DOTALL)
 
     def slice(self, text):
-        try:
-            return self.match(text).group(1)
-        except IndexError:
-            return ""
+        return tuple(g.strip() for g in self.match(text).groups())

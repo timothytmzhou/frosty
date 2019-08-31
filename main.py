@@ -20,11 +20,11 @@ async def process_message(message):
         if trigger.match(msg_info.content):
             if msg_info.user_level >= trigger.access_level:
                 async with message.channel.typing():
-                    message_slice = trigger.slice(msg_info.content)
+                    args = trigger.slice(msg_info.content)
                     # If so, passes the slice into the corresponding function,
                     #     and adds the returned Call object's invoke() method
                     #     to the client loop.
-                    task = await wrap_sync(client.loop, func, msg_info, message_slice)
+                    task = await wrap_sync(client.loop, func, msg_info, *args)
                     if isinstance(task, Call):
                         client.loop.create_task(task.invoke())
                 break
