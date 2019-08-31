@@ -40,7 +40,9 @@ class Message_Info:
         self.content = self.message.content
         self.author = self.message.author.name
         self.discriminator = self.message.author.discriminator
-        self.user_level = UserData.get_level(self.author, self.discriminator)
+        self.user_level = UserData.get_level(
+            "{0}#{1}".format(self.author, self.discriminator)
+        )
 
 
 class Call:
@@ -87,7 +89,10 @@ class Trigger:
         #     them.
         self.pattern = pattern
         if name is None:
-            self.name = re.match(r"[a-zA-Z\d!]*", self.pattern).group(0).strip()
+            self.name = re.match(
+                r"[a-zA-Z\d!^]*", 
+                self.pattern
+            ).group(0).strip().replace("^", "")
         else:
             self.name = name
         self.access_level = access_level
@@ -98,4 +103,6 @@ class Trigger:
         return re.match(self.pattern, text, re.DOTALL)
 
     def slice(self, text):
-        return tuple(g.strip() for g in self.match(text).groups())
+        return tuple(
+            g.strip() for g in self.match(text).groups() if g is not None
+        )

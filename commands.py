@@ -139,7 +139,7 @@ def snowman(msg_info, *args):
 
 def frosty_say(msg_info, *args):
     """
-    > Echo command, replaces message invoking <!say>.
+    > Echo command, deletes message invoking !say.
     """
     return Call(
         CallType.REPLACE,
@@ -162,7 +162,7 @@ def run_code(msg_info, *args):
         else:
             break
     code = code[i: len(code) - i]
-    for prefix in ("py", "python"):
+    for prefix in ("python", "py"):
         if code.startswith(prefix):
             code = code[len(prefix):]
     result = execute(code)
