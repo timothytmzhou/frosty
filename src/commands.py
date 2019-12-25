@@ -10,7 +10,7 @@ def frosty_help(msg_info, *args):
     > To reference the Frosty user manual, call !help with no args.
     """
     if len(args) == 0:
-        with open("help.txt", "r") as f:
+        with open("src/help.txt", "r") as f:
             return Call(CallType.SEND, msg_info.message, f.read())
     else:
         command = args[0]
