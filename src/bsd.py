@@ -15,7 +15,7 @@ class SnowAlertSystem:
     @staticmethod
     def text_from_html(body):
         soup = bs4.BeautifulSoup(body, "html.parser")
-        text = soup.find(class_="cs-column-text emergency-alert-header").get_text()
+        text = soup.find(class_="sitewide-alert").get_text()
         return text
 
     @staticmethod
