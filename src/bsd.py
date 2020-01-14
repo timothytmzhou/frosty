@@ -9,7 +9,7 @@ class SnowAlertSystem:
     ANNOUNCEMENTS = 500749047364321344
 
     def __init__(self, client):
-        SnowAlertSystem.last = SnowAlertSystem.get_warning()
+        SnowAlertSystem.last = self.get_warning() 
         self.client = client
 
     @staticmethod
@@ -24,10 +24,10 @@ class SnowAlertSystem:
 
     async def check_bsd(self):
         await self.client.wait_until_ready()
-        while not self.client.is_closed:
+        while not self.client.is_closed():
             if SnowAlertSystem.get_warning() != SnowAlertSystem.last:
-                last = SnowAlertSystem.get_warning()
+                SnowAlertSystem.last = SnowAlertSystem.get_warning()
                 await self.client.get_channel(SnowAlertSystem.ANNOUNCEMENTS).send(
-                    "`{0}`".format(last.strip())
+                    "```{0}```".format(SnowAlertSystem.last.strip())
                 )
             await asyncio.sleep(5)
