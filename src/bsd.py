@@ -22,6 +22,7 @@ class SnowAlertSystem:
 
     async def check_bsd(self):
         last = SnowAlertSystem.get_warning()
+        print(last)
         await self.client.wait_until_ready()
         while not self.client.is_closed():
             if SnowAlertSystem.get_warning() != last:
