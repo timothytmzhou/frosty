@@ -2,6 +2,7 @@ from message_structs import *
 from sandbox import execute
 from textwrap import dedent, indent
 from util import format_table
+from ask import ask
 
 
 def frosty_help(msg_info, *args):
@@ -210,4 +211,5 @@ commands = {
     Trigger(r"^!add (.*):(.*)", access_level=1): new_command,
     Trigger(r"^!remove (.*)", access_level=1): remove_command,
     Trigger(r"^!list", access_level=-1): command_list,
+    Trigger(r"^!ask (.*)", access_level=-1): ask
 }
