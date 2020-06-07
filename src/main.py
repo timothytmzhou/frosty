@@ -1,6 +1,5 @@
 # ihscy's over-engineered Discord bot
 import discord
-from src.util import wrap_sync
 from src.commands import *
 
 client = discord.Client()
