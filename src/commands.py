@@ -1,3 +1,4 @@
+import re
 from src.message_structs import *
 from src.extensions.sandbox import execute
 from src.util import format_table
@@ -73,20 +74,20 @@ def ban(msg_info, *args):
     > If already banned, gives them user status, otherwise if they are not
       an owner, ban them.
     """
-    id = args[0]
-    recipient_level = UserData.get_level(id)
+    target = args[0]
+    recipient_level = UserData.get_level(target)
     if recipient_level == -1:
-        UserData.levels[UserTypes.BANNED].remove(id)
-        UserData.levels[UserTypes.USER].append(id)
+        UserData.levels[UserTypes.BANNED].remove(target)
+        UserData.levels[UserTypes.USER].append(target)
         return Call(CallType.SEND, msg_info.message,
-                    "un-banned {0}".format(id))
+                    "un-banned {0}".format(target))
     elif recipient_level == 2:
         return Call(CallType.SEND, msg_info.message, "owners can't be banned")
     else:
-        UserData.levels[UserTypes(recipient_level)].remove(id)
-        UserData.levels[UserTypes.BANNED].append(id)
+        UserData.levels[UserTypes(recipient_level)].remove(target)
+        UserData.levels[UserTypes.BANNED].append(target)
         return Call(CallType.SEND, msg_info.message,
-                    "{0} has been banned".format(id))
+                    "{0} has been banned".format(target))
 
 
 def give_admin(msg_info, *args):
@@ -95,23 +96,24 @@ def give_admin(msg_info, *args):
     > If already an admin, gives them user status, otherwise makes them an
       admin-level user.
     """
-    recipient_level = UserData.get_level(id)
+    target = args[0]
+    recipient_level = UserData.get_level(target)
     if recipient_level == 1:
-        UserData.levels[UserTypes.ADMIN].remove(id)
-        UserData.levels[UserTypes.USER].append(id)
+        UserData.levels[UserTypes.ADMIN].remove(target)
+        UserData.levels[UserTypes.USER].append(target)
         return Call(
             CallType.SEND,
             msg_info.message,
-            "{0}'s admin status has been revoked".format(id)
+            "{0}'s admin status has been revoked".format(target)
         )
     elif recipient_level == 2:
         return Call(CallType.SEND, msg_info.message,
                     "owners can't be given admin status")
     else:
-        UserData.levels[UserTypes(recipient_level)].remove(id)
-        UserData.levels[UserTypes.ADMIN].append(id)
+        UserData.levels[UserTypes(recipient_level)].remove(target)
+        UserData.levels[UserTypes.ADMIN].append(target)
         return Call(CallType.SEND, msg_info.message,
-                    "{0} is now an admin".format(id))
+                    "{0} is now an admin".format(target))
 
 
 def snowman(msg_info, *args):
@@ -155,32 +157,21 @@ def run_code(msg_info, *args):
     > 60 second time limit, 1 mb memory limit.
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
-    code = args[0]
-    i = 0
-    while True:
-        if i < len(code) // 2 and code[i] == code[-i - 1] == "`":
-            i += 1
-        else:
-            break
-    code = code[i: len(code) - i]
-    for prefix in ("python", "py"):
-        if code.startswith(prefix):
-            code = code[len(prefix):]
+    code_pattern = "```{}```|`{}`".format("(?:py | python | gyp)(. *)")
+    code = re.match(code_pattern, args[0].strip(), re.DOTALL).group(1)
     result = execute(code)
-    msg = result["stdout"].decode()
     if result["timeout"]:
-        msg += "TimeoutError: computation timed out"
-    if result["oom_killed"]:
-        msg += "MemoryError: computation exceeded memory limit"
-    if result["stderr"] not in (b"", b"Killed\n"):
-        msg += result["stderr"].decode()
-    msg = msg.replace("`", "​`")
-    if msg != "":
-        return Call(
-            CallType.SEND,
-            msg_info.message,
-            "```python\n{}```".format(msg)
-        )
+        msg = "TimeoutError: computation timed out\n"
+    elif result["oom_killed"]:
+        msg = "MemoryError: computation exceeded memory limit\n"
+    else:
+        msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
+    msg = "```py\n{0}Execution time: {1}s```".format(msg, result["duration"])
+    return Call(
+        CallType.SEND,
+        msg_info.message,
+        "```py\n{}```".format(msg)
+    )
 
 
 def command_list(msg_info, *args):
