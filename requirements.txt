@@ -1,7 +1,4 @@
 discord.py==1.*
-bs4
-requests
-gspread
 epicbox
-oauth2client
 wolframalpha
+pyyaml

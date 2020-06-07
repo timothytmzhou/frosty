@@ -9,7 +9,7 @@ Most commands are taken by Frosty in the form < !command_name *args >. Each user
 banned :: restricted from use of virtually all commands.
 user   :: standard access level, can perform commands that do not modify Frosty.
 admin  :: is able to ban other users, give them admin status, and use otherwise restricted state-changing commands.
-owner  :: SPR jimot.``````md
+owner  :: ~~BDFL~~ stackdynamic.``````md
 
 An example of a command is the < !ban > command, which unsurprisingly bans users, and is restricted to < admin+ > status. A call would look like this:``````CSS
 

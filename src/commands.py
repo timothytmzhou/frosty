@@ -8,8 +8,8 @@ from textwrap import dedent, indent
 
 def frosty_help(msg_info, *args):
     """
-    > To get a full list of available commands, use the !list command.
-    > To reference the Frosty user manual, call !help with no args.
+    > To get a full list of available commands, use the /list command.
+    > To reference the Frosty user manual, call /help with no args.
     """
     if len(args) == 0:
         with open("about.txt", "r") as f:
@@ -25,14 +25,14 @@ def frosty_help(msg_info, *args):
                 else:
                     return Call(CallType.SEND, msg_info.message,
                                 "{0} does not define a docstring (yell at "
-                                "Timothy to add one)!")
+                                "stackdynamic to add one)!")
 
 
 def new_command(msg_info, *args):
     """
     > Allows users to add commands which run python code.
     > These must follow the syntax of "regex pattern : code".
-    > Note that an implicit ^ anchor is put in front of the pattern, so e.g !test becomes ^!test
+    > Note that an implicit ^ anchor is put in front of the pattern, so e.g /test becomes ^/test
     """
     name, code = args[0], args[1]
     trigger = Trigger("^{}".format(name), protected=False)
@@ -40,8 +40,8 @@ def new_command(msg_info, *args):
     def call_func(msg_info, *args):
         return run_code(msg_info, code)
 
-    call_func.__name__ = name.replace("!", "")
-    call_func.__doc__ = "> !add created command running code:\n{}".format(
+    call_func.__name__ = name.replace("/", "")
+    call_func.__doc__ = "> /add created command running code:\n{}".format(
         indent(code, " " * 4)
     )
     commands[trigger] = call_func
@@ -74,20 +74,21 @@ def ban(msg_info, *args):
     > If already banned, gives them user status, otherwise if they are not
       an owner, ban them.
     """
-    target = args[0]
-    recipient_level = UserData.get_level(target)
-    if recipient_level == -1:
-        UserData.levels[UserTypes.BANNED].remove(target)
-        UserData.levels[UserTypes.USER].append(target)
-        return Call(CallType.SEND, msg_info.message,
-                    "un-banned {0}".format(target))
-    elif recipient_level == 2:
-        return Call(CallType.SEND, msg_info.message, "owners can't be banned")
-    else:
-        UserData.levels[UserTypes(recipient_level)].remove(target)
-        UserData.levels[UserTypes.BANNED].append(target)
-        return Call(CallType.SEND, msg_info.message,
-                    "{0} has been banned".format(target))
+    targets = args
+    for target in targets:
+        recipient_level = UserData.get_level(target)
+        if recipient_level == -1:
+            UserData.levels[UserTypes.BANNED].remove(target)
+            UserData.levels[UserTypes.USER].append(target)
+            return Call(CallType.SEND, msg_info.message,
+                        "un-banned {0}".format(target))
+        elif recipient_level == 2:
+            return Call(CallType.SEND, msg_info.message, "owners can't be banned")
+        else:
+            UserData.levels[UserTypes(recipient_level)].remove(target)
+            UserData.levels[UserTypes.BANNED].append(target)
+    return Call(CallType.SEND, msg_info.message,
+                "banned {}".format(" ".join(targets)))
 
 
 def give_admin(msg_info, *args):
@@ -96,24 +97,25 @@ def give_admin(msg_info, *args):
     > If already an admin, gives them user status, otherwise makes them an
       admin-level user.
     """
-    target = args[0]
-    recipient_level = UserData.get_level(target)
-    if recipient_level == 1:
-        UserData.levels[UserTypes.ADMIN].remove(target)
-        UserData.levels[UserTypes.USER].append(target)
-        return Call(
-            CallType.SEND,
-            msg_info.message,
-            "{0}'s admin status has been revoked".format(target)
-        )
-    elif recipient_level == 2:
-        return Call(CallType.SEND, msg_info.message,
-                    "owners can't be given admin status")
-    else:
-        UserData.levels[UserTypes(recipient_level)].remove(target)
-        UserData.levels[UserTypes.ADMIN].append(target)
-        return Call(CallType.SEND, msg_info.message,
-                    "{0} is now an admin".format(target))
+    targets = args
+    for target in targets:
+        recipient_level = UserData.get_level(target)
+        if recipient_level == 1:
+            UserData.levels[UserTypes.ADMIN].remove(target)
+            UserData.levels[UserTypes.USER].append(target)
+            return Call(
+                CallType.SEND,
+                msg_info.message,
+                "{0}'s admin status has been revoked".format(target)
+            )
+        elif recipient_level == 2:
+            return Call(CallType.SEND, msg_info.message,
+                        "owners can't be given admin status")
+        else:
+            UserData.levels[UserTypes(recipient_level)].remove(target)
+            UserData.levels[UserTypes.ADMIN].append(target)
+    return Call(CallType.SEND, msg_info.message,
+                "gave admin to {0}".format(", ".join(targets)))
 
 
 def snowman(msg_info, *args):
@@ -142,7 +144,7 @@ def snowman(msg_info, *args):
 
 def frosty_say(msg_info, *args):
     """
-    > Echo command, deletes message invoking !say.
+    > Echo command, deletes message invoking /say.
     """
     return Call(
         CallType.REPLACE,
@@ -193,14 +195,14 @@ def command_list(msg_info, *args):
 
 
 commands = {
-    Trigger(r"^!help (.*)|^!help", access_level=-1): frosty_help,
-    Trigger(r"^!run[\s\n](.*)"): run_code,
-    Trigger(r"^give me (.*) (snowmen|snowman)", name="!snowman"): snowman,
-    Trigger(r"^!ban (.*)", access_level=1): ban,
-    Trigger(r"^!admin (.*)", access_level=1): give_admin,
-    Trigger(r"^!say (.*)"): frosty_say,
-    Trigger(r"^!add (.*):(.*)", access_level=1): new_command,
-    Trigger(r"^!remove (.*)", access_level=1): remove_command,
-    Trigger(r"^!list", access_level=-1): command_list,
-    Trigger(r"^!ask (.*)", access_level=-1): query.ask
+    Trigger(r"^/help (.*)|^/help", access_level=-1): frosty_help,
+    Trigger(r"^/run[\s\n](.*)"): run_code,
+    Trigger(r"^give me (.*) (snowmen|snowman)", name="/snowman"): snowman,
+    Trigger(r"^/ban (.*)", access_level=1): ban,
+    Trigger(r"^/admin (.*)", access_level=1): give_admin,
+    Trigger(r"^/say (.*)"): frosty_say,
+    Trigger(r"^/add (.*):(.*)", access_level=1): new_command,
+    Trigger(r"^/remove (.*)", access_level=1): remove_command,
+    Trigger(r"^/list", access_level=-1): command_list,
+    Trigger(r"^/ask (.*)", access_level=-1): query.ask
 }

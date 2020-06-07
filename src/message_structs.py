@@ -1,4 +1,5 @@
 import re
+import yaml
 from enum import Enum
 
 
@@ -10,21 +11,18 @@ class UserTypes(Enum):
 
 
 class UserData:
-    levels = {
-        UserTypes.OWNER: ["stackdynamic#4860"],
-        UserTypes.ADMIN: ["nog642#5233", "veggietiki#4699", "imyxh#6725", "Creon#3992",
-                          "NotDeGhost#6829", "jespiron#3979"],
-        UserTypes.USER: [],
-        UserTypes.BANNED: []
-    }
+    with open("perms.yaml") as f:
+        levels = {UserTypes[level]: user
+                  for level, user in yaml.load(f.read(), Loader=yaml.FullLoader).items()}
 
     @staticmethod
-    def get_level(id):
+    def get_level(uid):
         for access_level in UserData.levels:
-            if id in UserData.levels[access_level]:
+            if uid in UserData.levels[access_level]:
                 return access_level.value
+
         # If the user's level isn't already defined, add them to the users list
-        UserData.levels[UserTypes.USER].append(id)
+        UserData.levels[UserTypes.USER].append(uid)
         return 0
 
 
@@ -89,10 +87,9 @@ class Trigger:
         #     them.
         self.pattern = pattern
         if name is None:
-            self.name = re.match(
-                r"[a-zA-Z\d!^]*", 
-                self.pattern
-            ).group(0).strip().replace("^", "")
+            # assume pattern in the form ^/name args if name is not specified
+            assert re.match(r"\^\/\w+( .*)?", self.pattern)
+            self.name = self.pattern.split()[0][1:]
         else:
             self.name = name
         self.access_level = access_level
