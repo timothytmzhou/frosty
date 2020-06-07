@@ -1,8 +1,8 @@
-from message_structs import *
-from sandbox import execute
+from src.message_structs import *
+from src.extensions.sandbox import execute
+from src.util import format_table
+from src.extensions import query
 from textwrap import dedent, indent
-from util import format_table
-from ask import ask
 
 
 def frosty_help(msg_info, *args):
@@ -11,7 +11,7 @@ def frosty_help(msg_info, *args):
     > To reference the Frosty user manual, call !help with no args.
     """
     if len(args) == 0:
-        with open("src/help.txt", "r") as f:
+        with open("about.txt", "r") as f:
             return Call(CallType.SEND, msg_info.message, f.read())
     else:
         command = args[0]
@@ -35,7 +35,7 @@ def new_command(msg_info, *args):
     """
     name, code = args[0], args[1]
     trigger = Trigger("^{}".format(name), protected=False)
-    
+
     def call_func(msg_info, *args):
         return run_code(msg_info, code)
 
@@ -211,5 +211,5 @@ commands = {
     Trigger(r"^!add (.*):(.*)", access_level=1): new_command,
     Trigger(r"^!remove (.*)", access_level=1): remove_command,
     Trigger(r"^!list", access_level=-1): command_list,
-    Trigger(r"^!ask (.*)", access_level=-1): ask
+    Trigger(r"^!ask (.*)", access_level=-1): query.ask
 }

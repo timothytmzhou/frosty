@@ -1,16 +1,9 @@
 # ihscy's over-engineered Discord bot
 import discord
-import epicbox
-from bsd import SnowAlertSystem
-from util import wrap_sync
-from commands import *
+from src.util import wrap_sync
+from src.commands import *
 
 client = discord.Client()
-epicbox.configure(
-    profiles=[
-        epicbox.Profile('python', 'python')
-    ]
-)
 
 
 async def process_message(message):
@@ -46,8 +39,8 @@ def main():
     parser.add_argument("token", help="discord API token")
     args = parser.parse_args()
 
-    snow_alert = SnowAlertSystem(client)
-    client.loop.create_task(snow_alert.check_bsd())
+    # snow_alert = SnowAlertSystem(client)
+    # client.loop.create_task(snow_alert.check_bsd())
 
     client.run(args.token)
 

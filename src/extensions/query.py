@@ -1,5 +1,5 @@
 import wolframalpha
-from message_structs import *
+from src.message_structs import *
 
 with open("wa_app_id.txt") as waid:
     waClient = wolframalpha.Client(waid.read())
