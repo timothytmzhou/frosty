@@ -159,7 +159,7 @@ def run_code(msg_info, *args):
     > 60 second time limit, 1 mb memory limit.
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = "```{}```|`{}`".format("(?:py | python | gyp)(. *)")
+    code_pattern = "```{0}```|`{0}`".format("(?:py | python | gyp)(. *)")
     code = re.match(code_pattern, args[0].strip(), re.DOTALL).group(1)
     result = execute(code)
     if result["timeout"]:
