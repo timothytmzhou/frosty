@@ -1,88 +1,46 @@
 import re
-import yaml
-from enum import Enum
-
-
-class UserTypes(Enum):
-    OWNER = 2
-    ADMIN = 1
-    USER = 0
-    BANNED = -1
-
-
-class UserData:
-    with open("perms.yaml") as f:
-        levels = {UserTypes[level]: user
-                  for level, user in yaml.load(f.read(), Loader=yaml.FullLoader).items()}
-
-    @staticmethod
-    def get_level(uid):
-        for access_level in UserData.levels:
-            if uid in UserData.levels[access_level]:
-                return access_level.value
-
-        # If the user's level isn't already defined, add them to the users list
-        UserData.levels[UserTypes.USER].append(uid)
-        return 0
-
-
-class CallType(Enum):
-    DELETE = 0
-    SEND = 1
-    REPLACE = 2
+from io import StringIO
+from discord import File
 
 
 class Message_Info:
     def __init__(self, message):
         self.message = message
         self.content = self.message.content
+        self.channel = self.message.channel
+        self.guild = self.message.guild
         self.author = self.message.author.name
         self.discriminator = self.message.author.discriminator
-        self.user_level = UserData.get_level(
-            "{0}#{1}".format(self.author, self.discriminator)
-        )
+        self.tag = "{0}#{1}".format(self.author, self.discriminator)
 
 
 class Call:
-    def __init__(self, call_type, message, response=None,
-                 ignore_keywords=False):
-        self.call_type = call_type
-        self.response = response
-        self.message = message
-        self.ignore_keywords = ignore_keywords
+    def __init__(self, task, args):
+        self.task = task
+        self.args = args
 
     async def invoke(self):
-        # Invokes an action depending on call_type:
-        # CallType.DELETE -- deletes message.
-        # CallType.SEND -- sends response to the same channel as message.
-        # CallType.REPLACE -- performs both of the actions above.
-        if self.call_type == CallType.DELETE or self.call_type == CallType.REPLACE:
-            await self.delete()
-        if self.call_type == CallType.SEND or self.call_type == CallType.REPLACE:
-            if self.response is not None:
-                await self.send()
+        if self.task:
+            await self.task(self.args)
 
-    async def send(self):
-        if self.response is not None:
-            self.response = self.response.replace("@", "")
-            if not self.ignore_keywords:
-                keywords = {
-                    "!auth": self.message.author.name,
-                    "!channel": self.message.channel.name
-                }
-                for key in keywords:
-                    self.response = self.replace_keyords(key, keywords[key])
-            await self.message.channel.send(self.response[:2000])
+    async def send(self, channel, text):
+        if len(text > 2000):
+            await channel.send("message is longer than 2000 characters, writing to file")
+            await channel.send(file=File(StringIO(text), "output.txt"))
+        else:
+            await channel.send(text)
 
-    async def delete(self):
-        await self.message.delete()
+    async def delete(self, msg):
+        await msg.delete()
 
-    def replace_keyords(self, key, var):
-        return self.response.replace(key, var)
+    async def replace(self, msg, text):
+        channel = msg.channel
+        await self.delete(msg)
+        await self.send(text, channel)
 
 
 class Trigger:
-    def __init__(self, pattern, name=None, access_level=0, protected=True):
+    def __init__(self, pattern, name=None, protected=True):
         # Sets beginning and ending trigger phrases, .split()ed versions of
         #     them.
         self.pattern = pattern
@@ -92,8 +50,6 @@ class Trigger:
             self.name = self.pattern.split()[0][1:]
         else:
             self.name = name
-        self.access_level = access_level
-        self.level = UserTypes(self.access_level).name.lower()
         self.protected = protected
 
     def match(self, text):
