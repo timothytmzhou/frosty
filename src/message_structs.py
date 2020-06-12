@@ -24,20 +24,23 @@ class Call:
         if self.task:
             await self.task(*self.args)
 
-    async def send(self, channel, text):
+    @staticmethod
+    async def send(channel, text):
         if len(text > 2000):
             await channel.send("message is longer than 2000 characters, writing to file")
             await channel.send(file=File(StringIO(text), "output.txt"))
         else:
             await channel.send(text)
 
-    async def delete(self, msg):
+    @staticmethod
+    async def delete(msg):
         await msg.delete()
 
-    async def replace(self, msg, text):
+    @staticmethod
+    async def replace(msg, text):
         channel = msg.channel
-        await self.delete(msg)
-        await self.send(text, channel)
+        await Call.delete(msg)
+        await Call.send(text, channel)
 
 
 class Trigger:
