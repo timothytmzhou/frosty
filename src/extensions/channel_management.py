@@ -8,7 +8,7 @@ from discord import Permissions, PermissionOverwrite
 # Member : Role
 role_ids = {}
 role_permissions = Permissions.all()
-role_permissions.update({"administrator": False, "manage_roles": False, "manage_channels": False})
+role_permissions.update(administrator=False, manage_roles=False, manage_channels=False)
 
 
 def get_permission_overwrite(allowed):
