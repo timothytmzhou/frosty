@@ -24,7 +24,7 @@ async def process_message(message):
 
 @client.event
 async def on_message(message):
-    if not message.name.bot:
+    if not message.author.bot:
         try:
             await process_message(message)
         except Exception as e:
