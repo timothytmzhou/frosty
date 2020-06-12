@@ -22,7 +22,7 @@ class Call:
 
     async def invoke(self):
         if self.task:
-            await self.task(self.args)
+            await self.task(*self.args)
 
     async def send(self, channel, text):
         if len(text > 2000):
