@@ -1,15 +1,17 @@
 import re
 from src.message_structs import Call, Trigger
 from src.extensions.sandbox import execute
-from src.util import format_table
+from src.extensions import channel_management
 from src.extensions import query
-from textwrap import dedent, indent
+from src.util import format_table
+from textwrap import dedent
 
 
 def frosty_help(msg_info, *args):
     """
-    > To get a full list of available commands, use the /list command.
     > To reference the Frosty user manual, call /help with no args.
+    > To get a full list of available commands, use the /list command.
+    > To see details of a specific command, call /help command_name.
     """
     if len(args) == 0:
         with open("about.txt", "r") as f:
@@ -40,6 +42,7 @@ def snowman(msg_info, *args):
     """
     > Giver of snowmen since 2018.
     > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen.
+    > give me quantity snowman
     """
     snowmen_request = args[0]
     if snowmen_request == "a":
@@ -55,6 +58,7 @@ def snowman(msg_info, *args):
 def frosty_say(msg_info, *args):
     """
     > Echo command, deletes message invoking /say.
+    > /say message
     """
     return Call(task=Call.replace, args=(msg_info, args[0]))
 
@@ -63,6 +67,8 @@ def run_code(msg_info, *args):
     """
     > Runs arbitrary python code in docker sandbox.
     > 60 second time limit, 1 mb memory limit.
+    > Supports code formatting.
+    > /run code
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
     code_pattern = "```{0}```|`{0}`".format("(?:py | python | gyp)?(.*)")
@@ -81,6 +87,7 @@ def run_code(msg_info, *args):
 def command_list(msg_info, *args):
     """
     > Generates a list of all available commands.
+    > /list
     """
     headers = ("pattern", "command", "description")
     data = tuple(
@@ -99,7 +106,13 @@ commands = {
     Trigger(r"^/help (.*)|^/help"): frosty_help,
     Trigger(r"^/run[\s\n](.*)"): run_code,
     Trigger(r"^give me (.*) (snowmen|snowman)", name="/snowman"): snowman,
-    Trigger(r"^/say (.*)"): frosty_say,
+    Trigger(r"^/say (.+)"): frosty_say,
     Trigger(r"^/list"): command_list,
-    Trigger(r"^/ask (.*)"): query.ask
+    Trigger(r"^/ask (.+)"): query.ask,
+    Trigger(r"^/rename (.+)"): channel_management.rename_channel,
+    Trigger(r"^/id (.*)"): channel_management.set_role_id,
+    Trigger(r"^/make (\S+)(?: (.+))?"): channel_management.make_channel,
+    Trigger(r"^/add (.+)"): channel_management.add_members,
+    Trigger(r"^/kick (.+)"): channel_management.remove_members
+
 }

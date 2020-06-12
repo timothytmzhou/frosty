@@ -4,19 +4,14 @@ Welcome to the Frosty user manual!
 To get a full list of available commands, use the < !list > command. 
 To read the doc string of a command, call < !help [command] >.
 The source to Frosty can be found pinned in #frosty. 
-# Commands
-Most commands are taken by Frosty in the form < !command_name *args >. Each user has an assigned access level: ``````asciidoc
-banned :: restricted from use of virtually all commands.
-user   :: standard access level, can perform commands that do not modify Frosty.
-admin  :: is able to ban other users, give them admin status, and use otherwise restricted state-changing commands.
-owner  :: ~~BDFL~~ stackdynamic.``````md
-
-An example of a command is the < !ban > command, which unsurprisingly bans users, and is restricted to < admin+ > status. A call would look like this:``````CSS
-
-> !ban [user]``````md
-
+# Channel Management
+Users each have a role that acts as an id assigned to them. You can change the name of your role id with the /id command. Some examples of commands:
+``````asciidoc
+/add *users                 :: adds users (space separated role ids) to channel
+/remove *users              :: removes users
+/make channel_name (*users) :: makes new channel (users argument is optional)``````md
 # Snowmen
 If you need a snowman, the command syntax is a bit different. Use < give me a snowman > if you just want one snowman, or < give me [expression] snowmen > to have Frosty respond appropriately. For example, the following would give you 8 snowmen:``````CSS
 
 > give me 2**3 snowmen``````md
-Expression parsing is done via the < eval() > function. However, don't even think about injecting malicious code! Only parenthesis, numbers and arithmetic operators are allowed.```
+Expression parsing is done via a secure docker sandbox.```

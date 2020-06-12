@@ -1,6 +1,7 @@
 # ihscy's over-engineered Discord bot
 import discord
-from src.commands import *
+from src.commands import commands
+from src.message_structs import *
 
 client = discord.Client()
 
@@ -9,7 +10,7 @@ async def process_message(message):
     msg_info = Message_Info(message)
     # Iterates through the commands dict of the form {Trigger: func -> Call}:
     for trigger, func in commands.copy().items():
-        if trigger.match(msg_info.content) and msg_info.user_level >= trigger.access_level:
+        if trigger.match(msg_info.content):
             async with message.channel.typing():
                 args = trigger.slice(msg_info.content)
                 # If so, passes the slice into the corresponding function,
@@ -23,7 +24,7 @@ async def process_message(message):
 
 @client.event
 async def on_message(message):
-    if not message.author.bot:
+    if not message.name.bot:
         try:
             await process_message(message)
         except Exception as e:
@@ -36,9 +37,6 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("token", help="discord API token")
     args = parser.parse_args()
-
-    # snow_alert = SnowAlertSystem(client)
-    # client.loop.create_task(snow_alert.check_bsd())
 
     client.run(args.token)
 

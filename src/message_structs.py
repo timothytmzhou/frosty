@@ -6,12 +6,13 @@ from discord import File
 class Message_Info:
     def __init__(self, message):
         self.message = message
-        self.content = self.message.content
-        self.channel = self.message.channel
-        self.guild = self.message.guild
-        self.author = self.message.author.name
-        self.discriminator = self.message.author.discriminator
-        self.tag = "{0}#{1}".format(self.author, self.discriminator)
+        self.content = message.content
+        self.channel = message.channel
+        self.guild = message.guild
+        self.author = message.author
+        self.name = message.name
+        self.discriminator = message.name.discriminator
+        self.tag = "{0}#{1}".format(self.name, self.discriminator)
 
 
 class Call:
