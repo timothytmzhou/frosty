@@ -10,8 +10,8 @@ class Message_Info:
         self.channel = message.channel
         self.guild = message.guild
         self.author = message.author
-        self.name = message.name
-        self.discriminator = message.name.discriminator
+        self.name = self.author.name
+        self.discriminator = self.author.discriminator
         self.tag = "{0}#{1}".format(self.name, self.discriminator)
 
 
