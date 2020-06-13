@@ -26,7 +26,7 @@ class Call:
 
     @staticmethod
     async def send(channel, text):
-        if len(text > 2000):
+        if len(text) > 2000:
             await channel.send("message is longer than 2000 characters, writing to file")
             await channel.send(file=File(StringIO(text), "output.txt"))
         else:

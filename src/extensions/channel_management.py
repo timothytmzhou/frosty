@@ -3,7 +3,7 @@ Manages channels a la google hangouts through a role-based system.
 Members can kick/add each other with commands.
 """
 from src.message_structs import Call
-from discord import Permissions, PermissionOverwrite
+from discord import Permissions, PermissionOverwrite, Member, Role
 
 # Member : Role
 role_ids = {}
@@ -31,10 +31,14 @@ def get_members_from_str(str_members):
     return set(member for member in role_ids if role_ids[member].name in str_members)
 
 
-async def _set_role_id(guild, member, role):
-    role = await guild.create_role(name=role, permissions=role_permissions)
-    await member.add_roles(role)
-    role_ids[member] = role
+async def _set_role_id(msg_info, target, name):
+    if isinstance(target, Member):
+        role = await msg_info.guild.create_role(name=name, permissions=role_permissions)
+        await target.add_roles(role)
+        role_ids[target] = role
+    elif isinstance(target, Role):
+        await target.edit(name=name)
+    await msg_info.channel.send("set role id to {}".format(name))
 
 
 def set_role_id(msg_info, name):
@@ -42,14 +46,10 @@ def set_role_id(msg_info, name):
     > Changes the name of the unique role assigned to the user.
      """
     if msg_info.author in role_ids:
-        role = role_ids[msg_info.author]
-        role.edit(name=name)
-        return Call(
-            task=Call.send,
-            args=(msg_info.channel, "set {0}'s role id to {1}".format(msg_info.name, name))
-        )
+        target = role_ids[msg_info.author]
     else:
-        return Call(task=_set_role_id, args=(msg_info.guild, msg_info.author, name))
+        target = msg_info.author
+    return Call(task=_set_role_id, args=(msg_info, target, name))
 
 
 async def _make_channel(msg_info, name, members=None):

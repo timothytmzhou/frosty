@@ -1,6 +1,6 @@
 import re
 from src.message_structs import Call, Trigger
-from src.extensions.sandbox import execute
+from src.extensions import sandbox
 from src.extensions import channel_management
 from src.extensions import query
 from src.util import format_table
@@ -63,27 +63,6 @@ def frosty_say(msg_info, *args):
     return Call(task=Call.replace, args=(msg_info, args[0]))
 
 
-def run_code(msg_info, *args):
-    """
-    > Runs arbitrary python code in docker sandbox.
-    > 60 second time limit, 1 mb memory limit.
-    > Supports code formatting.
-    > /run code
-    """
-    # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = "```{0}```|`{0}`".format("(?:py | python | gyp)?(.*)")
-    code = re.match(code_pattern, args[0].strip(), re.DOTALL).group(1)
-    result = execute(code)
-    if result["timeout"]:
-        msg = "TimeoutError: computation timed out\n"
-    elif result["oom_killed"]:
-        msg = "MemoryError: computation exceeded memory limit\n"
-    else:
-        msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
-    msg = "```py\n{0}Execution time: {1}s```".format(msg, result["duration"])
-    return Call(task=Call.send, args=(msg_info.channel, "```py\n{}```".format(msg)))
-
-
 def command_list(msg_info, *args):
     """
     > Generates a list of all available commands.
@@ -104,7 +83,7 @@ def command_list(msg_info, *args):
 
 commands = {
     Trigger(r"^/help (.*)|^/help"): frosty_help,
-    Trigger(r"^/run[\s\n](.*)"): run_code,
+    Trigger(r"^/run[\s\n](.*)"): sandbox.run_code,
     Trigger(r"^give me (.*) (snowmen|snowman)", name="/snowman"): snowman,
     Trigger(r"^/say (.+)"): frosty_say,
     Trigger(r"^/list"): command_list,
