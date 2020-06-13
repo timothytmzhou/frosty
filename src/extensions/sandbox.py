@@ -2,12 +2,12 @@ import epicbox
 import re
 from src.message_structs import Call
 
-
 epicbox.configure(
     profiles=[
         epicbox.Profile('python', 'python:3.8-alpine')
     ]
 )
+
 
 def execute(code):
     files = [{'name': 'main.py', 'content': code.strip().encode()}]
@@ -31,7 +31,6 @@ def run_code(msg_info, *args):
     if result["timeout"]:
         msg = "TimeoutError: computation timed out\n"
     elif result["oom_killed"]:
-        msg = "MemoryError: computation exceeded memory limit\n"
         msg = "MemoryError: computation exceeded memory limit\n"
     else:
         msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")

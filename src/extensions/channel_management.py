@@ -2,42 +2,68 @@
 Manages channels a la google hangouts through a role-based system.
 Members can kick/add each other with commands.
 """
+import aiofiles
+import json
 from src.message_structs import Call
 from discord import Permissions, PermissionOverwrite, Member, Role
+from discord.utils import get
 
-# Member : Role
-role_ids = {}
-role_permissions = Permissions.all()
-role_permissions.update(administrator=False, manage_roles=False, manage_channels=False)
+CHANNEL_DATA = "channel_data.json"
+
+with open(CHANNEL_DATA) as f:
+    role_ids = json.load(f)
+
+ROLE_PERMISSIONS = Permissions.all()
+ROLE_PERMISSIONS.update(administrator=False, manage_roles=False, manage_channels=False)
+
+ALLOWED = PermissionOverwrite(
+    read_messages=True,
+    send_messages=True,
+    read_message_history=True,
+    mention_everyone=True,
+    external_emojis=True,
+    embed_links=True,
+    attach_files=True
+)
+
+BANNED = PermissionOverwrite(
+    read_messages=False,
+    send_messages=False,
+    read_message_history=False,
+    mention_everyone=False,
+    external_emojis=False,
+    embed_links=False,
+    attach_files=False
+)
 
 
-def get_permission_overwrite(allowed):
-    return PermissionOverwrite(
-        read_messages=allowed,
-        send_messages=allowed,
-        read_message_history=allowed,
-        mention_everyone=allowed,
-        external_emojis=allowed,
-        embed_links=allowed,
-        attach_files=allowed
-    )
+async def serialize_role_ids():
+    serialized = json.dumps(role_ids)
+    async with aiofiles.open(CHANNEL_DATA, "w") as f:
+        await f.write(serialized)
 
 
-allowed = get_permission_overwrite(True)
-banned = get_permission_overwrite(False)
+def get_role_from_member_id(guild, member_id):
+    return get(guild.roles, id=role_ids[member_id])
 
 
-def get_members_from_str(str_members):
-    return set(member for member in role_ids if role_ids[member].name in str_members)
+def get_members_from_str(guild, str_members):
+    members = set()
+    for member_id in role_ids:
+        member = get(guild.members, id=member_id)
+        if get_role_from_member_id(guild, member_id).name in str_members:
+            members.add(member)
+    return members
 
 
 async def _set_role_id(msg_info, target, name):
     if isinstance(target, Member):
-        role = await msg_info.guild.create_role(name=name, permissions=role_permissions)
+        role = await msg_info.guild.create_role(name=name, permissions=ROLE_PERMISSIONS)
         await target.add_roles(role)
-        role_ids[target] = role
+        role_ids[target.id] = role.id
     elif isinstance(target, Role):
         await target.edit(name=name)
+    await serialize_role_ids()
     await msg_info.channel.send("set role id to {}".format(name))
 
 
@@ -45,18 +71,19 @@ def set_role_id(msg_info, name):
     """
     > Changes the name of the unique role assigned to the user.
      """
-    if msg_info.author in role_ids:
-        target = role_ids[msg_info.author]
+    author_id = msg_info.author.id
+    if author_id in role_ids:
+        target = get_role_from_member_id(msg_info.guild, author_id)
     else:
         target = msg_info.author
     return Call(task=_set_role_id, args=(msg_info, target, name))
 
 
 async def _make_channel(msg_info, name, members=None):
-    overwrites = {msg_info.author: allowed}
+    overwrites = {msg_info.author: ALLOWED}
     if members is not None:
         overwrites.update({
-            role_ids[member]: allowed for member in members
+            get_role_from_member_id(msg_info.guild, member.id): ALLOWED for member in members
         })
     channel = await msg_info.guild.create_text_channel(name, overwrites=overwrites)
     await channel.send("created channel {0}".format(name))
@@ -70,14 +97,14 @@ def make_channel(msg_info, name, members=None):
      """
     args = (msg_info, name)
     if members is not None:
-        members = get_members_from_str(members.split())
+        members = get_members_from_str(msg_info.guild, members.split())
         args += members
     return Call(task=_make_channel, args=args)
 
 
 async def _add_members(channel, *members):
     for member in members:
-        await channel.set_permissions(member, allowed)
+        await channel.set_permissions(member, ALLOWED)
     await channel.send("added {} to channel".format(", ".join(map(lambda m: m.name, members))))
 
 
@@ -86,14 +113,14 @@ def add_members(msg_info, members):
     > Adds members to channel
     > /add *users
     """
-    members = get_members_from_str(members.split())
+    members = get_members_from_str(msg_info.guild, members.split())
     return Call(task=_add_members, args=(msg_info.channel, *members))
 
 
 async def _remove_members(channel, *members):
     members = set(members)
     for member in members:
-        await channel.set_permissions(member, banned)
+        await channel.set_permissions(member, BANNED)
     await channel.send("removed {} from channel".format(", ".join(map(lambda m: m.name, members))))
 
 
@@ -102,7 +129,7 @@ def remove_members(msg_info, members):
     > Removes members from channel
     > /remove *users
     """
-    members = get_members_from_str(members.split())
+    members = get_members_from_str(msg_info.guild, members.split())
     return Call(task=_remove_members, args=(msg_info.channel, *members))
 
 
