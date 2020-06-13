@@ -4,14 +4,18 @@ Members can kick/add each other with commands.
 """
 import aiofiles
 import json
+from os import path
 from src.message_structs import Call
 from discord import Permissions, PermissionOverwrite, Member, Role
 from discord.utils import get
 
 CHANNEL_DATA = "channel_data.json"
 
-with open(CHANNEL_DATA) as f:
-    role_ids = json.load(f)
+if path.exists(CHANNEL_DATA):
+    with open(CHANNEL_DATA) as f:
+        role_ids = json.load(f)
+else:
+    role_ids = {}
 
 ROLE_PERMISSIONS = Permissions.all()
 ROLE_PERMISSIONS.update(administrator=False, manage_roles=False, manage_channels=False)
