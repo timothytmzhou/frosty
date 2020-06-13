@@ -108,7 +108,7 @@ def make_channel(msg_info, name, members=None):
 
 async def _add_members(channel, *members):
     for member in members:
-        await channel.set_permissions(member, ALLOWED)
+        await channel.set_permissions(member, overwrite=ALLOWED)
     await channel.send("added {} to channel".format(", ".join(map(lambda m: m.name, members))))
 
 
@@ -124,7 +124,7 @@ def add_members(msg_info, members):
 async def _remove_members(channel, *members):
     members = set(members)
     for member in members:
-        await channel.set_permissions(member, BANNED)
+        await channel.set_permissions(member, overwrite=BANNED)
     await channel.send("removed {} from channel".format(", ".join(map(lambda m: m.name, members))))
 
 
