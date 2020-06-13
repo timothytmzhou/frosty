@@ -3,6 +3,12 @@ import re
 from src.message_structs import Call
 
 
+epicbox.configure(
+    profiles=[
+        epicbox.Profile('python', 'python:3.8-alpine')
+    ]
+)
+
 def execute(code):
     files = [{'name': 'main.py', 'content': code.strip().encode()}]
     limits = {'cputime': 60, 'memory': 64}
@@ -30,4 +36,4 @@ def run_code(msg_info, *args):
     else:
         msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
     msg = "```py\n{0}Execution time: {1}s```".format(msg, result["duration"])
-    return Call(task=Call.send, args=(msg_info.channel, "```py\n{}```".format(msg)))
+    return Call(task=Call.send, args=(msg_info.channel, msg))
