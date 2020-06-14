@@ -1,4 +1,3 @@
-import re
 from src.message_structs import Call, Trigger
 from src.extensions import sandbox
 from src.extensions import channel_management
@@ -83,15 +82,13 @@ def command_list(msg_info, *args):
 
 commands = {
     Trigger(r"^/help (.+)|^/help"): frosty_help,
-    Trigger(r"^/run[\s\n](.+)", name="/run"): sandbox.run_code,
+    Trigger(r"^/run\s(.+)", name="/run"): sandbox.run_code,
     Trigger(r"^give me (.+) (snowmen|snowman)", name="/snowman"): snowman,
     Trigger(r"^/say (.+)"): frosty_say,
     Trigger(r"^/list"): command_list,
     Trigger(r"^/ask (.+)"): query.ask,
     Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/id (.+)"): channel_management.set_role_id,
-    Trigger(r"^/make (\S+)(?: (.+))?"): channel_management.make_channel,
-    Trigger(r"^/add (.+)"): channel_management.add_members,
-    Trigger(r"^/kick (.+)"): channel_management.remove_members
-
+    Trigger(r"^/make ((?:<@!\d+>[ ]?)+)"): channel_management.make_channel,
+    Trigger(r"^/add ((?:<@!\d+>[ ]?)+)"): channel_management.add_members,
+    Trigger(r"^/kick ((?:<@!\d+>[ ]?)+)"): channel_management.remove_members
 }

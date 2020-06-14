@@ -1,17 +1,6 @@
 ```md
-# Quickstart
 Welcome to the Frosty user manual! 
 To get a full list of available commands, use the < !list > command. 
 To read the doc string of a command, call < !help [command] >.
-The source to Frosty can be found pinned in #frosty. 
-# Channel Management
-Users each have a role that acts as an id assigned to them. You can change the name of your role id with the /id command. Some examples of commands:
-``````asciidoc
-/add *users                 :: adds users (space separated role ids) to channel
-/remove *users              :: removes users
-/make channel_name (*users) :: makes new channel (users argument is optional)``````md
-# Snowmen
-If you need a snowman, the command syntax is a bit different. Use < give me a snowman > if you just want one snowman, or < give me [expression] snowmen > to have Frosty respond appropriately. For example, the following would give you 8 snowmen:``````CSS
-
-> give me 2**3 snowmen``````md
-Expression parsing is done via a secure docker sandbox.```
+The source to Frosty can be found pinned in #general.
+```

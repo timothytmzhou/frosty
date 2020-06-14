@@ -1,4 +1,3 @@
-aiofiles
 discord.py==1.*
 epicbox
 wolframalpha
