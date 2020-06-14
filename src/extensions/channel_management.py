@@ -36,7 +36,7 @@ def get_members(guild, members):
         yield get(guild.members, id=int(uid))
     tags = re.findall("(\w+)#(\d{4})", members)
     for username, discriminator in tags:
-        yield get(guild.members, name=username, discriminator=int(discriminator))
+        yield get(guild.members, name=username, discriminator=discriminator)
 
 
 async def _make_channel(msg_info, name, members=None):
