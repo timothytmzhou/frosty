@@ -31,8 +31,12 @@ BANNED = PermissionOverwrite(
 
 
 def get_members(guild, members):
-    ids = map(int, re.findall("<@(\d+)>", members))
-    return (get(guild.members, id=id) for id in ids)
+    ids = re.findall("<@(\d+)>", members)
+    for uid in ids:
+        yield get(guild.members, id=int(uid))
+    tags = re.findall("(\w+)#(\d{4})", members)
+    for username, discriminator in tags:
+        yield get(guild.members, name=username, discriminator=int(discriminator))
 
 
 async def _make_channel(msg_info, name, members=None):
