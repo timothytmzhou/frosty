@@ -64,7 +64,7 @@ def make_channel(msg_info, name, members=None):
     return Call(task=_make_channel, args=args)
 
 
-async def _add_members(channel, *members):
+async def _add_members(channel, members):
     members = set(members)
     added = []
     for member in members:
@@ -79,10 +79,10 @@ def add_members(msg_info, members):
     > /add *users
     """
     members = get_members(msg_info.guild, members)
-    return Call(task=_add_members, args=(msg_info.channel, *members))
+    return Call(task=_add_members, args=(msg_info.channel, members))
 
 
-async def _remove_members(channel, *members):
+async def _remove_members(channel, members):
     members = set(members)
     added = []
     for member in members:
@@ -97,7 +97,7 @@ def remove_members(msg_info, members):
     > /remove *users
     """
     members = get_members(msg_info.guild, members)
-    return Call(task=_remove_members, args=(msg_info.channel, *members))
+    return Call(task=_remove_members, args=(msg_info.channel, members))
 
 
 async def _rename_channel(channel, name):
