@@ -88,7 +88,7 @@ commands = {
     Trigger(r"^/list"): command_list,
     Trigger(r"^/ask (.+)"): query.ask,
     Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/make (\S+)((?:[ ]?<@!\d+>)*)"): channel_management.make_channel,
-    Trigger(r"^/add ((?:<@!\d+>[ ]?)+)"): channel_management.add_members,
-    Trigger(r"^/kick ((?:<@!\d+>[ ]?)+)"): channel_management.remove_members
+    Trigger(r"^/make (\S+)((?:[ ]?<@\d+>)*)"): channel_management.make_channel,
+    Trigger(r"^/add ((?:<@\d+>[ ]?)+)"): channel_management.add_members,
+    Trigger(r"^/kick ((?:<@\d+>[ ]?)+)"): channel_management.remove_members
 }
