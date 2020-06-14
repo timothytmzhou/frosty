@@ -31,7 +31,7 @@ BANNED = PermissionOverwrite(
 
 
 def get_members(guild, members):
-    ids = map(int, re.findall("<@!(\d+)>", members))
+    ids = map(int, re.findall("<@(\d+)>", members))
     return (get(guild.members, id=id) for id in ids)
 
 
@@ -52,7 +52,7 @@ def make_channel(msg_info, name, members=None):
     > Makes a new channel with supplied users
     > author of message is added automatically
     > /make channel_name *users
-     """
+    """
     args = [msg_info, name]
     if members is not None:
         members = get_members(msg_info.guild, members)
