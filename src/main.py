@@ -1,13 +1,14 @@
-# ihscy's over-engineered Discord bot
 import discord
+from src.config import PROFILE
 from src.commands import commands
 from src.message_structs import *
 
 client = discord.Client()
+guild = client.get_guild(PROFILE["guild_id"])
 
 
 async def process_message(message):
-    msg_info = Message_Info(message)
+    msg_info = Message_Info(message, guild=guild)
     # Iterates through the commands dict of the form {Trigger: func -> Call}:
     for trigger, func in commands.copy().items():
         if trigger.match(msg_info.content):
@@ -32,13 +33,7 @@ async def on_message(message):
 
 
 def main():
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    parser.add_argument("token", help="discord API token")
-    args = parser.parse_args()
-
-    client.run(args.token)
+    client.run(PROFILE["bot_token"])
 
 
 if __name__ == "__main__":

@@ -4,11 +4,11 @@ from discord import File
 
 
 class Message_Info:
-    def __init__(self, message):
+    def __init__(self, message, guild):
+        self.guild = guild
         self.message = message
         self.content = message.content
         self.channel = message.channel
-        self.guild = message.guild
         self.author = message.author
         self.name = self.author.name
         self.discriminator = self.author.discriminator

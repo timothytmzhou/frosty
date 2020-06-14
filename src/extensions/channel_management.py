@@ -23,6 +23,7 @@ ROLE_PERMISSIONS.update(administrator=False, manage_roles=False, manage_channels
 ALLOWED = PermissionOverwrite(
     read_messages=True,
     send_messages=True,
+    manage_messages=False,
     read_message_history=True,
     mention_everyone=True,
     external_emojis=True,
@@ -33,6 +34,7 @@ ALLOWED = PermissionOverwrite(
 BANNED = PermissionOverwrite(
     read_messages=False,
     send_messages=False,
+    manage_messages=False,
     read_message_history=False,
     mention_everyone=False,
     external_emojis=False,

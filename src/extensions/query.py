@@ -1,8 +1,9 @@
 import wolframalpha
 from src.message_structs import *
+from src.config import PROFILE
 
-with open("wa_app_id.txt") as waid:
-    waClient = wolframalpha.Client(waid.read())
+waClient = wolframalpha.Client(PROFILE["wa_app_id"])
+
 
 def ask(msg_info, *args):
     """
@@ -15,4 +16,4 @@ def ask(msg_info, *args):
         message = "".join("```md\n{0}```".format(r.text) for r in res.results)
     except AttributeError:
         message = "```Wolfram Alpha doesn't understand your query```"
-    return Call(CallType.SEND, msg_info.message, message)
+    return Call(task=Call.send, args=(msg_info.channel, message))
