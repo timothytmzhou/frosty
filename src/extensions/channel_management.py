@@ -90,7 +90,8 @@ async def _make_channel(msg_info, name, members=None):
             get_role_from_member_id(msg_info.guild, member.id): ALLOWED for member in members
         })
     category = msg_info.channel.category
-    channel = await msg_info.guild.create_text_channel(name, category=category, overwrites=overwrites)
+    channel = await msg_info.guild.create_text_channel(name, category=category,
+                                                       overwrites=overwrites)
     await channel.send("created channel {0}".format(name))
 
 

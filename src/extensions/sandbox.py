@@ -24,7 +24,7 @@ def run_code(msg_info, *args):
     > /run code
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = r"```(?:py | python | gyp)?(.+)```|`(.+)`|(.+)"
+    code_pattern = r"```(?:py[\s\n]|python[\s\n]|gyp[\s\n])?(.+)```|`(.+)`|(.+)"
     groups = re.match(code_pattern, args[0].strip(), re.DOTALL).groups()
     code = next(group for group in groups if group is not None)
     result = execute(code)
