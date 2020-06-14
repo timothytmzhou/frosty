@@ -57,7 +57,7 @@ def frosty_say(msg_info, text):
     > Echo command, deletes message invoking /say
     > /say message
     """
-    return Call(task=Call.replace, args=(msg_info, text))
+    return Call(task=Call.replace, args=(msg_info.message, text))
 
 
 def command_list(msg_info):
