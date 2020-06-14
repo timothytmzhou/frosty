@@ -13,7 +13,7 @@ CHANNEL_DATA = "channel_data.json"
 
 if path.exists(CHANNEL_DATA):
     with open(CHANNEL_DATA) as f:
-        role_ids = json.load(f)
+        role_ids = {int(key): value for key, value in json.load(f).items()}
 else:
     role_ids = {}
 
@@ -89,7 +89,8 @@ async def _make_channel(msg_info, name, members=None):
         overwrites.update({
             get_role_from_member_id(msg_info.guild, member.id): ALLOWED for member in members
         })
-    channel = await msg_info.guild.create_text_channel(name, overwrites=overwrites)
+    category = msg_info.channel.category
+    channel = await msg_info.guild.create_text_channel(name, category=category, overwrites=overwrites)
     await channel.send("created channel {0}".format(name))
 
 

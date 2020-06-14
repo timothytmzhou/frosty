@@ -18,7 +18,7 @@ async def process_message(message):
                 #     to the client loop.
                 task = await client.loop.run_in_executor(None, func, msg_info, *args)
                 if isinstance(task, Call):
-                    client.loop.create_task(task.invoke())
+                    await task.invoke()
             break
 
 
