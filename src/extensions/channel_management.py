@@ -4,11 +4,8 @@ Members can kick/add each other with commands.
 """
 import re
 from src.message_structs import Call
-from discord import Permissions, PermissionOverwrite
+from discord import PermissionOverwrite
 from discord.utils import get
-
-ROLE_PERMISSIONS = Permissions.all()
-ROLE_PERMISSIONS.update(administrator=False, manage_roles=False, manage_channels=False)
 
 ALLOWED = PermissionOverwrite(
     read_messages=True,
@@ -53,13 +50,13 @@ async def _make_channel(msg_info, name, members=None):
 def make_channel(msg_info, name, members=None):
     """
     > Makes a new channel with supplied users
-        > author of message is added automatically
+    > author of message is added automatically
     > /make channel_name *users
      """
-    args = (msg_info, name)
+    args = [msg_info, name]
     if members is not None:
         members = get_members(msg_info.guild, members)
-        args += members
+        args.append(members)
     return Call(task=_make_channel, args=args)
 
 
