@@ -40,7 +40,7 @@ class Call:
     async def replace(msg, text):
         channel = msg.channel
         await Call.delete(msg)
-        await Call.send(text, channel)
+        await Call.send(channel, text)
 
 
 class Trigger:
