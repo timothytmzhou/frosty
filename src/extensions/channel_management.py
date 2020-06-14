@@ -113,13 +113,13 @@ def rename_channel(msg_info, name):
 
 
 async def _pin_message(msg):
-    """
-    > Pins a message via id
-    > /pin msg_id
-    """
     await msg.pin()
 
 
 def pin_message(msg_info, msg_id):
+    """
+    > Pins a message via id
+    > /pin msg_id
+    """
     msg = msg_info.channel.fetch_message(int(msg_id))
     return Call(task=_pin_message, args=(msg))
