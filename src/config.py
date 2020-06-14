@@ -6,6 +6,8 @@ def gen_config():
     config = {}
     for param in PARAMS:
         value = input("{}: ".format(param)).strip()
+        if value.isdigit():
+            value = int(value)
         config[param] = value
     with open("config.json", "w") as f:
         f.write(json.dumps(config))
