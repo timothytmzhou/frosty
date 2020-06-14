@@ -18,9 +18,9 @@ def execute(code):
 
 def run_code(msg_info, *args):
     """
-    > Runs arbitrary python code in docker sandbox.
-    > 60 second time limit, 1 mb memory limit.
-    > Supports code formatting.
+    > Runs arbitrary python code in docker sandbox
+    > 60 second time limit, 1 mb memory limit
+    > Supports code formatting
     > /run code
     """
     # Removes leading/trailing pairs of ` to allow for code formatting

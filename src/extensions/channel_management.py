@@ -52,8 +52,8 @@ async def _make_channel(msg_info, name, members=None):
 
 def make_channel(msg_info, name, members=None):
     """
-    > Makes a new channel with supplied users.
-        > author of message is added automatically.
+    > Makes a new channel with supplied users
+        > author of message is added automatically
     > /make channel_name *users
      """
     args = (msg_info, name)

@@ -8,7 +8,7 @@ waClient = wolframalpha.Client(PROFILE["wa_app_id"])
 def ask(msg_info, *args):
     """
     > Queries Wolfram Alpha.
-    > Shows all text from pods with the results tag.
+    > Shows all text from pods with the results tag
     """
     query = args[0]
     try:
