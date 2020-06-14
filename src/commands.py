@@ -87,9 +87,9 @@ commands = {
     Trigger(r"^/list"): command_list,
     Trigger(r"^/ask (.+)"): query.ask,
     Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/make (\S+)((?:[ ]?<@\d+>|\w+#\d{4})*)"): channel_management.make_channel,
-    Trigger(r"^/add ((?:<@\d+>[ ]?)+|\w+#\d{4})"): channel_management.add_members,
-    Trigger(r"^/kick ((?:<@\d+>[ ]?)+|\w+#\d{4})"): channel_management.remove_members,
+    Trigger(r"^/make (\S+)((?:[ ]?<@[!]?\d+>|\w+#\d{4})*)"): channel_management.make_channel,
+    Trigger(r"^/add ((?:<@[!]?\d+>[ ]?)+|\w+#\d{4})"): channel_management.add_members,
+    Trigger(r"^/kick ((?:<@[!]?\d+>[ ]?)+|\w+#\d{4})"): channel_management.remove_members,
     Trigger(r"^/pin (\d+)") : channel_management.pin_message,
     Trigger(r"^give me (.+) (snowmen|snowman)", name="/snowman"): snowman
 }
