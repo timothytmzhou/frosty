@@ -5,7 +5,7 @@ from os import path
 def gen_config():
     config = {}
     for param in PARAMS:
-        value = input("{}: ").strip()
+        value = input("{}: ".format(param)).strip()
         config[param] = value
     with open("config.json", "w") as f:
         f.write(json.dumps(config))
