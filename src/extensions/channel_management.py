@@ -84,7 +84,7 @@ def set_role_id(msg_info, name):
 
 
 async def _make_channel(msg_info, name, members=None):
-    overwrites = {msg_info.author: ALLOWED}
+    overwrites = {msg_info.author: ALLOWED, msg_info.guild.roles[0]: BANNED}
     if members is not None:
         overwrites.update({
             get_role_from_member_id(msg_info.guild, member.id): ALLOWED for member in members
