@@ -39,7 +39,7 @@ def _get_members(guild, members):
     for username, discriminator in tags:
         yield get(guild.members, name=username, discriminator=discriminator)
     for role_id in roles:
-        role = get(guild.roles, id=role_id)
+        role = get(guild.roles, id=int(role_id))
         yield from role.members
 
 

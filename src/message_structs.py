@@ -47,7 +47,7 @@ class Trigger:
     def __init__(self, pattern, name=None, protected=True):
         self.pattern = pattern
         # replace \u with discriminator pattern
-        self.unsequenced_pattern = pattern.replace(r"\u", r"((?:<@[!\&]?\d+>|\w+#\d{4}$|\s)*)")
+        self.unsequenced_pattern = pattern.replace(r"\u", r"((?:<@[!&]?\d+>|\w+#\d{4}$|\s)*)")
         if name is None:
             # assume pattern in the form ^/name args if name is not specified
             assert re.match(r"\^\/\w+( .*)?", self.pattern)
