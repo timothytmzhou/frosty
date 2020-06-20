@@ -33,7 +33,7 @@ BANNED = PermissionOverwrite(
 def _get_members(guild, members):
     ids = re.findall("<@[!]?(\d+)>", members)
     tags = re.findall("(\w+)#(\d{4})", members)
-    roles = re.findall("<@&(\d+)>", members)
+    roles = re.findall("<@\&(\d+)>", members)
     for uid in ids:
         yield get(guild.members, id=int(uid))
     for username, discriminator in tags:
