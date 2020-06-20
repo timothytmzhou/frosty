@@ -42,7 +42,7 @@ def snowman(msg_info, snowmen_request):
     > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
     > give me quantity snowman
     """
-    if snowmen_request == "a":
+    if snowmen_request is None:
         return Call(task=Call.send, args=(msg_info.channel, "☃"))
     else:
         result = sandbox.execute("print(({}) * '☃')".format(snowmen_request))
@@ -90,5 +90,5 @@ commands = {
     Trigger(r"^/add \u"): channel_management.add_members,
     Trigger(r"^/kick \u"): channel_management.remove_members,
     Trigger(r"^/pin (\d+)"): channel_management.pin_message,
-    Trigger(r"^give me (.+) (snowmen|snowman)", name="/snowman"): snowman
+    Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman
 }
