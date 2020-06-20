@@ -30,13 +30,21 @@ BANNED = PermissionOverwrite(
 )
 
 
-def get_members(guild, members):
+def _get_members(guild, members):
     ids = re.findall("<@[!]?(\d+)>", members)
+    tags = re.findall("(\w+)#(\d{4})", members)
+    roles = re.findall("<@&(\d+)>", members)
     for uid in ids:
         yield get(guild.members, id=int(uid))
-    tags = re.findall("(\w+)#(\d{4})", members)
     for username, discriminator in tags:
         yield get(guild.members, name=username, discriminator=discriminator)
+    for role_id in roles:
+        role = get(guild.roles, id=role_id)
+        yield from role.members
+
+
+def get_members(guild, members):
+    return set(_get_members(guild, members))
 
 
 async def _make_channel(msg_info, name, members=None):
@@ -65,7 +73,6 @@ def make_channel(msg_info, name, members=None):
 
 
 async def _add_members(channel, members):
-    members = set(members)
     added = []
     for member in members:
         await channel.set_permissions(member, overwrite=ALLOWED)
@@ -83,7 +90,6 @@ def add_members(msg_info, members):
 
 
 async def _remove_members(channel, members):
-    members = set(members)
     added = []
     for member in members:
         await channel.set_permissions(member, overwrite=BANNED)

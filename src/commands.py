@@ -78,6 +78,7 @@ def command_list(msg_info):
     return Call(task=Call.send, args=(msg_info.channel, message))
 
 
+# \u is space-separated list of users/tags/roles
 commands = {
     Trigger(r"^/help (.+)|^/help"): frosty_help,
     Trigger(r"^/run\s(.+)", name="/run"): sandbox.run_code,
@@ -85,9 +86,9 @@ commands = {
     Trigger(r"^/list"): command_list,
     Trigger(r"^/ask (.+)"): query.ask,
     Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/make (\S+)((?:[ ]?<@[!]?\d+>|\w+#\d{4})*)"): channel_management.make_channel,
-    Trigger(r"^/add ((?:<@[!]?\d+>[ ]?)+|\w+#\d{4})"): channel_management.add_members,
-    Trigger(r"^/kick ((?:<@[!]?\d+>[ ]?)+|\w+#\d{4})"): channel_management.remove_members,
-    Trigger(r"^/pin (\d+)") : channel_management.pin_message,
+    Trigger(r"^/make (\S+)(?: \u)?"): channel_management.make_channel,
+    Trigger(r"^/add \u"): channel_management.add_members,
+    Trigger(r"^/kick \u"): channel_management.remove_members,
+    Trigger(r"^/pin (\d+)"): channel_management.pin_message,
     Trigger(r"^give me (.+) (snowmen|snowman)", name="/snowman"): snowman
 }

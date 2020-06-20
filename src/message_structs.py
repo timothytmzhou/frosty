@@ -45,9 +45,9 @@ class Call:
 
 class Trigger:
     def __init__(self, pattern, name=None, protected=True):
-        # Sets beginning and ending trigger phrases, .split()ed versions of
-        #     them.
         self.pattern = pattern
+        # replace \u with discriminator pattern
+        self.unsequenced_pattern = pattern.replace(r"\u", r"((?:<@[!&]?\d+>|\w+#\d{4}$|\s)*)")
         if name is None:
             # assume pattern in the form ^/name args if name is not specified
             assert re.match(r"\^\/\w+( .*)?", self.pattern)
@@ -57,7 +57,7 @@ class Trigger:
         self.protected = protected
 
     def match(self, text):
-        return re.match(self.pattern, text, re.DOTALL)
+        return re.match(self.unsequenced_pattern, text, re.DOTALL)
 
     def slice(self, text):
         return tuple(
