@@ -4,7 +4,7 @@ Members can kick/add each other with commands.
 """
 import re
 from src.message_structs import Call
-from discord import PermissionOverwrite
+from discord import PermissionOverwrite, Status
 from discord.utils import get
 
 ALLOWED = PermissionOverwrite(
@@ -30,17 +30,25 @@ BANNED = PermissionOverwrite(
 )
 
 
-def _get_members(guild, members):
-    ids = re.findall("<@[!]?(\d+)>", members)
-    tags = re.findall("(\w+)#(\d{4})", members)
-    roles = re.findall("<@\&(\d+)>", members)
-    for uid in ids:
-        yield get(guild.members, id=int(uid))
-    for username, discriminator in tags:
-        yield get(guild.members, name=username, discriminator=discriminator)
-    for role_id in roles:
-        role = get(guild.roles, id=int(role_id))
-        yield from role.members
+# TODO: clean this up
+# @here and @everyone are not channel-specific--is this behavior correct?
+def _get_members(guild, tags):
+    tags = tags.split()
+    for tag in tags:
+        if (m := re.match(r"<@[!]?(\d+)>", tag)):
+            uid = int(m.group(1))
+            yield get(guild.members, id=uid)
+        elif (m := re.match("(\w+#\d{4})", tag)):
+            username, discriminator = m.group(1).split("#")
+            yield get(guild.members, name=username, discriminator=discriminator)
+        elif (m := re.match("<@\&(\d+)>", tag)):
+            role_id = m.group(1)
+            role = get(guild.roles, id=int(role_id))
+            yield from role.members
+        elif tag == "@here":
+            yield from (member for member in guild.members if member.status == Status.online)
+        elif tag == "@everyone":
+            yield from guild.members
 
 
 def get_members(guild, members):
