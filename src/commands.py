@@ -36,7 +36,7 @@ def frosty_help(msg_info, command=None):
                     )
 
 
-def snowman(msg_info, snowmen_request):
+def snowman(msg_info, snowmen_request=None):
     """
     > Giver of snowmen since 2018
     > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
