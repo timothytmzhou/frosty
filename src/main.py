@@ -4,7 +4,6 @@ from src.commands import commands
 from src.message_structs import *
 
 client = discord.Client()
-guild = client.get_guild(PROFILE["guild_id"])
 
 
 async def process_message(message):
@@ -30,6 +29,13 @@ async def on_message(message):
             await process_message(message)
         except Exception as e:
             raise e
+
+
+@client.event
+async def on_ready():
+    # shhhhhh
+    global guild
+    guild = client.get_guild(PROFILE["guild_id"])
 
 
 def main():
