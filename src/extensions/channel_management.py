@@ -34,7 +34,7 @@ BANNED = PermissionOverwrite(
 # TODO: clean this up
 # @here and @everyone are not channel-specific--is this behavior correct?
 def _get_members(guild, tags):
-    tags = re.split("<@[!&]?\d+>|.+?#\d{4}|@here|@everyone", tags)
+    tags = re.findall("<@[!&]?\d+>|.+?#\d{4}|@here|@everyone", tags)
     for tag in tags:
         if (m := re.match(r"<@[!]?(\d+)>", tag)):
             uid = int(m.group(1))
