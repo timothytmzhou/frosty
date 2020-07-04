@@ -135,6 +135,10 @@ async def _archive_channel(channel):
 
 
 def archive_channel(msg_info):
+    """
+    > Archives current channel if no archived, otherwise un-archives
+    > /archive
+    """
     return Call(task=_archive_channel, args=(msg_info.channel))
 
 
