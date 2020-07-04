@@ -127,11 +127,12 @@ def rename_channel(msg_info, name):
     return Call(task=_rename_channel, args=(msg_info.channel, name))
 
 
-async def _archive_channel(channel):
+async def _archive_channel(msg_info):
+    channel = msg_info.channel
     if channel.category_id == PROFILE["archive"]:
-        await channel.edit(category=PROFILE["text"])
+        await channel.edit(category=get(msg_info.guild.categories, id=PROFILE["text"]))
     else:
-        await channel.edit(category=PROFILE["archive"])
+        await channel.edit(category=get(msg_info.guild.categories, id=PROFILE["archive"]))
 
 
 def archive_channel(msg_info):
@@ -139,7 +140,7 @@ def archive_channel(msg_info):
     > Archives current channel if no archived, otherwise un-archives
     > /archive
     """
-    return Call(task=_archive_channel, args=(msg_info.channel,))
+    return Call(task=_archive_channel, args=(msg_info.,))
 
 
 async def _pin_message(channel, msg_id):
