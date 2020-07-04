@@ -47,7 +47,7 @@ class Trigger:
     def __init__(self, pattern, name=None, protected=True):
         self.pattern = pattern
         # replace \u with discriminator pattern
-        tags = r"((?:(?:<@[!&]?\d+>|\w+#\d{4}|@here|@everyone)(?:$|\s))+)"
+        tags = r"((?:(?:<@[!&]?\d+>|.+?#\d{4}|@here|@everyone)(?:$|\s))+)"
         self.unsequenced_pattern = pattern.replace(r"\u", tags)
         if name is None:
             # assume pattern in the form ^/name args if name is not specified
