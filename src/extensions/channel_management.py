@@ -4,6 +4,7 @@ Members can kick/add each other with commands.
 """
 import re
 from src.message_structs import Call
+from src.config import PROFILE
 from discord import PermissionOverwrite, Status
 from discord.utils import get
 
@@ -124,6 +125,17 @@ def rename_channel(msg_info, name):
     > /rename channel_name
     """
     return Call(task=_rename_channel, args=(msg_info.channel, name))
+
+
+async def _archive_channel(channel):
+    if channel.category_id == PROFILE["archive"]:
+        await channel.edit(category=PROFILE["text"])
+    else:
+        await channel.edit(category=PROFILE["archive"])
+
+
+def archive_channel(msg_info):
+    return Call(task=_archive_channel, args=(msg_info.channel))
 
 
 async def _pin_message(channel, msg_id):
