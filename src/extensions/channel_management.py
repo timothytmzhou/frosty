@@ -140,7 +140,7 @@ def archive_channel(msg_info):
     > Archives current channel if no archived, otherwise un-archives
     > /archive
     """
-    return Call(task=_archive_channel, args=(msg_info.,))
+    return Call(task=_archive_channel, args=(msg_info,))
 
 
 async def _pin_message(channel, msg_id):
