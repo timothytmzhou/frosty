@@ -39,7 +39,7 @@ def _get_members(guild, tags):
         if (m := re.match(r"<@[!]?(\d+)>", tag)):
             uid = int(m.group(1))
             yield get(guild.members, id=uid)
-        elif (m := re.match("(\w+#\d{4})", tag)):
+        elif (m := re.match("(.+?#\d{4})", tag)):
             username, discriminator = m.group(1).split("#")
             yield get(guild.members, name=username, discriminator=discriminator)
         elif (m := re.match("<@\&(\d+)>", tag)):
