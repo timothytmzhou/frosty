@@ -7,5 +7,13 @@
     ],
     "file": "main.py",
     "command": "python main.py"
-  }
+  },
+  "c": {
+    "prefixes": [
+      "c",
+      "h"
+    ],
+    "file": "main.c",
+    "command": "gcc main.c -o main && ./main"
+    }
 }
