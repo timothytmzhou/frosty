@@ -15,5 +15,13 @@
     ],
     "file": "main.c",
     "command": "gcc main.c -o main && ./main"
-    }
+  },
+  "haskell": {
+    "prefixes": [
+      "haskell",
+      "hs"
+    ],
+    "file": "Main.hs",
+    "command": "ghc Main.hs && ./Main"
+  }
 }
