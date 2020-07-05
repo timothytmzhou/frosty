@@ -1,6 +1,6 @@
 ```md
 Welcome to the Frosty user manual! 
-To get a full list of available commands, use the < !list > command. 
-To read the doc string of a command, call < !help [command] >.
-The source to Frosty can be found pinned in #general.
+To get a full list of available commands, use the < /list > command.
+To read the doc string of a command, call < /help [command] >.
+To get instant fulfillment, ask for a snowman.
 ```
