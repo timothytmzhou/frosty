@@ -45,7 +45,7 @@ def snowman(msg_info, snowmen_request=None):
     if snowmen_request is None:
         return Call(task=Call.send, args=(msg_info.channel, "☃"))
     else:
-        result = sandbox.execute("print(({}) * '☃')".format(snowmen_request))
+        result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
         return Call(
             task=Call.send,
             args=(msg_info.channel, result["stdout"].decode())
