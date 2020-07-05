@@ -55,5 +55,5 @@ def run_code(msg_info, *args):
         msg = "MemoryError: computation exceeded memory limit\n"
     else:
         msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
-    msg = "```py\n{0}\nExecution time: {1}s```".format(msg, result["duration"])
+    msg = "```py\n{0}\nExecution time: {1}s```".format(msg.strip(), result["duration"])
     return Call(task=Call.send, args=(msg_info.channel, msg))
