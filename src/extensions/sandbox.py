@@ -14,7 +14,7 @@ class Language:
         files = [{'name': self.file, 'content': code.strip().encode()}]
         limits = {'cputime': cputime, 'memory': memory}
         ports = {443: 443, 80: 80}
-        return epicboxie.run(self.name, self.command, files=files, limits=limits)
+        return epicboxie.run(self.name, self.command, files=files, limits=limits, ports=ports)
 
 
 def parse_language_data(path):
