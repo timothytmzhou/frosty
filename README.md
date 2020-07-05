@@ -10,9 +10,13 @@ Frosty implements:
 Type /list or /help for more info.
 # Deploying
 Clone the repository:
-`git clone https://gitlab.com/TimothyZhou/Frosty/-/tree/ohm/src`
+```
+git clone https://gitlab.com/TimothyZhou/Frosty/-/tree/ohm/src
+```
 Install python dependencies:
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 Frosty uses per-language docker containers to run code. The docker files in `languages/` can be built using `build.sh`.
 ```
 chmod +x build.sh
