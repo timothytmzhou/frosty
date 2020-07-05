@@ -1,5 +1,5 @@
 {
-  "python": {
+  "python:3.8": {
     "prefixes": [
       "py",
       "python",
