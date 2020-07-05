@@ -1,0 +1,11 @@
+{
+  "python": {
+    "prefixes": [
+      "py",
+      "python",
+      "gyp"
+    ],
+    "file": "main.py",
+    "command": "python main.py"
+  }
+}

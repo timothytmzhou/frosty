@@ -1,19 +1,40 @@
 import epicbox
 import re
+import json
 from src.message_structs import Call
 
-epicbox.configure(
-    profiles=[
-        epicbox.Profile('python', 'python:3.8-alpine')
-    ]
-)
+
+class Language:
+    def __init__(self, name, file, command):
+        self.name = name
+        self.file = file
+        self.command = command
+
+    def execute(self, code, cputime=60, memory=64):
+        files = [{'name': self.file, 'content': code.strip().encode()}]
+        limits = {'cputime': cputime, 'memory': memory}
+        result = epicbox.run(self.name, self.command, files=files, limits=limits)
+        return result
 
 
-def execute(code):
-    files = [{'name': 'main.py', 'content': code.strip().encode()}]
-    limits = {'cputime': 60, 'memory': 64}
-    result = epicbox.run('python', 'python3 main.py', files=files, limits=limits)
-    return result
+def parse_language_data(path):
+    languages = {}
+    with open(path) as f:
+        language_data = json.load(f)
+        for language_name, params in language_data.items():
+            prefixes, file, command = params["prefixes"], params["file"], params["command"]
+            language = Language(language_name, file, command)
+            languages.update({prefix: language for prefix in prefixes})
+        epicbox.configure(
+            profiles=[
+                epicbox.Profile(language_name, "ohm/{}".format(language_name))
+                for language_name in language_data
+            ]
+        )
+    return languages
+
+
+LANGUAGES = parse_language_data("languages/languages.json")
 
 
 def run_code(msg_info, *args):
@@ -24,10 +45,10 @@ def run_code(msg_info, *args):
     > /run code
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = r"```(?:py[\s\n]|python[\s\n]|gyp[\s\n])?(.+)```|`(.+)`|(.+)"
-    groups = re.match(code_pattern, args[0].strip(), re.DOTALL).groups()
-    code = next(group for group in groups if group is not None)
-    result = execute(code)
+    code_pattern = r"```(.+?)[\s\n](.+?)```"
+    extension, code = re.match(code_pattern, args[0].strip(), re.DOTALL).groups()
+    language = LANGUAGES[extension]
+    result = language.execute(code)
     if result["timeout"]:
         msg = "TimeoutError: computation timed out\n"
     elif result["oom_killed"]:
