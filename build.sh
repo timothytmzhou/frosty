@@ -1,5 +1,6 @@
 # builds all the docker containers in languages/
-for dockerfile in languages/*.dockerfile
+for dockerfile in languages/dockerfiles/*.dockerfile
 do
-  docker build $dockerfile -t ohm/$dockerfile
+  name=$(basename $dockerfile .dockerfile)
+  docker build -f $dockerfile -t ohm/$name .
 done
