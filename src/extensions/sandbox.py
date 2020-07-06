@@ -10,7 +10,7 @@ class Language:
         self.file = file
         self.command = command
 
-    def execute(self, code, cputime=60, memory=64):
+    def execute(self, code, cputime=60, memory=512):
         files = [{'name': self.file, 'content': code.strip().encode()}]
         limits = {'cputime': cputime, 'memory': memory}
         ports = {443: 443, 80: 80}
