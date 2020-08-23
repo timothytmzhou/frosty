@@ -1,13 +1,7 @@
-frosty/ohm - over-engineered hangouts messaging
+frosty - containerized code execution
 ====================================
 # About
-Frosty implements:
-- a fully asyncronous, extensible command system
-- arbitrary code execution in docker sandboxes
-- discord channel management a la Google Hangouts (adding/removing users to channels, making channels, removing channels, etc.)
-- ☃️!
-
-Type /list or /help for more info.
+Frosty implements arbitrary code execution for a variety of languages. Type /list or /help for more info.
 # Deploying
 Clone the repository:
 ```
@@ -27,8 +21,5 @@ Run frosty from the root directory of the repo.
 On startup, if the needed `config.json` file is not present, frosty will automatically generate one. You will need to provide the following inputs:
 - bot_token - discord api bot token
 -  guild_id - server id
-- wa_app_id - wolfram alpha api token
-- archive -  category id for archived channels
-- text - category id for text channels
 
 You can also generate this file by running `src/config.py` directly.

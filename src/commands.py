@@ -1,7 +1,5 @@
 from src.message_structs import Call, Trigger
 from src.extensions import sandbox
-from src.extensions import channel_management
-from src.extensions import query
 from src.util import format_table
 from textwrap import dedent
 
@@ -52,14 +50,6 @@ def snowman(msg_info, snowmen_request=None):
         )
 
 
-def frosty_say(msg_info, text):
-    """
-    > Echo command, deletes message invoking /say
-    > /say message
-    """
-    return Call(task=Call.replace, args=(msg_info.message, text))
-
-
 def command_list(msg_info):
     """
     > Generates a list of all available commands
@@ -82,14 +72,6 @@ def command_list(msg_info):
 commands = {
     Trigger(r"^/help (.+)|^/help"): frosty_help,
     Trigger(r"^/run\s(.+)", name="/run"): sandbox.run_code,
-    Trigger(r"^/say (.+)"): frosty_say,
     Trigger(r"^/list"): command_list,
-    Trigger(r"^/ask (.+)"): query.ask,
-    Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/make (\S+)(?: \u)?"): channel_management.make_channel,
-    Trigger(r"^/archive"): channel_management.archive_channel,
-    Trigger(r"^/add \u"): channel_management.add_members,
-    Trigger(r"^/kick \u"): channel_management.remove_members,
-    Trigger(r"^/pin (\d+)"): channel_management.pin_message,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
 }
