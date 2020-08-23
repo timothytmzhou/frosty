@@ -61,7 +61,7 @@ def command_list(msg_info):
     headers = ("pattern", "command", "description")
     data = tuple(
         (
-            trigger.pattern.replace("`", "​`"),
+            trigger.pattern.replace("`", "`"),
             trigger.name,
             func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
         )
