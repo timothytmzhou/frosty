@@ -30,7 +30,7 @@
       "jsp"
     ],
     "file": "Main.java",
-    "command": "javac Main.java && java main"
+    "command": "javac Main.java && java Main"
   },
   "cpp": {
     "prefixes": [
