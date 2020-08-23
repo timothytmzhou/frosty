@@ -46,9 +46,12 @@ def snowman(msg_info, snowmen_request=None):
         return Call(task=Call.send, args=(msg_info.channel, "☃"))
     else:
         result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
+        out = result["stdout"].decode()
+        if not all(c == '☃' for c in out):
+            out = "```py\n{0}```".format(out)
         return Call(
             task=Call.send,
-            args=(msg_info.channel, result["stdout"].decode())
+            args=(msg_info.channel, out)
         )
 
 
@@ -68,7 +71,7 @@ def command_list(msg_info):
     headers = ("pattern", "command", "description")
     data = tuple(
         (
-            trigger.pattern,
+            trigger.pattern.replace("`", "​`"),
             trigger.name,
             func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
         )
