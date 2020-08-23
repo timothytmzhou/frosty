@@ -4,8 +4,7 @@ from discord import File
 
 
 class Message_Info:
-    def __init__(self, message, guild):
-        self.guild = guild
+    def __init__(self, message):
         self.message = message
         self.content = message.content
         self.channel = message.channel
