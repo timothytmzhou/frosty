@@ -44,6 +44,6 @@
       "hxx"
     ],
     "file": "main.cpp",
-    "command": "gcc main.cpp -o main && ./main"
+    "command": "g++ main.cpp -o main && ./main"
   }
 }
