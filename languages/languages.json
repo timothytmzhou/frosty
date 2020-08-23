@@ -23,5 +23,27 @@
     ],
     "file": "Main.hs",
     "command": "ghc Main.hs && ./Main"
+  },
+  "java": {
+    "prefixes": [
+      "java",
+      "jsp"
+    ],
+    "file": "main.java",
+    "command": "javac main.java && java main"
+  },
+  "cpp": {
+    "prefixes": [
+      "cpp",
+      "hpp",
+      "cc",
+      "hh",
+      "c++",
+      "h++",
+      "cxx",
+      "hxx"
+    ],
+    "file": "main.cpp",
+    "command": "gcc main.cpp -o main && ./main"
   }
 }
