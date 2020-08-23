@@ -29,8 +29,8 @@
       "java",
       "jsp"
     ],
-    "file": "main.java",
-    "command": "javac main.java && java main"
+    "file": "Main.java",
+    "command": "javac Main.java && java main"
   },
   "cpp": {
     "prefixes": [
