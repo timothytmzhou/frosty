@@ -37,7 +37,7 @@ def parse_language_data(path):
 LANGUAGES = parse_language_data("languages/languages.json")
 
 
-def run_code(msg_info, *args):
+def run_code(msg_info, extension, code):
     """
     > Runs arbitrary python code in docker sandbox
     > 60 second time limit, 1 mb memory limit
@@ -45,8 +45,6 @@ def run_code(msg_info, *args):
     > /run code
     """
     # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = r"```(.+?)[\s\n](.+?)```"
-    extension, code = re.match(code_pattern, args[0].strip(), re.DOTALL).groups()
     language = LANGUAGES[extension]
     result = language.execute(code)
     if result["timeout"]:
