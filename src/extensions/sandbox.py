@@ -1,5 +1,4 @@
-import epicboxie
-import re
+import epicbox
 import json
 from src.message_structs import Call
 
@@ -13,8 +12,7 @@ class Language:
     def execute(self, code, cputime=60, memory=512):
         files = [{'name': self.file, 'content': code.strip().encode()}]
         limits = {'cputime': cputime, 'memory': memory}
-        ports = {443: 443, 80: 80}
-        return epicboxie.run(self.name, self.command, files=files, limits=limits, ports=ports)
+        return epicbox.run(self.name, self.command, files=files, limits=limits)
 
 
 def parse_language_data(path):
@@ -25,9 +23,9 @@ def parse_language_data(path):
             prefixes, file, command = params["prefixes"], params["file"], params["command"]
             language = Language(language_name, file, command)
             languages.update({prefix: language for prefix in prefixes})
-        epicboxie.configure(
+        epicbox.configure(
             profiles=[
-                epicboxie.Profile(language_name, "frosty/{}".format(language_name))
+                epicbox.Profile(language_name, "frosty/{}".format(language_name))
                 for language_name in language_data
             ]
         )
