@@ -29,5 +29,5 @@ def get_config():
         return gen_config()
 
 
-PARAMS = {"bot_token", "guild_id"}
+PARAMS = {"bot_token"}
 PROFILE = get_config()
