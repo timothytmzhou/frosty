@@ -71,7 +71,7 @@ def command_list(msg_info):
 # \u is space-separated list of users/tags/roles
 commands = {
     Trigger(r"^/help (.+)|^/help"): frosty_help,
-    Trigger(r"^/run\s(.+)", name="/run"): sandbox.run_code,
+    Trigger(r"^/run\s```(.+?)[\s\n]([\s\S]*)```", name="/run"): sandbox.run_code,
     Trigger(r"^/list"): command_list,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
 }
