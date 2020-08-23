@@ -27,7 +27,7 @@ def parse_language_data(path):
             languages.update({prefix: language for prefix in prefixes})
         epicboxie.configure(
             profiles=[
-                epicboxie.Profile(language_name, "ohm/{}".format(language_name))
+                epicboxie.Profile(language_name, "frosty/{}".format(language_name))
                 for language_name in language_data
             ]
         )
