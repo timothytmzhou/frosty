@@ -48,5 +48,6 @@ def run_code(msg_info, extension, code):
         msg = "MemoryError: computation exceeded memory limit\n"
     else:
         msg = result["stdout"].decode()
-    msg = "{0}\nExecution time: {1}s".format(msg.strip(), result["duration"])
+    execution_time = "{}s".format(result["duration"]) if result["duration"] is not None else "terminated"
+    msg = "{0}\nExecution time: {1}".format(msg.strip(), execution_time)
     return Call(task=Call.send, args=(msg_info.channel, msg, "bash"))
