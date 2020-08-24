@@ -1,0 +1,28 @@
+```CSS
+language      aliases                                    filename``````asciidoc
+Python     :: py, python, gyp                         :: main.py
+C          :: c, h                                    :: main.c
+Haskell    :: haskell, hs                             :: Main.hs
+Java       :: java, jsp                               :: Main.java
+C++        :: cpp, hpp, cc, hh, c++, h++, cxx, hxx    :: main.cpp
+Rust       :: rust, rs                                :: main.rs
+C#         :: csharp, cs                              :: main.cs
+Go         :: go, golang                              :: main.go
+Javascript :: js, jsx, javascript                     :: main.js
+Clojure    :: clojure, clj                            :: main.clj
+F#         :: fsharp, fs                              :: main.fsx
+Kotlin     :: kotlin, kt                              :: main.kt
+Scala      :: scala                                   :: Main.scala
+Lisp       :: lisp                                    :: main.lsp
+Bash       :: bash, sh, zsh                           :: main.bash
+Scheme     :: scheme                                  :: main.scm
+Ruby       :: ruby, rb, gemsp, ec, podspec, thor, irb :: main.rb
+R          :: r                                       :: main.r
+PHP        :: php, php3, php4, php5, php6, php7       :: main.php
+Perl       :: perl, pl, pm                            :: main.pearl
+OCaml      :: ocaml, ml                               :: main.ml
+Lua        :: lua                                     :: main.lua
+Typescript :: typescript, ts                          :: main.ts
+Dart       :: dart                                    :: main.dart
+Swift      :: swift                                   :: main.swift
+```

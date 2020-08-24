@@ -74,9 +74,18 @@ def command_list(msg_info):
     return Call(task=Call.send, args=(msg_info.channel, message))
 
 
+def lang_info(msg_info):
+    """
+    > Lists supported languages and their aliases.
+    """
+    with open("languages.txt", "r") as f:
+        return Call(task=Call.send, args=(msg_info.channel, f.read()))
+
+
 # \u is space-separated list of users/tags/roles
 commands = {
     Trigger(r"^/help (.+)|^/help"): frosty_help,
+    Trigger(r"^/langs"): lang_info,
     Trigger(r"^/run\s```(.+?)[\s\n]([\s\S]*)```", name="/run"): sandbox.run_code,
     Trigger(r"^/list"): command_list,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
