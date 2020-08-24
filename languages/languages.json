@@ -108,14 +108,14 @@
       "scala"
     ],
     "file": "Main.scala",
-    "command": "scalac -nc Main.scala"
+    "command": "scala -nc Main.scala"
   },
   "lisp": {
     "prefixes": [
       "lisp"
     ],
-    "file": "main.lisp",
-    "command": "lisp main.lisp"
+    "file": "main.lsp",
+    "command": "sbcl --script main.lsp"
   },
   "bash": {
     "prefixes": [
