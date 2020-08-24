@@ -99,4 +99,3 @@ commands = {
     Trigger(r"^/pin (\d+)"): channel_management.pin_message,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
 }
-uiuc
