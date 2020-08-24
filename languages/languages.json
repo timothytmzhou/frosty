@@ -210,5 +210,13 @@
     ],
     "file": "main.swift",
     "command": "swiftc -o main main.swift && ./main"
+  },
+  "brainfuck": {
+    "prefixes": [
+      "brainfuck",
+      "bf"
+    ],
+    "file": "main.bf",
+    "command": "brainfuck-esotope main.bf"
   }
 }
