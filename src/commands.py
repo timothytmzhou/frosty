@@ -81,4 +81,3 @@ commands = {
     Trigger(r"^/list"): command_list,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
 }
-uiuc
