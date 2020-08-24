@@ -1,0 +1,1 @@
+FROM zachdeibert/typescript:latest

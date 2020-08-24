@@ -37,12 +37,9 @@ LANGUAGES = parse_language_data("languages/languages.json")
 
 def run_code(msg_info, extension, code):
     """
-    > Runs arbitrary python code in docker sandbox
+    > Runs arbitrary code in docker sandbox
     > 60 second time limit, 1 mb memory limit
-    > Supports code formatting
-    > /run code
     """
-    # Removes leading/trailing pairs of ` to allow for code formatting
     language = LANGUAGES[extension]
     result = language.execute(code)
     if result["timeout"]:
@@ -50,6 +47,6 @@ def run_code(msg_info, extension, code):
     elif result["oom_killed"]:
         msg = "MemoryError: computation exceeded memory limit\n"
     else:
-        msg = (result["stdout"]).decode().replace("`", "`​")
+        msg = result["stdout"].decode()
     msg = "{0}\nExecution time: {1}s".format(msg.strip(), result["duration"])
     return Call(task=Call.send, args=(msg_info.channel, msg, "bash"))

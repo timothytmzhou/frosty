@@ -3,4 +3,40 @@ Welcome to the Frosty user manual!
 To get a full list of available commands, use the < /list > command.
 To read the doc string of a command, call < /help [command] >.
 To get instant fulfillment, ask for a snowman.
+
+Running code
+============
+Begin your message with /run, followed by a highlighted code block. For instance:
+/run `​`​`py
+print("hello world")
+`​`​`
+
+
+Supported languages
+-------------------
+Bash
+Swift
+Ocaml
+C#
+Javascript
+Typescript
+Scheme
+Lua
+Kotlin
+Java
+Scala
+R
+Clojure
+Haskell
+Pearl
+C++
+Lisp
+Go
+Php
+Dart
+Rust
+Python
+C
+Ruby
+Fsharp
 ```
