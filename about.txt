@@ -10,33 +10,9 @@ Begin your message with /run, followed by a highlighted code block. For instance
 /run `​`​`py
 print("hello world")
 `​`​`
+You can get a full list of supported languages (and their aliases) with /langs.
 
-
-Supported languages
--------------------
-Bash
-Swift
-OCaml
-C#
-Javascript
-Typescript
-Scheme
-Lua
-Kotlin
-Java
-Scala
-R
-Clojure
-Haskell
-Pearl
-C++
-Lisps
-Go
-PHP
-Dart
-Rust
-Python
-C
-Ruby
-F#
+Source
+======
+https://gitlab.com/TimothyZhou/Frosty
 ```
