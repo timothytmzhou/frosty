@@ -7,7 +7,7 @@ class Language:
     def __init__(self, name, file, command):
         self.name = name
         self.file = file
-        self.command = command
+        self.command = "{{{0}}} 2>&1".format(command)
 
     def execute(self, code, cputime=60, memory=512):
         files = [{'name': self.file, 'content': code.strip().encode()}]
@@ -50,6 +50,6 @@ def run_code(msg_info, extension, code):
     elif result["oom_killed"]:
         msg = "MemoryError: computation exceeded memory limit\n"
     else:
-        msg = (result["stdout"]).decode().replace("`", "`")
-    msg = "```py\n{0}\nExecution time: {1}s```".format(msg.strip(), result["duration"])
-    return Call(task=Call.send, args=(msg_info.channel, msg))
+        msg = (result["stdout"]).decode().replace("`", "`​")
+    msg = "{0}\nExecution time: {1}s".format(msg.strip(), result["duration"])
+    return Call(task=Call.send, args=(msg_info.channel, msg, "bash"))

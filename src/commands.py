@@ -23,7 +23,8 @@ def frosty_help(msg_info, command=None):
                         task=Call.send,
                         args=(
                             msg_info.channel,
-                            "```md\n{0}```".format(dedent(value.__doc__))
+                            dedent(value.__doc__),
+                            "md"
                         )
                     )
                 else:
@@ -45,13 +46,13 @@ def snowman(msg_info, snowmen_request=None):
     if snowmen_request is None:
         return Call(task=Call.send, args=(msg_info.channel, "☃"))
     else:
+        sandbox.run_code(msg_info, "py")
         result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
         out = result["stdout"].decode()
-        if not all(c == '☃' for c in out):
-            out = "```py\n{0}```".format(out)
+        highlighting = None if all(c == '☃' for c in out) else "py"
         return Call(
             task=Call.send,
-            args=(msg_info.channel, out)
+            args=(msg_info.channel, out, "py", highlighting)
         )
 
 
@@ -71,7 +72,7 @@ def command_list(msg_info):
     headers = ("pattern", "command", "description")
     data = tuple(
         (
-            trigger.pattern.replace("`", "`"),
+            trigger.pattern.replace("`", "`​"),
             trigger.name,
             func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
         )

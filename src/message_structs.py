@@ -25,7 +25,9 @@ class Call:
             await self.task(*self.args)
 
     @staticmethod
-    async def send(channel, text):
+    async def send(channel, text, highlighting=None):
+        if highlighting is not None:
+            text = "```{0}\n{1}```".format(highlighting, text.replace("`", "`​"))
         if len(text) > 2000:
             await channel.send("message is longer than 2000 characters, writing to file")
             await channel.send(file=File(StringIO(text), "output.txt"))
