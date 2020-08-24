@@ -131,7 +131,7 @@
       "scheme"
     ],
     "file": "main.scm",
-    "command": "scheme --quiet < program.scm"
+    "command": "scheme --quiet < main.scm"
   },
   "ruby": {
     "prefixes": [
