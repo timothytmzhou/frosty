@@ -108,7 +108,7 @@
       "scala"
     ],
     "file": "Main.scala",
-    "command": "scala -nc Main.scala"
+    "command": "scala Main.scala"
   },
   "lisp": {
     "prefixes": [
