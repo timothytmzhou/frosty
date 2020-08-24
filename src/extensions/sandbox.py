@@ -7,12 +7,12 @@ class Language:
     def __init__(self, name, file, command):
         self.name = name
         self.file = file
-        self.command = "{{{0}}} 2>&1".format(command)
+        self.command = "({0}) 2>&1".format(command)
 
     def execute(self, code, cputime=60, memory=512):
         files = [{'name': self.file, 'content': code.strip().encode()}]
         limits = {'cputime': cputime, 'memory': memory}
-        return epicbox.run(self.name, self.command + " 2>&1", files=files, limits=limits)
+        return epicbox.run(self.name, self.command, files=files, limits=limits)
 
 
 def parse_language_data(path):
