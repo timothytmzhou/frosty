@@ -45,5 +45,170 @@
     ],
     "file": "main.cpp",
     "command": "g++ main.cpp -o main && ./main"
+  },
+  "rust": {
+    "prefixes": [
+      "rust",
+      "rs"
+    ],
+    "file": "main.rs",
+    "command": "rustc main.rs && ./main"
+  },
+  "csharp": {
+    "prefixes": [
+      "csharp",
+      "cs"
+    ],
+    "file": "main.cs",
+    "command": "mcs -out:main.exe main.cs && mono main.exe"
+  },
+  "go": {
+    "prefixes": [
+      "go",
+      "golang"
+    ],
+    "file": "main.go",
+    "command": "go run main.go"
+  },
+  "js": {
+    "prefixes": [
+      "js",
+      "jsx",
+      "javascript"
+    ],
+    "file": "main.js",
+    "command": "node main.js"
+  },
+  "clojure": {
+    "prefixes": [
+      "clojure",
+      "clj"
+    ],
+    "file": "main.clj",
+    "command": "clj main.clj"
+  },
+  "fsharp": {
+    "prefixes": [
+      "fsharp",
+      "fs"
+    ],
+    "file": "main.fsx",
+    "command": "fsharpi main.fsx"
+  },
+  "kotlin": {
+    "prefixes": [
+      "kotlin",
+      "kt"
+    ],
+    "file": "main.kt",
+    "command": "kotlinc main.kt -include-runtime -d main.jar && java -jar kotlin.jar"
+  },
+  "scala": {
+    "prefixes": [
+      "scala"
+    ],
+    "file": "Main.scala",
+    "command": "scalac Main.scala && scala Main"
+  },
+  "lisp": {
+    "prefixes": [
+      "lisp"
+    ],
+    "file": "main.lisp",
+    "command": "lisp main.lisp"
+  },
+  "bash": {
+    "prefixes": [
+      "bash",
+      "sh",
+      "zsh"
+    ],
+    "file": "main.bash",
+    "command": "bash main.bash"
+  },
+  "scheme": {
+    "prefixes": [
+      "scheme"
+    ],
+    "file": "main.scm",
+    "command": "scheme --quiet < program.scm"
+  },
+  "ruby": {
+    "prefixes": [
+      "ruby",
+      "rb",
+      "gemsp",
+      "ec",
+      "podspec",
+      "thor",
+      "irb"
+    ],
+    "file": "main.rb",
+    "command": "ruby main.rb"
+  },
+  "r": {
+    "prefixes": [
+      "r"
+    ],
+    "file": "main.r",
+    "command": "Rscript main.r"
+  },
+  "php": {
+    "prefixes": [
+      "php",
+      "php3",
+      "php4",
+      "php5",
+      "php6",
+      "php7"
+    ],
+    "file": "main.php",
+    "command": "php main.php"
+  },
+  "perl": {
+    "prefixes": [
+      "perl",
+      "pl",
+      "pm"
+    ],
+    "file": "main.pearl",
+    "command": "pearl main.pl"
+  },
+  "ocaml": {
+    "prefixes": [
+      "ocaml",
+      "ml"
+    ],
+    "file": "main.ml",
+    "command": "ocamlc -o main main.ml && ./main.ml"
+  },
+  "lua": {
+    "prefixes": [
+      "lua"
+    ],
+    "file": "main.lua",
+    "command": "lua main.lua"
+  },
+  "typescript": {
+    "prefixes": [
+      "typescript",
+      "ts"
+    ],
+    "file": "main.ts",
+    "command": "tsc main.ts && node main.js"
+  },
+  "dart": {
+    "prefixes": [
+      "dart"
+    ],
+    "file": "main.dart",
+    "command": "dart main.dart"
+  },
+  "swift": {
+    "prefixes": [
+      "swift"
+    ],
+    "file": "main.swift",
+    "command": "swiftc -o main main.swift && ./main"
   }
 }
