@@ -101,14 +101,14 @@
       "kt"
     ],
     "file": "main.kt",
-    "command": "kotlinc main.kt -include-runtime -d main.jar && java -jar kotlin.jar"
+    "command": "kotlinc main.kt -include-runtime -d main.jar && java -jar main.jar"
   },
   "scala": {
     "prefixes": [
       "scala"
     ],
     "file": "Main.scala",
-    "command": "scalac Main.scala && scala Main"
+    "command": "scalac -nc Main.scala"
   },
   "lisp": {
     "prefixes": [
@@ -180,7 +180,7 @@
       "ml"
     ],
     "file": "main.ml",
-    "command": "ocamlc -o main main.ml && ./main.ml"
+    "command": "ocamlc -o main main.ml && ./main"
   },
   "lua": {
     "prefixes": [

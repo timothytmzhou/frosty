@@ -1,1 +1,1 @@
-FROM codesignal/lisp
+FROM daewok/lisp-devel:latest
