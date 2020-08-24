@@ -30,7 +30,7 @@ Clojure
 Haskell
 Pearl
 C++
-Lisp
+Lisps
 Go
 Php
 Dart
@@ -38,5 +38,5 @@ Rust
 Python
 C
 Ruby
-Fsharp
+F#
 ```
