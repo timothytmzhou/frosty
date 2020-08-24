@@ -17,7 +17,7 @@ def format_table(data, headers):
     items = "\n".join(
         " :: ".join(
             element +
-            " " * (column_lengths[column] - len(element))
+            " " * (column_lengths[column] - len(element).replace("​", ""))
             for column, element in enumerate(row)
         )
         for row in data

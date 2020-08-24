@@ -45,6 +45,8 @@ def snowman(msg_info, snowmen_request=None):
     """
     if snowmen_request is None:
         return Call(task=Call.send, args=(msg_info.channel, "☃"))
+
+
     else:
         sandbox.run_code(msg_info, "py")
         result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
@@ -97,3 +99,4 @@ commands = {
     Trigger(r"^/pin (\d+)"): channel_management.pin_message,
     Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
 }
+uiuc
