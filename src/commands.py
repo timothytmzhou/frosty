@@ -51,7 +51,7 @@ def snowman(msg_info, snowmen_request=None):
         highlighting = None if all(c == '☃' for c in out) else "py"
         return Call(
             task=Call.send,
-            args=(msg_info.channel, out, "py", highlighting)
+            args=(msg_info.channel, out, highlighting)
         )
 
 
