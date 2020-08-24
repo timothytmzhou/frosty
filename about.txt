@@ -6,11 +6,11 @@ To get instant fulfillment, ask for a snowman.
 
 Running code
 ============
-Begin your message with /run, followed by a highlighted code block. For instance:
+Begin your message with /run, followed by a syntax-highlighted code block. Note that highlight.js has an aliasing system, so for example "python" and "py" are interchangeable. Below is an example:
 /run `​`​`py
 print("hello world")
 `​`​`
-You can get a full list of supported languages (and their aliases) with /langs.
+You can get a full list of supported languages (and aliases) with /langs.
 
 Source
 ======
