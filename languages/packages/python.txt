@@ -20,3 +20,4 @@ scipy
 seaborn
 sortedcollections
 sortedcontainers
+z3-solver
