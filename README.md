@@ -20,6 +20,5 @@ Run frosty from the root directory of the repo.
 `python src/main.py`
 On startup, if the needed `config.json` file is not present, frosty will automatically generate one. You will need to provide the following inputs:
 - bot_token - discord api bot token
--  guild_id - server id
 
 You can also generate this file by running `src/config.py` directly.
