@@ -9,7 +9,7 @@ class Language:
         self.file = file
         self.command = "({0}) 2>&1".format(command)
 
-    def execute(self, code, cputime=60, memory=512, realtime=120):
+    def execute(self, code, cputime=60, memory=256, realtime=120):
         files = [{'name': self.file, 'content': code.strip().encode()}]
         limits = {'cputime': cputime, 'memory': memory, 'realtime': realtime}
         return epicbox.run(self.name, self.command, files=files, limits=limits)
