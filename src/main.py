@@ -7,7 +7,7 @@ client = discord.Client()
 
 
 async def process_message(message):
-    msg_info = Message_Info(message)
+    msg_info = Message_Info(message, guild=guild)
     # Iterates through the commands dict of the form {Trigger: func -> Call}:
     for trigger, func in commands.copy().items():
         if trigger.match(msg_info.content):
@@ -29,6 +29,13 @@ async def on_message(message):
             await process_message(message)
         except Exception as e:
             raise e
+
+
+@client.event
+async def on_ready():
+    # shhhhhh
+    global guild
+    guild = client.get_guild(PROFILE["guild_id"])
 
 
 def main():
