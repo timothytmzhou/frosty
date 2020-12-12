@@ -3,7 +3,8 @@ from src.config import PROFILE
 from src.commands import commands
 from src.message_structs import *
 
-client = discord.Client()
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
 
 
 async def process_message(message):
