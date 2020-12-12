@@ -4,7 +4,7 @@ from src.commands import commands
 from src.message_structs import *
 
 
-intents = discord.Intents(messages=True, members=True)
+intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
 async def process_message(message):
@@ -12,14 +12,13 @@ async def process_message(message):
     # Iterates through the commands dict of the form {Trigger: func -> Call}:
     for trigger, func in commands.copy().items():
         if trigger.match(msg_info.content):
-            async with message.channel.typing():
-                args = trigger.slice(msg_info.content)
-                # If so, passes the slice into the corresponding function,
-                #     and adds the returned Call object's invoke() method
-                #     to the client loop.
-                task = await client.loop.run_in_executor(None, func, msg_info, *args)
-                if isinstance(task, Call):
-                    await task.invoke()
+            args = trigger.slice(msg_info.content)
+            # If so, passes the slice into the corresponding function,
+            #     and adds the returned Call object's invoke() method
+            #     to the client loop.
+            task = await client.loop.run_in_executor(None, func, msg_info, *args)
+            if isinstance(task, Call):
+                await task.invoke()
             break
 
 
