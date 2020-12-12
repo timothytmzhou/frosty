@@ -3,9 +3,9 @@ from src.config import PROFILE
 from src.commands import commands
 from src.message_structs import *
 
+
 intents = discord.Intents(messages=True, members=True)
 client = discord.Client(intents=intents)
-
 
 async def process_message(message):
     msg_info = Message_Info(message, guild=guild)

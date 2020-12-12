@@ -1,0 +1,939 @@
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 48, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'java'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 48, in run_code
+    if result["timeout"]:
+KeyError: 'java'
+  File "src/main.py", line 9
+    async def process_message(message):
+            ^
+SyntaxError: invalid syntax
+event='Failed to create a sandbox container' sandbox_id='5baa363f-b8b7-40e5-ac56-41f14c2dd4aa' logger='epicbox.sandboxes' level='error' timestamp='2020-08-24T07:52:02.829473Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 259, in _raise_for_status\n    response.raise_for_status()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/models.py", line 941, in raise_for_status\n    raise HTTPError(http_error_msg, response=self)\nrequests.exceptions.HTTPError: 404 Client Error: Not Found for url: http+docker://localhost/v1.39/containers/create?name=epicbox-5baa363f-b8b7-40e5-ac56-41f14c2dd4aa\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container\n    c = docker_client.containers.create(image,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create\n    resp = self.client.api.create_container(**create_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container\n    return self.create_container_from_config(config, name)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 441, in create_container_from_config\n    return self._result(res, True)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 265, in _result\n    self._raise_for_status(response)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 261, in _raise_for_status\n    raise create_api_error_from_http_exception(e)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/errors.py", line 31, in create_api_error_from_http_exception\n    raise cls(e, response=response, explanation=explanation)\ndocker.errors.ImageNotFound: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 259, in _raise_for_status
+    response.raise_for_status()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/models.py", line 941, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: http+docker://localhost/v1.39/containers/create?name=epicbox-5baa363f-b8b7-40e5-ac56-41f14c2dd4aa
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container
+    c = docker_client.containers.create(image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create
+    resp = self.client.api.create_container(**create_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container
+    return self.create_container_from_config(config, name)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 441, in create_container_from_config
+    return self._result(res, True)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 265, in _result
+    self._raise_for_status(response)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 261, in _raise_for_status
+    raise create_api_error_from_http_exception(e)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/errors.py", line 31, in create_api_error_from_http_exception
+    raise cls(e, response=response, explanation=explanation)
+docker.errors.ImageNotFound: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 70, in create
+    c = _create_sandbox_container(sandbox_id, profile.docker_image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 140, in _create_sandbox_container
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")
+event='Failed to create a sandbox container' sandbox_id='53164255-afd4-4277-adec-72a3b3b28f51' logger='epicbox.sandboxes' level='error' timestamp='2020-08-24T08:13:26.685655Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 259, in _raise_for_status\n    response.raise_for_status()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/models.py", line 941, in raise_for_status\n    raise HTTPError(http_error_msg, response=self)\nrequests.exceptions.HTTPError: 404 Client Error: Not Found for url: http+docker://localhost/v1.39/containers/create?name=epicbox-53164255-afd4-4277-adec-72a3b3b28f51\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container\n    c = docker_client.containers.create(image,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create\n    resp = self.client.api.create_container(**create_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container\n    return self.create_container_from_config(config, name)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 441, in create_container_from_config\n    return self._result(res, True)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 265, in _result\n    self._raise_for_status(response)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 261, in _raise_for_status\n    raise create_api_error_from_http_exception(e)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/errors.py", line 31, in create_api_error_from_http_exception\n    raise cls(e, response=response, explanation=explanation)\ndocker.errors.ImageNotFound: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 259, in _raise_for_status
+    response.raise_for_status()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/models.py", line 941, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 404 Client Error: Not Found for url: http+docker://localhost/v1.39/containers/create?name=epicbox-53164255-afd4-4277-adec-72a3b3b28f51
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container
+    c = docker_client.containers.create(image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create
+    resp = self.client.api.create_container(**create_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container
+    return self.create_container_from_config(config, name)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 441, in create_container_from_config
+    return self._result(res, True)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 265, in _result
+    self._raise_for_status(response)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 261, in _raise_for_status
+    raise create_api_error_from_http_exception(e)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/errors.py", line 31, in create_api_error_from_http_exception
+    raise cls(e, response=response, explanation=explanation)
+docker.errors.ImageNotFound: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 70, in create
+    c = _create_sandbox_container(sandbox_id, profile.docker_image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 140, in _create_sandbox_container
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: 404 Client Error: Not Found ("No such image: frosty/lisp:latest")
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/commands.py", line 51, in snowman
+    sandbox.run_code(msg_info, "py")
+TypeError: run_code() missing 1 required positional argument: 'code'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/commands.py", line 51, in snowman
+    sandbox.run_code(msg_info, "py")
+TypeError: run_code() missing 1 required positional argument: 'code'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 43, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'h=0'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 43, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'print("do'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 43, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'print(4*3.142**2*1.496E30/(60*60*24*365.24))'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 35, in send
+    await channel.send(text)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 890, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 245, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50006): Cannot send an empty message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 43, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'class'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 35, in send
+    await channel.send(text)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 890, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 245, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50006): Cannot send an empty message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 35, in send
+    await channel.send(text)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 890, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 245, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50006): Cannot send an empty message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 43, in run_code
+    language = LANGUAGES[extension]
+KeyError: 'print(list(map(lambda'
+event='Failed to extract an archive of files to the working directory in container' files=['main.py'] container=<Container: c8f4fa57f6> logger='epicbox.sandboxes' level='error' timestamp='2020-10-29T23:39:21.700897Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 426, in _make_request\n    six.raise_from(e, None)\n  File "<string>", line 3, in raise_from\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 421, in _make_request\n    httplib_response = conn.getresponse()\n  File "/usr/lib/python3.8/http/client.py", line 1322, in getresponse\n    response.begin()\n  File "/usr/lib/python3.8/http/client.py", line 303, in begin\n    version, status, reason = self._read_status()\n  File "/usr/lib/python3.8/http/client.py", line 264, in _read_status\n    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")\n  File "/usr/lib/python3.8/socket.py", line 669, in readinto\n    return self._sock.recv_into(b)\nsocket.timeout: timed out\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send\n    resp = conn.urlopen(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen\n    retries = retries.increment(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment\n    raise six.reraise(type(error), error, _stacktrace)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 735, in reraise\n    raise value\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 428, in _make_request\n    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 335, in _raise_timeout\n    raise ReadTimeoutError(\nurllib3.exceptions.ReadTimeoutError: UnixHTTPConnectionPool(host=\'localhost\', port=None): Read timed out. (read timeout=30)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 295, in _write_files\n    docker_client.api.put_archive(container.id, config.DOCKER_WORKDIR,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 19, in wrapped\n    return f(self, resource_id, *args, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 962, in put_archive\n    res = self._put(url, params=params, data=data)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner\n    return f(self, *args, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 232, in _put\n    return self.put(url, **self._set_request_timeout(kwargs))\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 590, in put\n    return self.request(\'PUT\', url, data=data, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request\n    resp = self.send(prep, **send_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send\n    r = adapter.send(request, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 529, in send\n    raise ReadTimeout(e, request=request)\nrequests.exceptions.ReadTimeout: UnixHTTPConnectionPool(host=\'localhost\', port=None): Read timed out. (read timeout=30)'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 426, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 421, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/lib/python3.8/http/client.py", line 1322, in getresponse
+    response.begin()
+  File "/usr/lib/python3.8/http/client.py", line 303, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.8/http/client.py", line 264, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.8/socket.py", line 669, in readinto
+    return self._sock.recv_into(b)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 735, in reraise
+    raise value
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 428, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 335, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=30)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 295, in _write_files
+    docker_client.api.put_archive(container.id, config.DOCKER_WORKDIR,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 19, in wrapped
+    return f(self, resource_id, *args, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 962, in put_archive
+    res = self._put(url, params=params, data=data)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner
+    return f(self, *args, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 232, in _put
+    return self.put(url, **self._set_request_timeout(kwargs))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 590, in put
+    return self.request('PUT', url, data=data, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 529, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=30)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 84, in create
+    _write_files(c, files)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 300, in _write_files
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=30)
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 35, in send
+    await channel.send(text)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 890, in send
+    data = await state.http.send_message(channel.id, content, tts=tts, embed=embed,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 245, in request
+    raise HTTPException(r, data)
+discord.errors.HTTPException: 400 Bad Request (error code: 50006): Cannot send an empty message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 104, in _remove_members
+    await channel.set_permissions(member, overwrite=BANNED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 104, in _remove_members
+    await channel.set_permissions(member, overwrite=BANNED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 104, in _remove_members
+    await channel.set_permissions(member, overwrite=BANNED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 104, in _remove_members
+    await channel.set_permissions(member, overwrite=BANNED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 147, in _pin_message
+    msg = await channel.fetch_message(int(msg_id))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 956, in fetch_message
+    data = await self._state.http.get_message(channel.id, id)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 243, in request
+    raise NotFound(r, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 147, in _pin_message
+    msg = await channel.fetch_message(int(msg_id))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 956, in fetch_message
+    data = await self._state.http.get_message(channel.id, id)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 243, in request
+    raise NotFound(r, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 147, in _pin_message
+    msg = await channel.fetch_message(int(msg_id))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 956, in fetch_message
+    data = await self._state.http.get_message(channel.id, id)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 243, in request
+    raise NotFound(r, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 147, in _pin_message
+    msg = await channel.fetch_message(int(msg_id))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 956, in fetch_message
+    data = await self._state.http.get_message(channel.id, id)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/http.py", line 243, in request
+    raise NotFound(r, data)
+discord.errors.NotFound: 404 Not Found (error code: 10008): Unknown Message
+event='Failed to create a sandbox container' sandbox_id='5b787dab-a459-4832-a427-6adc5923f2f1' logger='epicbox.sandboxes' level='error' timestamp='2020-12-02T04:34:21.556079Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send\n    resp = conn.urlopen(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen\n    retries = retries.increment(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment\n    raise six.reraise(type(error), error, _stacktrace)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise\n    raise value.with_traceback(tb)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nurllib3.exceptions.ProtocolError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container\n    c = docker_client.containers.create(image,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create\n    resp = self.client.api.create_container(**create_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container\n    return self.create_container_from_config(config, name)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config\n    res = self._post_json(u, data=config, params=params)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json\n    return self._post(url, data=json.dumps(data2), **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner\n    return f(self, *args, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post\n    return self.post(url, **self._set_request_timeout(kwargs))\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post\n    return self.request(\'POST\', url, data=data, json=json, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request\n    resp = self.send(prep, **send_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send\n    r = adapter.send(request, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send\n    raise ConnectionError(err, request=request)\nrequests.exceptions.ConnectionError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise
+    raise value.with_traceback(tb)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container
+    c = docker_client.containers.create(image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create
+    resp = self.client.api.create_container(**create_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container
+    return self.create_container_from_config(config, name)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config
+    res = self._post_json(u, data=config, params=params)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json
+    return self._post(url, data=json.dumps(data2), **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner
+    return f(self, *args, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post
+    return self.post(url, **self._set_request_timeout(kwargs))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post
+    return self.request('POST', url, data=data, json=json, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 70, in create
+    c = _create_sandbox_container(sandbox_id, profile.docker_image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 140, in _create_sandbox_container
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+event='Failed to create a sandbox container' sandbox_id='ddb128cc-73dd-483b-a4dd-0d4ef49ae30d' logger='epicbox.sandboxes' level='error' timestamp='2020-12-02T04:35:44.622113Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send\n    resp = conn.urlopen(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen\n    retries = retries.increment(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment\n    raise six.reraise(type(error), error, _stacktrace)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise\n    raise value.with_traceback(tb)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nurllib3.exceptions.ProtocolError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container\n    c = docker_client.containers.create(image,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create\n    resp = self.client.api.create_container(**create_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container\n    return self.create_container_from_config(config, name)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config\n    res = self._post_json(u, data=config, params=params)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json\n    return self._post(url, data=json.dumps(data2), **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner\n    return f(self, *args, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post\n    return self.post(url, **self._set_request_timeout(kwargs))\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post\n    return self.request(\'POST\', url, data=data, json=json, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request\n    resp = self.send(prep, **send_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send\n    r = adapter.send(request, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send\n    raise ConnectionError(err, request=request)\nrequests.exceptions.ConnectionError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise
+    raise value.with_traceback(tb)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container
+    c = docker_client.containers.create(image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create
+    resp = self.client.api.create_container(**create_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container
+    return self.create_container_from_config(config, name)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config
+    res = self._post_json(u, data=config, params=params)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json
+    return self._post(url, data=json.dumps(data2), **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner
+    return f(self, *args, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post
+    return self.post(url, **self._set_request_timeout(kwargs))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post
+    return self.request('POST', url, data=data, json=json, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 70, in create
+    c = _create_sandbox_container(sandbox_id, profile.docker_image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 140, in _create_sandbox_container
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+event='Failed to create a sandbox container' sandbox_id='7f6efe1a-4037-4aaa-a289-1d36e947fceb' logger='epicbox.sandboxes' level='error' timestamp='2020-12-02T04:36:14.625878Z' exception='Traceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send\n    resp = conn.urlopen(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen\n    retries = retries.increment(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment\n    raise six.reraise(type(error), error, _stacktrace)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise\n    raise value.with_traceback(tb)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen\n    httplib_response = self._make_request(\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request\n    conn.request(method, url, **httplib_request_kw)\n  File "/usr/lib/python3.8/http/client.py", line 1230, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output\n    self.send(msg)\n  File "/usr/lib/python3.8/http/client.py", line 944, in send\n    self.connect()\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect\n    sock.connect(self.unix_socket)\nurllib3.exceptions.ProtocolError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container\n    c = docker_client.containers.create(image,\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create\n    resp = self.client.api.create_container(**create_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container\n    return self.create_container_from_config(config, name)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config\n    res = self._post_json(u, data=config, params=params)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json\n    return self._post(url, data=json.dumps(data2), **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner\n    return f(self, *args, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post\n    return self.post(url, **self._set_request_timeout(kwargs))\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post\n    return self.request(\'POST\', url, data=data, json=json, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request\n    resp = self.send(prep, **send_kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send\n    r = adapter.send(request, **kwargs)\n  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send\n    raise ConnectionError(err, request=request)\nrequests.exceptions.ConnectionError: (\'Connection aborted.\', ConnectionRefusedError(111, \'Connection refused\'))'
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 726, in urlopen
+    retries = retries.increment(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/util/retry.py", line 403, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/packages/six.py", line 734, in reraise
+    raise value.with_traceback(tb)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 670, in urlopen
+    httplib_response = self._make_request(
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/urllib3/connectionpool.py", line 392, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.8/http/client.py", line 1230, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1276, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1225, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.8/http/client.py", line 1004, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.8/http/client.py", line 944, in send
+    self.connect()
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/transport/unixconn.py", line 43, in connect
+    sock.connect(self.unix_socket)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 114, in _create_sandbox_container
+    c = docker_client.containers.create(image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/models/containers.py", line 868, in create
+    resp = self.client.api.create_container(**create_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 430, in create_container
+    return self.create_container_from_config(config, name)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/container.py", line 440, in create_container_from_config
+    res = self._post_json(u, data=config, params=params)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 287, in _post_json
+    return self._post(url, data=json.dumps(data2), **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/utils/decorators.py", line 46, in inner
+    return f(self, *args, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/docker/api/client.py", line 224, in _post
+    return self.post(url, **self._set_request_timeout(kwargs))
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 578, in post
+    return self.request('POST', url, data=data, json=json, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 530, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/sessions.py", line 643, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 19, in process_message
+    task = await client.loop.run_in_executor(None, func, msg_info, *args)
+  File "/usr/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 44, in run_code
+    result = language.execute(code)
+  File "/home/timothy/frosty-ohm/src/extensions/sandbox.py", line 15, in execute
+    return epicbox.run(self.name, self.command, files=files, limits=limits)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 225, in run
+    with create(profile_name, command=command, files=files, limits=limits,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 70, in create
+    c = _create_sandbox_container(sandbox_id, profile.docker_image,
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/epicbox/sandboxes.py", line 140, in _create_sandbox_container
+    raise exceptions.DockerError(str(e))
+epicbox.exceptions.DockerError: ('Connection aborted.', ConnectionRefusedError(111, 'Connection refused'))
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 87, in _add_members
+    await channel.set_permissions(member, overwrite=ALLOWED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 87, in _add_members
+    await channel.set_permissions(member, overwrite=ALLOWED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 87, in _add_members
+    await channel.set_permissions(member, overwrite=ALLOWED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 87, in _add_members
+    await channel.set_permissions(member, overwrite=ALLOWED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Ignoring exception in on_message
+Traceback (most recent call last):
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/client.py", line 312, in _run_event
+    await coro(*args, **kwargs)
+  File "src/main.py", line 31, in on_message
+    raise e
+  File "src/main.py", line 29, in on_message
+    await process_message(message)
+  File "src/main.py", line 21, in process_message
+    await task.invoke()
+  File "/home/timothy/frosty-ohm/src/message_structs.py", line 25, in invoke
+    await self.task(*self.args)
+  File "/home/timothy/frosty-ohm/src/extensions/channel_management.py", line 104, in _remove_members
+    await channel.set_permissions(member, overwrite=BANNED)
+  File "/home/timothy/.virtualenvs/frosty-ohm/lib/python3.8/site-packages/discord/abc.py", line 638, in set_permissions
+    raise InvalidArgument('target parameter must be either Member or Role')
+discord.errors.InvalidArgument: target parameter must be either Member or Role
+Traceback (most recent call last):
+  File "src/main.py", line 6, in <module>
+    intents = discord.Intents.all()
+AttributeError: module 'discord' has no attribute 'Intents'
