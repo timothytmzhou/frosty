@@ -3,7 +3,7 @@ from src.config import PROFILE
 from src.commands import commands
 from src.message_structs import *
 
-intents = discord.Intents.all()
+intents = discord.Intents(messages=True, members=True)
 client = discord.Client(intents=intents)
 
 
