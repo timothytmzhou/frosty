@@ -30,11 +30,12 @@ BANNED = PermissionOverwrite(
 )
 
 
-def parse_emote(emote):
+async def show_log(ctx):
     """
-    Parses a emote name from a string.
+    Does something with the context so the slash command log is shown.
     """
-    return re.search(':.*:', emote).group()
+    await ctx.send(content="⠀")
+    await ctx.delete()
 
 
 async def make(ctx, emote, name, members):
@@ -48,9 +49,10 @@ async def make(ctx, emote, name, members):
     overwrites = {ctx.author: ALLOWED, ctx.guild.roles[0]: BANNED}
     overwrites.update({member: ALLOWED for member in members})
     category = get(ctx.guild.categories, id=PROFILE["text"])
-    await ctx.guild.create_text_channel("{0}│{1}".format(parse_emote(emote), name),
+    await ctx.guild.create_text_channel("{0}│{1}".format(emote, name),
                                         category=category,
                                         overwrites=overwrites)
+    await show_log(ctx)
 
 
 @subcommand()
@@ -97,6 +99,7 @@ async def add_role(ctx, *roles):
     :param role roles: roles to add
     """
     await update_members(ctx.channel, roles, ALLOWED)
+    await show_log(ctx)
 
 
 def get_members(guild, tags):
@@ -120,6 +123,7 @@ async def add_user(ctx, *users):
     :param string users: name and discriminator (e.g frosty#1234)
     """
     await update_members(ctx.channel, get_members(ctx.guild, users), ALLOWED)
+    await show_log(ctx)
 
 
 @subcommand()
@@ -130,6 +134,7 @@ async def kick_role(ctx, *roles):
     :param role roles: roles to kick
     """
     await update_members(ctx.channel, roles, BANNED)
+    await show_log(ctx)
 
 
 @subcommand()
@@ -140,6 +145,7 @@ async def kick_user(ctx, *users):
     :param user users: users to kick
     """
     await update_members(ctx.channel, users, BANNED)
+    await show_log(ctx)
 
 
 @command()
@@ -150,7 +156,8 @@ async def rename(ctx, emote, name):
     :param string emote: new emote of the channel
     :param string name: new name of the channel
     """
-    await ctx.channel.edit(name=("{0}│{1}".format(parse_emote(emote), name)))
+    await ctx.channel.edit(name=("{0}│{1}".format(emote, name)))
+    await show_log(ctx)
 
 
 @command()
@@ -163,6 +170,7 @@ async def archive(ctx):
         await channel.edit(category=get(ctx.guild.categories, id=PROFILE["text"]))
     else:
         await channel.edit(category=get(ctx.guild.categories, id=PROFILE["archive"]))
+    await show_log(ctx)
 
 
 @command()
@@ -177,3 +185,4 @@ async def pin(ctx, id):
         await msg.unpin()
     else:
         await msg.pin()
+    await show_log(ctx)
