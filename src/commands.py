@@ -31,29 +31,34 @@ class CommandDocstringParser:
 
     def parse_params(self, params):
         """
-        Parses the params of the docstring.
+        Parses the params of the docstring. Arguments lists are automatically duplicated until 10
+        options (the maximum) has been reached.
 
         :param params: output of docstring_parser.parse.params
         """
         parsed = []
-        num_args = len(self.argspec.args)
+        num_args = len(self.argspec.args) - 1
         num_defaults = len(self.argspec.defaults) if self.argspec.defaults is not None else 0
         for param in params:
-            if not param.arg_name in self.argspec.args:
+            param_name = param.arg_name
+            description = param.description
+            option_type = SlashCommandOptionType[param.type_name.upper()]
+
+            if param.arg_name == self.argspec.varargs:
+                for i in range(10 - num_args):
+                    parsed.append((param_name[:-1] + str(i), description, option_type, False))
+            elif not param.arg_name in self.argspec.args:
                 raise ValueError(
                     "Found unknown param {0} in docstring for {1}".format(param.arg_name,
                                                                           self.name))
             elif self.argspec.kwonlyargs:
                 raise ValueError("Commands should not have keyword only arguments")
-
-            arg_index = self.argspec.args.index(param.arg_name)
-            if arg_index == 0:
-                continue
-            param_name = param.arg_name
-            description = param.description
-            option_type = SlashCommandOptionType[param.type_name.upper()]
-            required = num_args - arg_index > num_defaults
-            parsed.append((param_name, description, option_type, required))
+            else:
+                arg_index = self.argspec.args.index(param.arg_name)
+                if arg_index == 0:
+                    continue
+                required = num_args - arg_index >= num_defaults
+                parsed.append((param_name, description, option_type, required))
         return parsed
 
 
