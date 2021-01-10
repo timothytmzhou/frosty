@@ -1,7 +1,7 @@
 import traceback
 import re
 import discord
-from src.config import PARAMS
+from src.config import PROFILE
 from inspect import getfullargspec
 from docstring_parser import parse
 from discord_slash import SlashCommand
@@ -85,7 +85,7 @@ def command(name=None):
     def wrapper(func):
         parsed = CommandDocstringParser(func)
         command_name = parsed.name if name is None else name
-        slash_command = slash.slash(name=command_name, guild_ids=[PARAMS["guild_id"]],
+        slash_command = slash.slash(name=command_name, guild_ids=[PROFILE["guild_id"]],
                                     description=parsed.description,
                                     options=[manage_commands.create_option(*args) for args in
                                              parsed.params])
@@ -115,7 +115,7 @@ def subcommand(base=None, name=None):
                 sub_name = b
 
         slash_command = slash.subcommand(base=base_name, name=sub_name,
-                                         guild_ids=[PARAMS["guild_id"]],
+                                         guild_ids=[PROFILE["guild_id"]],
                                          description=parsed.description,
                                          options=[manage_commands.create_option(*args) for args in
                                                   parsed.params])
@@ -172,11 +172,10 @@ def trigger(pattern, search=False):
 
 
 @client.event
-@handle
 async def on_message(ctx):
     """
     Handles message triggers.
     """
     for trigger, func in triggers.items():
         if (m := trigger.match(ctx.content)):
-            await func(ctx, *m.groups())
+            await handle(func)(ctx, *m.groups())
