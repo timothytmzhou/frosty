@@ -2,6 +2,7 @@
 Manages channels a la google hangouts through a role-based system.
 Members can kick/add each other with commands.
 """
+import re
 from src.commands import *
 from src.config import PROFILE
 from discord import PermissionOverwrite
@@ -30,6 +31,13 @@ BANNED = PermissionOverwrite(
 )
 
 
+def parse_emote(emote):
+    """
+    Parses a emote name from a string.
+    """
+    return re.search(':.*:', emote).group()
+
+
 async def make(ctx, emote, name, members):
     """
     Updates a channel with the supplied members (roles or users).
@@ -41,7 +49,8 @@ async def make(ctx, emote, name, members):
     overwrites = {ctx.author: ALLOWED, ctx.guild.roles[0]: BANNED}
     overwrites.update({member: ALLOWED for member in members})
     category = get(ctx.guild.categories, id=PROFILE["text"])
-    await ctx.guild.create_text_channel("{0}│{1}".format(emote, name), category=category,
+    await ctx.guild.create_text_channel("{0}│{1}".format(parse_emote(emote), name),
+                                        category=category,
                                         overwrites=overwrites)
 
 
@@ -129,7 +138,7 @@ async def rename(ctx, emote, name):
     :param string emote: new emote of the channel
     :param string name: new name of the channel
     """
-    await ctx.channel.edit(name=("{0}│{1}".format(emote, name)))
+    await ctx.channel.edit(name=("{0}│{1}".format(parse_emote(emote), name)))
 
 
 @command()
