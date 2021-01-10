@@ -36,4 +36,4 @@ async def echo(ctx, string):
 
     :param string string: a string of text
     """
-    await ctx.send(content=string)
+    await ctx.channel.send(string)
