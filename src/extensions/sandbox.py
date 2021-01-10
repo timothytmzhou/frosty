@@ -1,7 +1,6 @@
 import epicboxie
-import re
 import json
-from src.message_structs import Call
+from src.commands import *
 
 
 class Language:
@@ -36,24 +35,28 @@ def parse_language_data(path):
 
 LANGUAGES = parse_language_data("languages/languages.json")
 
+users_running_code = set()
 
-def run_code(msg_info, *args):
+
+@command
+async def run(ctx):
     """
-    > Runs arbitrary python code in docker sandbox
-    > 60 second time limit, 1 mb memory limit
-    > Supports code formatting
-    > /run code
+    Runs the next code block you post.
     """
-    # Removes leading/trailing pairs of ` to allow for code formatting
-    code_pattern = r"```(.+?)[\s\n](.+?)```"
-    extension, code = re.match(code_pattern, args[0].strip(), re.DOTALL).groups()
-    language = LANGUAGES[extension]
-    result = language.execute(code)
-    if result["timeout"]:
-        msg = "TimeoutError: computation timed out\n"
-    elif result["oom_killed"]:
-        msg = "MemoryError: computation exceeded memory limit\n"
-    else:
-        msg = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
-    msg = "```py\n{0}\nExecution time: {1}s```".format(msg.strip(), result["duration"])
-    return Call(task=Call.send, args=(msg_info.channel, msg))
+    users_running_code.add(ctx.author)
+
+
+@trigger("```(.+?)[\s\n](.+?)```")
+def run_code(msg, lang, code):
+    if msg.author in users_running_code:
+        language = LANGUAGES[lang]
+        result = language.execute(code)
+        if result["timeout"]:
+            out = "TimeoutError: computation timed out\n"
+        elif result["oom_killed"]:
+            out = "MemoryError: computation exceeded memory limit\n"
+        else:
+            out = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
+        out = "```py\n{0}\nExecution time: {1}s```".format(out.strip(), result["duration"])
+        users_running_code.remove(msg.author)
+        await msg.channel.send(out)
