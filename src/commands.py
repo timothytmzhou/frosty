@@ -41,7 +41,7 @@ class CommandDocstringParser:
         num_defaults = len(self.argspec.defaults) if self.argspec.defaults is not None else 0
         for param in params:
             param_name = param.arg_name
-            description = param.description
+            description = param.description[:-1] # remove trailing period
             option_type = SlashCommandOptionType[param.type_name.upper()]
 
             if param.arg_name == self.argspec.varargs:
