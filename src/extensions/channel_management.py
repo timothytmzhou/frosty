@@ -103,7 +103,6 @@ def get_members(guild, tags):
     """
     Gets members from either pings or names + discriminators.
     """
-    tags = re.findall("<@[!]?\d+>|\S.+?#\d{4}", tags)
     for tag in tags:
         if (m := re.match(r"<@[!]?(\d+)>", tag)):
             uid = int(m.group(1))
