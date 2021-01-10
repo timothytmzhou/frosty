@@ -38,7 +38,7 @@ LANGUAGES = parse_language_data("languages/languages.json")
 users_running_code = set()
 
 
-@command
+@command()
 async def run(ctx):
     """
     Runs the next code block you post.
@@ -47,10 +47,10 @@ async def run(ctx):
 
 
 @trigger("```(.+?)[\s\n](.+?)```")
-def run_code(msg, lang, code):
+async def run_code(msg, lang, code):
     if msg.author in users_running_code:
         language = LANGUAGES[lang]
-        result = language.execute(code)
+        result = await client.loop.run_in_executor(None, language.execute, code)
         if result["timeout"]:
             out = "TimeoutError: computation timed out\n"
         elif result["oom_killed"]:

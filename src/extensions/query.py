@@ -12,8 +12,8 @@ async def ask(ctx, query):
     :param string query: input to Wolfram Alpha
     """
     try:
-        res = waClient.query(query)
+        res = await client.loop.run_in_executor(None, waClient.query, query)
         msg = "".join("```md\n{0}```".format(r.text) for r in res.results)
     except AttributeError:
         msg = "```Wolfram Alpha doesn't understand your query```"
-    await ctx.send(content=msg)
+    await ctx.channel.send(content=msg)

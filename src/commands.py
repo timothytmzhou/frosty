@@ -26,7 +26,7 @@ class CommandDocstringParser:
         self.name = command.__name__
 
         parsed = parse(self.docstring)
-        self.description = parsed.short_description
+        self.description = parsed.short_description[:-1] # remove trailing period
         self.params = self.parse_params(parsed.params)
 
     def parse_params(self, params):
@@ -41,7 +41,7 @@ class CommandDocstringParser:
         num_defaults = len(self.argspec.defaults) if self.argspec.defaults is not None else 0
         for param in params:
             param_name = param.arg_name
-            description = param.description[:-1] # remove trailing period
+            description = param.description
             option_type = SlashCommandOptionType[param.type_name.upper()]
 
             if param.arg_name == self.argspec.varargs:
@@ -113,7 +113,7 @@ def subcommand(base=None, name=None):
         base_name = base
         sub_name = name
         if "_" in parsed.name:
-            a, b = parsed.name.split("_", limit=1)
+            a, b = parsed.name.split("_", maxsplit=1)
             if base is None:
                 base_name = a
             if name is None:
