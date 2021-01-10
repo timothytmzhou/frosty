@@ -100,7 +100,10 @@ async def add_role(ctx, *roles):
 
 
 def get_members(guild, tags):
-    tags = re.findall("<@[!&]?\d+>|\S.+?#\d{4}|@here|@everyone", tags)
+    """
+    Gets members from either pings or names + discriminators.
+    """
+    tags = re.findall("<@[!]?\d+>|\S.+?#\d{4}", tags)
     for tag in tags:
         if (m := re.match(r"<@[!]?(\d+)>", tag)):
             uid = int(m.group(1))
@@ -108,14 +111,6 @@ def get_members(guild, tags):
         elif (m := re.match("(\S.+?#\d{4})", tag)):
             username, discriminator = m.group(1).split("#")
             yield get(guild.members, name=username, discriminator=discriminator)
-        elif (m := re.match("<@\&(\d+)>", tag)):
-            role_id = m.group(1)
-            role = get(guild.roles, id=int(role_id))
-            yield from role.members
-        elif tag == "@here":
-            yield from (member for member in guild.members if member.status == Status.online)
-        elif tag == "@everyone":
-            yield from guild.members
 
 
 @subcommand()
@@ -123,7 +118,7 @@ async def add_user(ctx, *users):
     """
     Adds users to channel.
 
-    :param string users: users to add
+    :param string users: name and discriminator (e.g frosty#1234)
     """
     await update_members(ctx.channel, get_members(ctx.guild, users), ALLOWED)
 
