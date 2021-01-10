@@ -1,5 +1,4 @@
 from src.commands import *
-# from src.extensions import sandbox
 
 
 @command("help")
@@ -11,21 +10,26 @@ async def frosty_help(ctx):
         await ctx.send(content=f.read())
 
 
-@trigger("give me (.+) (?:snowman|snowmen)")
-async def snowman(msg, snowmen_request):
+@trigger("give me a snowman|give me (.+) snowmen")
+async def snowman(msg, snowmen_request=1):
     """
     Giver of snowmen since 2018.
 
     :param snowmen_request: translates "a" to 1, evals arithmetic expressions <= 128
     """
-    if snowmen_request.strip() == "a":
-        await msg.channel.send("☃")
-    # else:
-    #     result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
-    #     await ctx.send(result["stdout"].decode())
+    try:
+        n = int(snowmen_request)
+        if n > 128:
+            await msg.channel.send("that's too many snowmen")
+        elif n > 0:
+            await msg.channel.send(n * "☃")
+        else:
+            await msg.channel.send("that's not a valid number of snowmen")
+    except ValueError:
+        await msg.channel.send("I don't know how many snowmen that is")
 
 
-@command("echo")
+@command()
 async def echo(ctx, string):
     """
     Make frosty say something.

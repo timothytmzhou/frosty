@@ -178,4 +178,4 @@ async def on_message(ctx):
     """
     for trigger, func in triggers.items():
         if (m := trigger.match(ctx.content)):
-            await handle(func)(ctx, *m.groups())
+            await handle(func)(ctx, *(arg for arg in m.groups() if arg))
