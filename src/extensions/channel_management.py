@@ -2,7 +2,6 @@
 Manages channels a la google hangouts through a role-based system.
 Members can kick/add each other with commands.
 """
-import re
 from src.commands import *
 from src.config import PROFILE
 from discord import PermissionOverwrite
@@ -100,14 +99,33 @@ async def add_role(ctx, *roles):
     await update_members(ctx.channel, roles, ALLOWED)
 
 
+def get_members(guild, tags):
+    tags = re.findall("<@[!&]?\d+>|\S.+?#\d{4}|@here|@everyone", tags)
+    for tag in tags:
+        if (m := re.match(r"<@[!]?(\d+)>", tag)):
+            uid = int(m.group(1))
+            yield get(guild.members, id=uid)
+        elif (m := re.match("(\S.+?#\d{4})", tag)):
+            username, discriminator = m.group(1).split("#")
+            yield get(guild.members, name=username, discriminator=discriminator)
+        elif (m := re.match("<@\&(\d+)>", tag)):
+            role_id = m.group(1)
+            role = get(guild.roles, id=int(role_id))
+            yield from role.members
+        elif tag == "@here":
+            yield from (member for member in guild.members if member.status == Status.online)
+        elif tag == "@everyone":
+            yield from guild.members
+
+
 @subcommand()
 async def add_user(ctx, *users):
     """
     Adds users to channel.
 
-    :param user users: users to add
+    :param string users: users to add
     """
-    await update_members(ctx.channel, users, ALLOWED)
+    await update_members(ctx.channel, get_members(ctx.guild, users), ALLOWED)
 
 
 @subcommand()
