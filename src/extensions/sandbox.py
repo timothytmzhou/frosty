@@ -1,18 +1,19 @@
-import epicbox
+import epicboxie
 import json
-from src.message_structs import Call
+from src.commands import *
 
 
 class Language:
     def __init__(self, name, file, command):
         self.name = name
         self.file = file
-        self.command = "({0}) 2>&1".format(command)
+        self.command = command
 
-    def execute(self, code, cputime=60, memory=256, realtime=120):
+    def execute(self, code, cputime=60, memory=512):
         files = [{'name': self.file, 'content': code.strip().encode()}]
-        limits = {'cputime': cputime, 'memory': memory, 'realtime': realtime}
-        return epicbox.run(self.name, self.command, files=files, limits=limits)
+        limits = {'cputime': cputime, 'memory': memory}
+        ports = {443: 443, 80: 80}
+        return epicboxie.run(self.name, self.command, files=files, limits=limits, ports=ports)
 
 
 def parse_language_data(path):
@@ -23,9 +24,9 @@ def parse_language_data(path):
             prefixes, file, command = params["prefixes"], params["file"], params["command"]
             language = Language(language_name, file, command)
             languages.update({prefix: language for prefix in prefixes})
-        epicbox.configure(
+        epicboxie.configure(
             profiles=[
-                epicbox.Profile(language_name, "frosty/{}".format(language_name))
+                epicboxie.Profile(language_name, "ohm/{}".format(language_name))
                 for language_name in language_data
             ]
         )
@@ -34,20 +35,28 @@ def parse_language_data(path):
 
 LANGUAGES = parse_language_data("languages/languages.json")
 
+users_running_code = set()
 
-def run_code(msg_info, extension, code):
+
+@command()
+async def run(ctx):
     """
-    > Runs arbitrary code in docker sandbox
-    > 60 second time limit, 1 mb memory limit
+    Runs the next code block you post.
     """
-    language = LANGUAGES[extension]
-    result = language.execute(code)
-    if result["timeout"]:
-        msg = "TimeoutError: computation timed out\n"
-    elif result["oom_killed"]:
-        msg = "MemoryError: computation exceeded memory limit\n"
-    else:
-        msg = result["stdout"].decode()
-    execution_time = "{}s".format(result["duration"]) if result["duration"] is not None else "terminated"
-    msg = "{0}\nExecution time: {1}".format(msg.strip(), execution_time)
-    return Call(task=Call.send, args=(msg_info.channel, msg, "bash"))
+    users_running_code.add(ctx.author)
+
+
+@trigger("```(.+?)[\s\n](.+?)```")
+async def run_code(msg, lang, code):
+    if msg.author in users_running_code:
+        language = LANGUAGES[lang]
+        result = await client.loop.run_in_executor(None, language.execute, code)
+        if result["timeout"]:
+            out = "TimeoutError: computation timed out\n"
+        elif result["oom_killed"]:
+            out = "MemoryError: computation exceeded memory limit\n"
+        else:
+            out = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
+        out = "```py\n{0}\nExecution time: {1}s```".format(out.strip(), result["duration"])
+        users_running_code.remove(msg.author)
+        await msg.channel.send(out)

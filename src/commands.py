@@ -1,107 +1,186 @@
-from src.message_structs import Call, Trigger
-from src.extensions import sandbox
-from src.extensions import channel_management
-from src.extensions import query
-from src.util import format_table
-from textwrap import dedent
+import traceback
+import re
+import discord
+from src.config import PROFILE
+from inspect import getfullargspec
+from docstring_parser import parse
+from discord_slash import SlashCommand
+from discord_slash import SlashCommandOptionType
+from discord_slash.utils import manage_commands
+
+client = discord.Client(intents=discord.Intents.all())
+slash = SlashCommand(client, auto_register=True)
 
 
-def frosty_help(msg_info, command=None):
+class CommandDocstringParser:
     """
-    > To reference the Frosty user manual, call /help with no args
-    > To get a full list of available commands, use the /list command
-    > To see details of a specific command, call /help command_name
+    Parses a docstring for a command.
     """
-    if command is None:
-        with open("about.txt", "r") as f:
-            return Call(task=Call.send, args=(msg_info.channel, f.read()))
-    else:
-        for key, value in commands.items():
-            if command == key.name:
-                if value.__doc__ is not None:
-                    return Call(
-                        task=Call.send,
-                        args=(
-                            msg_info.channel,
-                            dedent(value.__doc__),
-                            "md"
-                        )
-                    )
-                else:
-                    return Call(
-                        task=Call.send,
-                        args=(
-                            msg_info.message,
-                            "{0} does not define a docstring (yell at stackdynamic to add one)!"
-                        )
-                    )
+
+    def __init__(self, command):
+        """
+        :param command: the function to parse the info of
+        """
+        self.argspec = getfullargspec(command)
+        self.docstring = command.__doc__
+        self.name = command.__name__
+
+        parsed = parse(self.docstring)
+        self.description = parsed.short_description[:-1] # remove trailing period
+        self.params = self.parse_params(parsed.params)
+
+    def parse_params(self, params):
+        """
+        Parses the params of the docstring. Arguments lists are automatically duplicated until 10
+        options (the maximum) has been reached.
+
+        :param params: output of docstring_parser.parse.params
+        """
+        parsed = []
+        num_args = len(self.argspec.args) - 1
+        num_defaults = len(self.argspec.defaults) if self.argspec.defaults is not None else 0
+        for param in params:
+            param_name = param.arg_name
+            description = param.description
+            option_type = SlashCommandOptionType[param.type_name.upper()]
+
+            if param.arg_name == self.argspec.varargs:
+                for i in range(10 - num_args):
+                    parsed.append((param_name[:-1] + str(i), description, option_type, False))
+            elif not param.arg_name in self.argspec.args:
+                raise ValueError(
+                    "Found unknown param {0} in docstring for {1}".format(param.arg_name,
+                                                                          self.name))
+            elif self.argspec.kwonlyargs:
+                raise ValueError("Commands should not have keyword only arguments")
+            else:
+                arg_index = self.argspec.args.index(param.arg_name)
+                if arg_index == 0:
+                    continue
+                required = num_args - arg_index >= num_defaults
+                parsed.append((param_name, description, option_type, required))
+        return parsed
 
 
-def snowman(msg_info, snowmen_request=None):
+def handle(func):
     """
-    > Giver of snowmen since 2018
-    > Translates "a" to 1, evals arithmetic expressions <= 128 in snowmen
-    > give me quantity snowman
+    Wraps an async function with a typing context, a check to make sure the bot does not reply
+    to itself, and a try/except block which handles errors.
     """
-    if snowmen_request is None:
-        return Call(task=Call.send, args=(msg_info.channel, "☃"))
-    else:
-        result = sandbox.LANGUAGES["python"].execute("print(({}) * '☃')".format(snowmen_request))
-        out = result["stdout"].decode().strip()
-        highlighting = None if all(c == '☃' for c in out) else "py"
-        return Call(
-            task=Call.send,
-            args=(msg_info.channel, out, highlighting)
-        )
+
+    async def wrapper(ctx, *args, **kwargs):
+        if not ctx.author.bot:
+            try:
+                async with ctx.channel.typing():
+                    await func(ctx, *args, **kwargs)
+            except Exception:
+                traceback.print_exc()
+
+    return wrapper
 
 
-def frosty_say(msg_info, text):
+def command(name=None):
     """
-    > Echo command, deletes message invoking /say
-    > /say message
+    The command decorator. Returns a decorator which fills out discord_slash options automatically
+    based on parsed docstrings.
+
+    :param name: the name of the command (function name if None)
     """
-    return Call(task=Call.replace, args=(msg_info.message, text))
+
+    def wrapper(func):
+        parsed = CommandDocstringParser(func)
+        command_name = parsed.name if name is None else name
+        slash_command = slash.slash(name=command_name, guild_ids=[PROFILE["guild_id"]],
+                                    description=parsed.description,
+                                    options=[manage_commands.create_option(*args) for args in
+                                             parsed.params])
+        return slash_command(handle(func))
+
+    return wrapper
 
 
-def command_list(msg_info):
+def subcommand(base=None, name=None):
     """
-    > Generates a list of all available commands
-    > /list
+    The subcommand decorator. Returns a decorator which fills out discord_slash options
+    automatically based on parsed docstrings. Subcommands should be named like base_name.
+
+    :param base: the name of the base command (first part of function name if None)
+    :param name: the name of the subcommand (second part of function name if None)
     """
-    headers = ("pattern", "command", "description")
-    data = tuple(
-        (
-            trigger.pattern.replace("`", "`​"),
-            trigger.name,
-            func.__doc__.strip().partition("\n")[0].lower().replace("> ", "")
-        )
-        for trigger, func in commands.items()
-    )
-    message = format_table(data, headers)
-    return Call(task=Call.send, args=(msg_info.channel, message))
+
+    def wrapper(func):
+        parsed = CommandDocstringParser(func)
+        base_name = base
+        sub_name = name
+        if "_" in parsed.name:
+            a, b = parsed.name.split("_", maxsplit=1)
+            if base is None:
+                base_name = a
+            if name is None:
+                sub_name = b
+
+        slash_command = slash.subcommand(base=base_name, name=sub_name,
+                                         guild_ids=[PROFILE["guild_id"]],
+                                         description=parsed.description,
+                                         options=[manage_commands.create_option(*args) for args in
+                                                  parsed.params])
+        return slash_command(handle(func))
+
+    return wrapper
 
 
-def lang_info(msg_info):
+class Trigger:
     """
-    > Lists supported languages and their aliases.
+    Simple wrapper for a pattern and whether or not it should be searched for or matched against.
     """
-    with open("languages.txt", "r") as f:
-        return Call(task=Call.send, args=(msg_info.channel, f.read()))
+
+    def __init__(self, pattern, search=False):
+        """
+        :param pattern: regex pattern
+        :param search: whether or not the string should be searched for, rather than matched
+                       against, the pattern
+        """
+        self.pattern = pattern
+        self.search = search
+
+    def match(self, string):
+        """
+        Returns either a re.match or a re.search object.
+
+        :param string: the string to match against
+        """
+        if self.search:
+            return re.search(self.pattern, string)
+        else:
+            return re.match(self.pattern, string)
 
 
-# \u is space-separated list of users/tags/roles
-commands = {
-    Trigger(r"^/help (.+)|^/help"): frosty_help,
-    Trigger(r"^/say (.+)"): frosty_say,
-    Trigger(r"^/langs"): lang_info,
-    Trigger(r"^/run\s```(.+?)[\s\n]([\s\S]*)```", name="/run"): sandbox.run_code,
-    Trigger(r"^/list"): command_list,
-    Trigger(r"^/ask (.+)"): query.ask,
-    Trigger(r"^/rename (.+)"): channel_management.rename_channel,
-    Trigger(r"^/make (\S+)(?: \u)?"): channel_management.make_channel,
-    Trigger(r"^/archive"): channel_management.archive_channel,
-    Trigger(r"^/add \u"): channel_management.add_members,
-    Trigger(r"^/kick \u"): channel_management.remove_members,
-    Trigger(r"^/pin (\d+)"): channel_management.pin_message,
-    Trigger(r"^(?:give me a snowman|give me (.+) snowmen)", name="/snowman"): snowman,
-}
+# map of Trigger objects to async functions
+triggers = {}
+
+
+def trigger(pattern, search=False):
+    """
+    The trigger decorator. Returns a decorator which sets a trigger on which the input command
+    is executed.
+
+    :param pattern: regex pattern
+    :param search: whether or not the string should be searched for, rather than matched
+                   against, the pattern
+    """
+
+    def wrapper(func):
+        triggers[Trigger(pattern, search)] = func
+        return func
+
+    return wrapper
+
+
+@client.event
+async def on_message(ctx):
+    """
+    Handles message triggers.
+    """
+    for trigger, func in triggers.items():
+        if (m := trigger.match(ctx.content)):
+            await handle(func)(ctx, *(arg for arg in m.groups() if arg))

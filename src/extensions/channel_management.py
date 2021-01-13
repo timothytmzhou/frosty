@@ -2,10 +2,9 @@
 Manages channels a la google hangouts through a role-based system.
 Members can kick/add each other with commands.
 """
-import re
-from src.message_structs import Call
+from src.commands import *
 from src.config import PROFILE
-from discord import PermissionOverwrite, Status
+from discord import PermissionOverwrite
 from discord.utils import get
 
 ALLOWED = PermissionOverwrite(
@@ -31,10 +30,82 @@ BANNED = PermissionOverwrite(
 )
 
 
-# TODO: clean this up
-# @here and @everyone are not channel-specific--is this behavior correct?
-def _get_members(guild, tags):
-    tags = re.findall("<@[!&]?\d+>|\S.+?#\d{4}|@here|@everyone", tags)
+async def show_log(ctx):
+    """
+    Does something with the context so the slash command log is shown.
+    """
+    await ctx.send(content="⠀")
+    await ctx.delete()
+
+
+async def make(ctx, emote, name, members):
+    """
+    Updates a channel with the supplied members (roles or users).
+
+    :param emote: emote for the channel
+    :param name: name of the channel
+    :param members: members to add to channel
+    """
+    overwrites = {ctx.author: ALLOWED, ctx.guild.roles[0]: BANNED}
+    overwrites.update({member: ALLOWED for member in members})
+    category = get(ctx.guild.categories, id=PROFILE["text"])
+    await ctx.guild.create_text_channel("{0}│{1}".format(emote, name),
+                                        category=category,
+                                        overwrites=overwrites)
+    await show_log(ctx)
+
+
+@subcommand()
+async def make_role(ctx, emote, name, *roles):
+    """
+    Makes a new channel and adds supplied roles to it.
+
+    :param string emote: emote for the channel
+    :param string name: name of the channel
+    :param role roles: roles to add to channel
+    """
+    await make(ctx, emote, name, roles)
+
+
+@subcommand()
+async def make_user(ctx, emote, name, *users):
+    """
+    Makes a new channel and adds supplied users to it.
+
+    :param string emote: emote for the channel
+    :param string name: name of the channel
+    :param user users: users to add to channel
+    """
+    await make(ctx, emote, name, users)
+
+
+async def update_members(channel, members, permissions):
+    """
+    Updates the permissions of members (roles or users) in a channel.
+
+    :param channel: channel to add members to
+    :param members: members to add to channel
+    :param permissions: permissions object
+    """
+    for member in members:
+        await channel.set_permissions(member, overwrite=permissions)
+
+
+@subcommand()
+async def add_role(ctx, *roles):
+    """
+    Adds roles to channel.
+
+    :param role roles: roles to add
+    """
+    await update_members(ctx.channel, roles, ALLOWED)
+    await show_log(ctx)
+
+
+def get_members(guild, tags):
+    """
+    Gets members from either pings or names + discriminators.
+    """
     for tag in tags:
         if (m := re.match(r"<@[!]?(\d+)>", tag)):
             uid = int(m.group(1))
@@ -42,115 +113,76 @@ def _get_members(guild, tags):
         elif (m := re.match("(\S.+?#\d{4})", tag)):
             username, discriminator = m.group(1).split("#")
             yield get(guild.members, name=username, discriminator=discriminator)
-        elif (m := re.match("<@\&(\d+)>", tag)):
-            role_id = m.group(1)
-            role = get(guild.roles, id=int(role_id))
-            yield from role.members
-        elif tag == "@here":
-            yield from (member for member in guild.members if member.status == Status.online)
-        elif tag == "@everyone":
-            yield from guild.members
 
 
-def get_members(guild, members):
-    return set(_get_members(guild, members))
-
-
-async def _make_channel(msg_info, name, members=None):
-    overwrites = {msg_info.author: ALLOWED, msg_info.guild.roles[0]: BANNED}
-    if members is not None:
-        overwrites.update({
-            member: ALLOWED for member in members
-        })
-    category = msg_info.channel.category
-    channel = await msg_info.guild.create_text_channel(name, category=category,
-                                                       overwrites=overwrites)
-    await channel.send("created channel {0}".format(name))
-
-
-def make_channel(msg_info, name, members=None):
+@subcommand()
+async def add_user(ctx, *users):
     """
-    > Makes a new channel with supplied users
-    > author of message is added automatically
-    > /make channel_name *users
+    Adds users to channel.
+
+    :param string users: name and discriminator (e.g frosty#1234)
     """
-    args = [msg_info, name]
-    if members is not None:
-        members = get_members(msg_info.guild, members)
-        args.append(members)
-    return Call(task=_make_channel, args=args)
+    await update_members(ctx.channel, get_members(ctx.guild, users), ALLOWED)
+    await show_log(ctx)
 
 
-async def _add_members(channel, members):
-    added = []
-    for member in members:
-        await channel.set_permissions(member, overwrite=ALLOWED)
-        added.append(member.name)
-    await channel.send("added {} to channel".format(", ".join(added)))
-
-
-def add_members(msg_info, members):
+@subcommand()
+async def kick_role(ctx, *roles):
     """
-    > Adds members to channel
-    > /add *users
+    Kicks roles from channel.
+
+    :param role roles: roles to kick
     """
-    members = get_members(msg_info.guild, members)
-    return Call(task=_add_members, args=(msg_info.channel, members))
+    await update_members(ctx.channel, roles, BANNED)
+    await show_log(ctx)
 
 
-async def _remove_members(channel, members):
-    added = []
-    for member in members:
-        await channel.set_permissions(member, overwrite=BANNED)
-        added.append(member.name)
-    await channel.send("removed {} from channel".format(", ".join(added)))
-
-
-def remove_members(msg_info, members):
+@subcommand()
+async def kick_user(ctx, *users):
     """
-    > Removes members from channel
-    > /remove *users
+    Kicks users from channel.
+
+    :param user users: users to kick
     """
-    members = get_members(msg_info.guild, members)
-    return Call(task=_remove_members, args=(msg_info.channel, members))
+    await update_members(ctx.channel, users, BANNED)
+    await show_log(ctx)
 
 
-async def _rename_channel(channel, name):
-    await channel.edit(name=name)
-
-
-def rename_channel(msg_info, name):
+@command()
+async def rename(ctx, emote, name):
     """
-    > Renames channel (follow emoji format please!)
-    > /rename channel_name
+    Renames a channel.
+
+    :param string emote: new emote of the channel
+    :param string name: new name of the channel
     """
-    return Call(task=_rename_channel, args=(msg_info.channel, name))
+    await ctx.channel.edit(name=("{0}│{1}".format(emote, name)))
+    await show_log(ctx)
 
 
-async def _archive_channel(msg_info):
-    channel = msg_info.channel
+@command()
+async def archive(ctx):
+    """
+    Archives this channel.
+    """
+    channel = ctx.channel
     if channel.category_id == PROFILE["archive"]:
-        await channel.edit(category=get(msg_info.guild.categories, id=PROFILE["text"]))
+        await channel.edit(category=get(ctx.guild.categories, id=PROFILE["text"]))
     else:
-        await channel.edit(category=get(msg_info.guild.categories, id=PROFILE["archive"]))
+        await channel.edit(category=get(ctx.guild.categories, id=PROFILE["archive"]))
+    await show_log(ctx)
 
 
-def archive_channel(msg_info):
+@command()
+async def pin(ctx, id):
     """
-    > Archives current channel if no archived, otherwise un-archives
-    > /archive
+    Pins or unpins a message.
+
+    :param integer id: message id
     """
-    return Call(task=_archive_channel, args=(msg_info,))
-
-
-async def _pin_message(channel, msg_id):
-    msg = await channel.fetch_message(int(msg_id))
-    await msg.pin()
-
-
-def pin_message(msg_info, msg_id):
-    """
-    > Pins a message via id
-    > /pin msg_id
-    """
-    return Call(task=_pin_message, args=(msg_info.channel, msg_id))
+    msg = await ctx.channel.fetch_message(id)
+    if msg.pinned():
+        await msg.unpin()
+    else:
+        await msg.pin()
+    await show_log(ctx)
