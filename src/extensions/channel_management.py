@@ -180,8 +180,8 @@ async def pin(ctx, id):
 
     :param integer id: message id
     """
-    msg = await ctx.channel.fetch_message(id)
-    if msg.pinned():
+    msg = await ctx.channel.fetch_message(int(id))
+    if msg.pinned:
         await msg.unpin()
     else:
         await msg.pin()
