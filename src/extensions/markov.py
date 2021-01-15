@@ -11,12 +11,12 @@ async def markov_refresh(ctx, channel, number):
     Reads a channel's message history for generating markov messages.
 
     :param channel channel: which channel to read from
-    :param integer number: how many messages to load (max 2000)
+    :param integer number: how many messages to load (max 10000)
     """
 
     global channel_history
 
-    refresh_max = 2000
+    refresh_max = 10000
     number = min(number, refresh_max)
 
     await ctx.channel.send(f"Refreshing {number} most recent messages from {channel}...")
