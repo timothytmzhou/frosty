@@ -178,7 +178,7 @@ async def pin(ctx, id):
     """
     Pins or unpins a message.
 
-    :param integer id: message id
+    :param string id: message id
     """
     msg = await ctx.channel.fetch_message(int(id))
     if msg.pinned:
