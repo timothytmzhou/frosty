@@ -35,20 +35,16 @@ def parse_language_data(path):
 
 LANGUAGES = parse_language_data("languages/languages.json")
 
-users_running_code = set()
 
 @trigger("^/run\s```(.+?)[\s\n]([\s\S]*)```")
 async def run_code(msg, lang, code):
-    print(code)
-    if msg.author in users_running_code:
-        language = LANGUAGES[lang]
-        result = await client.loop.run_in_executor(None, language.execute, code)
-        if result["timeout"]:
-            out = "TimeoutError: computation timed out\n"
-        elif result["oom_killed"]:
-            out = "MemoryError: computation exceeded memory limit\n"
-        else:
-            out = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
-        out = "```py\n{0}\nExecution time: {1}s```".format(out.strip(), result["duration"])
-        users_running_code.remove(msg.author)
-        await msg.channel.send(out)
+    language = LANGUAGES[lang]
+    result = await client.loop.run_in_executor(None, language.execute, code)
+    if result["timeout"]:
+        out = "TimeoutError: computation timed out\n"
+    elif result["oom_killed"]:
+        out = "MemoryError: computation exceeded memory limit\n"
+    else:
+        out = (result["stdout"] + result["stderr"]).decode().replace("`", "​`")
+    out = "```py\n{0}\nExecution time: {1}s```".format(out.strip(), result["duration"])
+    await msg.channel.send(out)
