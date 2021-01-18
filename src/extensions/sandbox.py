@@ -37,17 +37,9 @@ LANGUAGES = parse_language_data("languages/languages.json")
 
 users_running_code = set()
 
-
-@command()
-async def run(ctx):
-    """
-    Runs the next code block you post.
-    """
-    users_running_code.add(ctx.author)
-
-
-@trigger("```(.+?)[\s\n](.+?)```")
+@trigger("^/run\s```(.+?)[\s\n]([\s\S]*)```")
 async def run_code(msg, lang, code):
+    print(code)
     if msg.author in users_running_code:
         language = LANGUAGES[lang]
         result = await client.loop.run_in_executor(None, language.execute, code)
