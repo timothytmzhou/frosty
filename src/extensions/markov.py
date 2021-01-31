@@ -48,13 +48,16 @@ async def markov_generate(ctx, user, length, prefix=None):
 
     chain = Chain(history)
     chain.train()
-    chain_output = chain.generate(length, prefix)
+    chain_success, chain_output = chain.generate(length, prefix)
 
-    msg_send = split_message_text(await filter_text_for_mentions(ctx, chain_output))
+    if chain_success:
+        msg_send = split_message_text(await filter_text_for_mentions(ctx, chain_output))
 
-    await ctx.channel.send(f'{user} says:\n')
-    for part in msg_send:
-        await ctx.channel.send(f'{part}')
+        await ctx.channel.send(f'{user} says:\n')
+        for part in msg_send:
+            await ctx.channel.send(f'{part}')
+    else:
+        await ctx.channel.send(f'Error {user}: {chain_output}\n')
 
 
 def split_message_text(text, char_limit=2000):
@@ -70,13 +73,12 @@ def get_user_message_history(user):
 
 
 async def filter_text_for_mentions(context, text):
-
     cached_ids = {}
 
     matches = re.findall('<@.*?>', text)
     for match in matches:
         if match == '@everyone' or match == '@here':
-            text = text.replace(match, '``'+match+'``')
+            text = text.replace(match, '``' + match + '``')
         safe_ping = match.replace('@', '@!')
         user_id = match.replace('@', '').replace('<', '').replace('>', '').replace('!', '').replace('&', '')
 
@@ -115,20 +117,17 @@ class Chain:
             prefix_words = prefix.split()
             starting_word = prefix_words[-1]
             if starting_word not in self.chain_dict:
-                return f'User has not said the word {starting_word}, so the Markov chain could not be traversed.'
+                return False, f'User has not said the word {starting_word}, so the Markov chain could not be traversed.'
             else:
                 starting_state = self.chain_dict[starting_word]
-                generated_text = '**' + prefix[:-len(starting_word)] + '**'
+                generated_text = ' *' + prefix + '* '
         else:
             starting_state = list(self.chain_dict.values())[random.randrange(0, len(self.chain_dict.keys()))]
+            generated_text = starting_state.word + ' '
 
         current_state = starting_state
 
-        while words_so_far < length:
-
-            generated_text += current_state.word + ' '
-            words_so_far += 1
-
+        while words_so_far < length + 1:
             dice_roll = random.uniform(0, 1)
             p_sum = 0
 
@@ -146,7 +145,10 @@ class Chain:
                 else:
                     p_sum += t.probability
 
-        return generated_text
+            generated_text += current_state.word + ' '
+            words_so_far += 1
+
+        return True, generated_text
 
     # Creates Markov Chain Structure but does not calculate state transition probabilities
     def create_markov_structure(self):
