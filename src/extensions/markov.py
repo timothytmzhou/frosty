@@ -113,12 +113,12 @@ class Chain:
         # If there is a prefix, check that the last word in the prefix exists
         if prefix is not None:
             prefix_words = prefix.split()
-            starting_word = prefix_words[len(prefix_words) - 1]
+            starting_word = prefix_words[-1]
             if starting_word not in self.chain_dict:
                 return f'User has not said the word {starting_word}, so the Markov chain could not be traversed.'
             else:
                 starting_state = self.chain_dict[starting_word]
-                generated_text = prefix + ' '
+                generated_text = '**' + prefix[:-len(starting_word)] + '**'
         else:
             starting_state = list(self.chain_dict.values())[random.randrange(0, len(self.chain_dict.keys()))]
 
@@ -145,9 +145,6 @@ class Chain:
                     break
                 else:
                     p_sum += t.probability
-
-            if words_so_far % 100 == 0:
-                print('generated', words_so_far, 'of', length, 'words.')
 
         return generated_text
 
