@@ -25,4 +25,5 @@ Lua        :: lua                                     :: main.lua
 Typescript :: typescript, ts                          :: main.ts
 Dart       :: dart                                    :: main.dart
 Swift      :: swift                                   :: main.swift
+Julia      :: julia                                   :: main.jl
 ```

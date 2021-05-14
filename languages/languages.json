@@ -218,5 +218,13 @@
     ],
     "file": "main.bf",
     "command": "brainfuck-esotope main.bf"
+  },
+  "julia": {
+    "prefixes": [
+      "julia",
+      "jl"
+    ],
+    "file": "main.jl",
+    "command": "julia main.jl"
   }
 }
