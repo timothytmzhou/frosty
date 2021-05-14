@@ -45,13 +45,14 @@ async def make(ctx, emote, name, members):
     :param name: name of the channel
     :param members: members to add to channel
     """
+    channel_name = "{0}│{1}".format(emote, name)
     overwrites = {ctx.author: ALLOWED, ctx.guild.roles[0]: BANNED}
     overwrites.update({member: ALLOWED for member in members})
     category = get(ctx.guild.categories, id=PROFILE["text"])
-    await ctx.guild.create_text_channel("{0}│{1}".format(emote, name),
+    await ctx.guild.create_text_channel(channel_name,
                                         category=category,
                                         overwrites=overwrites)
-    await show_log(ctx)
+    await show_log(ctx, "Made channel {}".format(channel_name))
 
 
 @subcommand()
@@ -78,16 +79,21 @@ async def make_user(ctx, emote, name, *users):
     await make(ctx, emote, name, users)
 
 
-async def update_members(channel, members, permissions):
+async def update_members(ctx, members, permissions):
     """
     Updates the permissions of members (roles or users) in a channel.
 
-    :param channel: channel to add members to
+    :param ctx: message context
     :param members: members to add to channel
     :param permissions: permissions object
     """
     for member in members:
-        await channel.set_permissions(member, overwrite=permissions)
+        if isinstance(member, Exception):
+            await show_log(ctx, str(member))
+            return False
+        else:
+            await ctx.channel.set_permissions(member, overwrite=permissions)
+    return True
 
 
 async def update_roles(channel, roles, permissions):
@@ -134,8 +140,12 @@ def get_members(guild, tags):
         else:
             # Assume user nicknames
             matches = [member for member in guild.members if get_display_name(member).lower() == tag.lower()]
-            if len(matches) == 1:
+            if len(matches) > 1:
+                yield ValueError("Nickname is not unique, use username and discriminator")
+            elif matches:
                 yield matches[0]
+            else:
+                yield ValueError("Not found.")
 
 
 @subcommand()
@@ -145,8 +155,9 @@ async def add_user(ctx, **users):
 
     :param string users: name and discriminator (e.g frosty#1234) or nickname (must be unique in server, case-insensitive)
     """
-    await update_members(ctx.channel, get_members(ctx.guild, users.values()), ALLOWED)
-    await show_log(ctx, "Added {}".format(", ".join(user.nick for user in get_members(ctx.guild, users.values()))))
+    success = await update_members(ctx, get_members(ctx.guild, users.values()), ALLOWED)
+    if success:
+        await show_log(ctx, "Added {}".format(", ".join(user.nick for user in get_members(ctx.guild, users.values()))))
 
 
 @subcommand()
@@ -167,7 +178,7 @@ async def kick_user(ctx, **users):
 
     :param user users: users to kick
     """
-    await update_members(ctx.channel, users.values(), BANNED)
+    await update_members(ctx, users.values(), BANNED)
     await show_log(ctx, "Kicked {}".format(", ".join(user.nick for user in users.values())))
 
 
