@@ -7,8 +7,15 @@ async def frosty_help(ctx):
     Shows the Frosty user manual.
     """
     with open("about.txt", "r") as f:
-        await ctx.send(content=f.read())
+        await ctx.send(content=f.read(), hidden=True)
 
+@command("langs")
+async def langs(ctx):
+    """
+    Gets a list of supported languages.
+    """
+    with open("languages.txt", "r") as f:
+        await ctx.send(f.read(), hidden=True)
 
 @trigger("give me a snowman|give me (.+) snowmen")
 async def snowman(msg, snowmen_request=1):
@@ -37,3 +44,4 @@ async def echo(ctx, string):
     :param string string: a string of text
     """
     await ctx.channel.send(string)
+    await ctx.send(content="​", hidden=True)

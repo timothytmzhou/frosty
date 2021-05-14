@@ -30,12 +30,11 @@ BANNED = PermissionOverwrite(
 )
 
 
-async def show_log(ctx):
+async def show_log(ctx, content):
     """
     Does something with the context so the slash command log is shown.
     """
-    await ctx.send(content="⠀")
-    await ctx.delete()
+    await ctx.send(content="`{}`".format(content))
 
 
 async def make(ctx, emote, name, members):
@@ -91,15 +90,34 @@ async def update_members(channel, members, permissions):
         await channel.set_permissions(member, overwrite=permissions)
 
 
-@subcommand()
-async def add_role(ctx, *roles):
+async def update_roles(channel, roles, permissions):
     """
-    Adds roles to channel.
+    Updates the permissions of members (roles or users) in a channel.
+
+    :param channel: channel to add members to
+    :param roles: roles to update
+    :param permissions: permissions object
+    """
+    for role in roles:
+        await channel.set_permissions(role, overwrite=permissions)
+
+
+def get_display_name(user):
+    """
+    Helper method to get display name for a user.
+    """
+    return user.nick if user.nick is not None else user.name
+
+
+@subcommand()
+async def add_role(ctx, **roles):
+    """
+    Gives default permissions for the given roles. User-level permissions overwrite role-level ones.
 
     :param role roles: roles to add
     """
-    await update_members(ctx.channel, roles, ALLOWED)
-    await show_log(ctx)
+    await update_roles(ctx.channel, roles.values(), ALLOWED)
+    await show_log(ctx, "Added {}".format(", ".join(role.name for role in roles.values())))
 
 
 def get_members(guild, tags):
@@ -113,39 +131,44 @@ def get_members(guild, tags):
         elif (m := re.match("(\S.+?#\d{4})", tag)):
             username, discriminator = m.group(1).split("#")
             yield get(guild.members, name=username, discriminator=discriminator)
+        else:
+            # Assume user nicknames
+            matches = [member for member in guild.members if get_display_name(member).lower() == tag.lower()]
+            if len(matches) == 1:
+                yield matches[0]
 
 
 @subcommand()
-async def add_user(ctx, *users):
+async def add_user(ctx, **users):
     """
     Adds users to channel.
 
-    :param string users: name and discriminator (e.g frosty#1234)
+    :param string users: name and discriminator (e.g frosty#1234) or nickname (must be unique in server, case-insensitive)
     """
-    await update_members(ctx.channel, get_members(ctx.guild, users), ALLOWED)
-    await show_log(ctx)
+    await update_members(ctx.channel, get_members(ctx.guild, users.values()), ALLOWED)
+    await show_log(ctx, "Added {}".format(", ".join(user.nick for user in get_members(ctx.guild, users.values()))))
 
 
 @subcommand()
-async def kick_role(ctx, *roles):
+async def kick_role(ctx, **roles):
     """
-    Kicks roles from channel.
+    Removes default permissions for the given roles. User-level permissions overwrite role-level ones.
 
     :param role roles: roles to kick
     """
-    await update_members(ctx.channel, roles, BANNED)
-    await show_log(ctx)
+    await update_roles(ctx.channel, roles.values(), BANNED)
+    await show_log(ctx, "Kicked {}".format(", ".join(role.name for role in roles.values())))
 
 
 @subcommand()
-async def kick_user(ctx, *users):
+async def kick_user(ctx, **users):
     """
     Kicks users from channel.
 
     :param user users: users to kick
     """
-    await update_members(ctx.channel, users, BANNED)
-    await show_log(ctx)
+    await update_members(ctx.channel, users.values(), BANNED)
+    await show_log(ctx, "Kicked {}".format(", ".join(user.nick for user in users.values())))
 
 
 @command()
@@ -157,7 +180,7 @@ async def rename(ctx, emote, name):
     :param string name: new name of the channel
     """
     await ctx.channel.edit(name=("{0}│{1}".format(emote, name)))
-    await show_log(ctx)
+    await show_log(ctx, "Renamed channel to {}".format(name))
 
 
 @command()
@@ -168,9 +191,10 @@ async def archive(ctx):
     channel = ctx.channel
     if channel.category_id == PROFILE["archive"]:
         await channel.edit(category=get(ctx.guild.categories, id=PROFILE["text"]))
+        await show_log(ctx, "Unarchived channel")
     else:
         await channel.edit(category=get(ctx.guild.categories, id=PROFILE["archive"]))
-    await show_log(ctx)
+        await show_log(ctx, "Archived channel")
 
 
 @command()
@@ -185,4 +209,4 @@ async def pin(ctx, id):
         await msg.unpin()
     else:
         await msg.pin()
-    await show_log(ctx)
+    await show_log(ctx, "Pinned message")

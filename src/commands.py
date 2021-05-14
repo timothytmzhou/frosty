@@ -9,7 +9,7 @@ from discord_slash import SlashCommandOptionType
 from discord_slash.utils import manage_commands
 
 client = discord.Client(intents=discord.Intents.all())
-slash = SlashCommand(client, auto_register=True)
+slash = SlashCommand(client, sync_commands=True)
 
 
 class CommandDocstringParser:
@@ -44,7 +44,7 @@ class CommandDocstringParser:
             description = param.description
             option_type = SlashCommandOptionType[param.type_name.upper()]
 
-            if param.arg_name == self.argspec.varargs:
+            if param.arg_name == self.argspec.varargs or param.arg_name == self.argspec.varkw:
                 for i in range(10 - num_args):
                     parsed.append((param_name[:-1] + str(i), description, option_type, False))
             elif not param.arg_name in self.argspec.args:
