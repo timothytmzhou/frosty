@@ -22,6 +22,7 @@ async def markov_refresh(ctx, channel, number):
     await ctx.channel.send(f"Refreshing {number} most recent messages from {channel}...")
     channel_history = await channel.history(limit=number).flatten()
     await ctx.channel.send(f"Finished refreshing {number} most recent messages from {channel}.")
+    await ctx.send(content="​", hidden=True)
 
 
 @subcommand()
@@ -58,6 +59,7 @@ async def markov_generate(ctx, user, length, prefix=None):
             await ctx.channel.send(f'{part}')
     else:
         await ctx.channel.send(f'Error {user}: {chain_output}\n')
+    await ctx.send(content="​", hidden=True)
 
 
 def split_message_text(text, char_limit=2000):
